@@ -1,4 +1,4 @@
-package com.mu;
+package src.com.mu.project19_io.work_test;
 
 import java.io.*;
 import java.util.Objects;

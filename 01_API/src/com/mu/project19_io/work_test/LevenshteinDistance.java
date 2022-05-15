@@ -1,7 +1,10 @@
-package com.mu;
+package src.com.mu.project19_io.work_test;
 
 import java.io.*;
 import java.util.*;
+
+import static src.com.mu.project19_io.work_test.LevenshteinDistance.getMinValue;
+import static src.com.mu.project19_io.work_test.LevenshteinDistance.minDistance;
 
 /*
     单词最佳匹配算法的主要目标是找出与作为参数的字符串最相似的单词。要实现一个这样的算法，需要做如下准备。
@@ -16,12 +19,14 @@ import java.util.*;
 
 public class LevenshteinDistance {
     public static void main(String[] args) throws Exception {
+        System.out.println("输入匹配单词：");
         Scanner sc = new Scanner(System.in);
         String input = sc.next();
         if (input == ""){
             throw new Exception("至少输入一个字符");
         }
         long start = System.currentTimeMillis();
+        /*
         FileReader fr = new FileReader("Dictionary.txt");
         BufferedReader br = new BufferedReader(fr);
         Map<Integer,String> map = new Hashtable<>();
@@ -42,6 +47,9 @@ public class LevenshteinDistance {
                 System.out.println(map.get(entry.getKey()));
             }
         }
+        */
+        WorldLoader worldLoader =WorldLoader.getInstance();
+        worldLoader.getWords(input);
         long end = System.currentTimeMillis();
         System.out.println("总耗时： " + (end - start) + "ms");
     }
@@ -82,6 +90,53 @@ public class LevenshteinDistance {
             }
         }
         return d[n][m];
+    }
+}
+
+class WorldLoader{
+    private static WorldLoader instance = new WorldLoader();
+
+    private List<String> words;
+
+    Map<Integer,String> map = new Hashtable<>();
+
+    private WorldLoader(){
+        FileReader fr = null;
+        try {
+            fr = new FileReader("Dictionary.txt");
+            BufferedReader br = new BufferedReader(fr);
+            int num = 0;
+            String str;
+            while ((str = br.readLine()) != null) {
+                map.put(++num,str);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static WorldLoader getInstance(){
+        if(instance == null){
+            instance = new WorldLoader();
+        }
+        return instance;
+    }
+
+    public void getWords(String input){
+        Map<Integer,Integer> result = new HashMap<>();
+        int count = map.size();
+        for (Map.Entry<Integer,String> entry : map.entrySet()){
+            result.put(count--,minDistance(input,entry.getValue()));
+        }
+        int tmp = (int)getMinValue(result);
+        for (Map.Entry<Integer,Integer> entry : result.entrySet()){
+            if(entry.getValue().equals(tmp)){
+                System.out.println(map.get(entry.getKey()));
+            }
+        }
     }
 }
 
