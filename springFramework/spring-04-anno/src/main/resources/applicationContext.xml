@@ -7,11 +7,7 @@
        http://www.springframework.org/schema/context
        https://www.springframework.org/schema/context/spring-context.xsd">
 
-    <!--启用注解配置-->
+    <context:component-scan base-package="com.mu.pojo"/>
     <context:annotation-config/>
-
-    <bean id="Cat111" class="com.mu.pojo.Cat" />
-    <bean id="Dog222" class="com.mu.pojo.Dog" />
-    <bean id="Person" class="com.mu.pojo.Person" />
 
 </beans>

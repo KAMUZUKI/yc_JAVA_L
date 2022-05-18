@@ -17,7 +17,7 @@
         <!-- configure properties of aspect here as normal -->
     </bean>
 
-    <bean id="test" class="com.mu.aspect.test">
+    <bean id="Test" class="com.mu.aspect.Test">
 
     </bean>
     <!-- more bean definitions for data access objects go here -->

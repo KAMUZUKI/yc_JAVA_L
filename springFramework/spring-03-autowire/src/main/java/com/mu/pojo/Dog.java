@@ -1,7 +1,7 @@
 package com.mu.pojo;
 
 public class Dog {
-    Dog() {
+    public void shout() {
         System.out.println("wang~");
     }
 }
