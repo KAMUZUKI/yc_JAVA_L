@@ -7,4 +7,12 @@
     <select id="selectUser" resultType="user">
         select * from manager.user;
     </select>
+    
+    <insert id="addUser" parameterType="user">
+        insert into manager.user(id,name,age) values(#{id},#{name},#{age});
+    </insert>
+
+    <delete id="deleteUser" parameterType="int">
+        delete from manager.user where user.id = #{id};
+    </delete>
 </mapper>
