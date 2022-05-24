@@ -1,7 +1,6 @@
 package com.mu.mapper;
 
 import com.mu.pojo.User;
-import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
 
 import java.util.List;
