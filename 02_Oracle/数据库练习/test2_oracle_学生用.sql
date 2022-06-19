@@ -69,6 +69,12 @@ from (
          ) a,S
 where S.SNO=a.SNO;
 
+select S.SNAME 学生姓名
+from S
+    where S.SNO not in(
+        select SC.SNO from SC where SC.CNO in(
+            select C.CNO from C where C.CTEACHER='李明')
+        );
 --2. 列出有二门以上（含两门）不及格课程的学生姓名及其平均成绩
 select S.SNAME 学生姓名,avg(SC.SCGRADE) avgGRADE
 from S,SC,(
@@ -100,7 +106,7 @@ from S,(
          from SC
          where CNO='1' or CNO='2'
          group by SC.SNO
-         having count(*) >=2
+         having count(*) =2
          ) a
 where S.SNO=a.SNO;
 
@@ -130,3 +136,8 @@ from S,(
     where a.学号=SC.SNO and (SC.CNO='1' or SC.CNO='2')
     group by SC.CNO) b
 where b.SNO=S.SNO;
+
+select SNO,sc1.SNO,CNAME,SCGRADE
+from SC sc1,C
+where C.CNO=SC1.CNO and sc1.CNO in(1,2) and
+(select sc2.SCGRADE from SC sc2 where sc1.SNO=sc2.SNO and CNO=1)>(select sc3.SCGRADE from SC sc3 where sc1.SNO=sc3.SNO and CNO=2);

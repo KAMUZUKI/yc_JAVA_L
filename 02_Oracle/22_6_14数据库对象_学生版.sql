@@ -19,31 +19,37 @@
 --生成索引后，再执行一次查询
 --索引的特征:  索引也要存储，索引也占空间，由数据库自动维护索引.
 
-create table myTestTable as
+create table stu_test_100w as
 select rownum as id,
        to_char(sysdate + rownum/24/3600, 'yyyy-mm-dd hh24:mi:ss') as inc_datetime,
        trunc(dbms_random.value(0, 100)) as random_id,
        dbms_random.string('x', 20) random_string
 from dual
-connect by level <= 1000000;
+connect by level <= 100000;
 
 --可以将一个索引建立在与数据文件不同的表空间上, 以提高效率
 --1. 创建一个表空间, 一个表空间可以放在一个或多个文件上
 --删除，创建表空间的权限
+drop tablespace index_student_test_tab1 including contents;
 
-
+create tablespace index_student_test_tab1
+datafile 'D:\Java_L\yc_JAVA_L\tablespace\index_student_test_tab1.f'
+    SIZE 10M AUTOEXTEND ON;  --size 10 初始大小  autoextend on 自动增长
 --2. 将索引文件建立在一个表空间上
-
-
+create index index_student_test2
+ON stu_test_100w (address)
+    TABLESPACE index_student_test_tab1;
 
 --重建索引:   当数据经过了大量修改后，索引已经失效， 就要重建索引
+ALTER INDEX index_student_test2 rebuild;
 
-
+SELECT * FROM (
+                  SELECT t.*, ROWID
+                  FROM SCOTT."stu_test_100w" t
+                  ORDER BY "address"
+              ) WHERE ROWNUM <= 501;
 --删除索引
-
-
-
-
+drop index index_student_test2;
 
 --索引的类型:
 --B树索引, 位图索引, 反向键索引, 全局与本地索引, 基于函数的索引
@@ -53,24 +59,48 @@ connect by level <= 1000000;
 
 --   oracle表的主键列上创建唯一索引
 --语法:   create unique index 索引名  on 表名(列名);
-
+drop index index_emp2_ename;
+create index index_emp2_ename
+on SCOTT.emp(ename);
 
 --组合索引:   WHERE 子句中引用了组合索引的所有列或大多数列，则可以提高检索速度
 --语法:   create index 索引名 on 表名(列名1,列名2....)
 --案例: 对stu_test_100w  的stu_name,  birthday两个列进行组合索引
+drop index index_test_mul;
 
+select * from stu_test_100w
+    where stu_name='smith29793' and birthday='2009-11-18 13:57:40';
 
+-- 组合索引 有顺序
+create index index_test_mul
+on stu_test_100w(stu_name,birthday);
 
+select * from stu_test_100w
+    where stu_name='smith29793' and birthday='2009-11-18 13:57:40';
 
+select * from stu_test_100w where stu_pwd='abc' and birthday='2009-11-18 13:57:40' and stu_name='smith1';
 
 --反向键索引反转索引列键值的每个字节     reverse
 --案例: 请对id列建立反向键索引
+drop index index_test_recerse;
 
+create index index_test_recerse
+on stu_test_100w(id) reverse;
 
 --位图索引:   相似于表分区中的列表分区:      位图用在只有几个值的列上(列的值基数比较小,  例如性别， 地区，省份，国家)
 --一个索引对应多条数据.
 --案列: 在emp表中建立针对deptno的位图索引
+select * from emp;
+drop index index_test_bitmap;
+create bitmap  index index_test_bitmap
+on emp(deptno);
 
+select * from emp where deptno=20;
+drop index index_stu_bitmap_address;
+create bitmap index index_stu_bitmap_address
+on stu_test_100w(address);
+
+select * from stu_test_100w where address='北京市';
 
 --基于函数的索引:   基于一个或多个列上的函数或表达式创建的索引
 --表达式中不能出现聚合函数
@@ -78,23 +108,20 @@ connect by level <= 1000000;
 --创建时必须具有 QUERY REWRITE 权限
 --创建一个函数索引
 
+create index index_stu_test_100w
+on stu_test_100w(upper(stu_name));
+
+select upper(stu_name) from stu_test_100w where upper(stu_name)='SMITH1';
 
 
 
 --oracle提供了一系列关于索引信息的视图
 --USER_INDEXES: 用户创建的索引信息
-
+select * from user_indexes;
 --分区索引:   uSER_IND_PARTITIONS
-
+select * from USER_IND_PARTITIONS;
 --USER_IND_COLUMNS － 与索引相关的表列的信息
-
-
-
-
-
-
-
-
+select * from user_ind_columns;
 
 ---------------------------------3. 视图-----------------------------
 --why视图要用?
@@ -115,59 +142,105 @@ connect by level <= 1000000;
 
 --注意: 创建视图应有权限.
 --1. 以sys as sysdba登录，给scott赋权限
-
+grant create view to scott;
 
 --案例一:   将dept部门表以视图形式展示出来
+create or REPLACE view v_dept
+as
+    select * from dept;
 
+select * from v_dept;
 
 --视图就是一张虚拟的表，所以可以使用select 进行查询
 
 --案例二： 视图可以隐藏复杂的查询
 -- 需求：查询出每个员工名及所属部门名
+create or replace view v_dept_emp2
+as
+    select empno,ename,dname
+    from emp
+    left join dept
+        on emp.DEPTNO=dept.DEPTNO;
 
+select * from v_dept_emp2;
 
 
 -- 需求: 查询出每个部门及这个部门下员工数
+select * from emp;
+select * from dept;
 
+create or replace view v_deptinfo
+as
+    select dname,count(empno) as total
+    from dept
+    left join emp on dept.deptno=EMP.DEPTNO
+    group by dept.deptno,dept.dname;
+
+select * from v_deptinfo;
 
 
 --视图学习深入
 --1. force关键字:    忽略查询的错误来强制创建视图
 --why   force?
-
+create view v_test_wrong
+as
+    select * from thisistabel;
 
 --假设这张表以后会有，但前期必须先创建视图?
 --请加入force
+create force view v_test_wrong
+as
+select * from thisistabel;
 
-
-
+select * from v_test_wrong;  --视图可以创建但不能使用
 
 --2. 别名机制: 作用=》 隐藏真实的列名
+create or replace view v_dept_emp3(eno,en,dn)
+as
+    select empno,ename,dname
+    from emp
+        left join dept
+            on emp.deptno=dept.deptno;
 
 
+select * from v_dept_emp3;
 --3. with check option的作用
 --案例 :
 --1. 创建一个视图，用于查询所有编号小于100的部门
+create or replace view v_dept_less_50
+as
+    select * from dept where deptno<50;
 
+select * from v_dept_less_50;
 
 --2. 请使用视图插入一个新部门，编号为 1000
-
+insert into v_dept_less_50 values(89,'develop 180','hunan');
 
 
 --3. 查询视图，
-
+select * from v_dept_less_50;
+select * from dept;
 
 
 --对比以上两个查询发现：视图中的数据丢失了.   with check option的作用就是给视图加一个条件约束，
 --该约束所限的条件就是视图中子查询的where条件，以后如果想通过该视图执行DML操作，首先会检查.
+create or replace view v_dept_less_50
+as
+    select * from dept where DEPTNO<50
+with check OPTION;
 
-
+insert into v_dept_less_50 values(92,'development','hunan');
+select * from v_dept_less_50;
 -- 4. 内联视图
 --定义:  在from 子句中使用子查询，这个子句就称为内联视图( inline view). 内联视图是一个命名的sql 语句，但不是真正的视图。
 --应用:   翻页，排名,（注意还需要配合rownum一起使用)
 -- a. 伪列 rownum : 伪列rownum的作用就是标识返回的结果集中数据行的行号,从1到n编辑.
 --观察以下语句的运行结果
-
+select a.*,ROWNUM from dept a where ROWNUM=1;
+select a.*,ROWNUM from dept a where ROWNUM>1;
+select a.*,ROWNUM from dept a where ROWNUM>=1;
+select a.*,ROWNUM from dept a where ROWNUM>5;
+select a.*,ROWNUM from dept a where ROWNUM<5;
 
 --分析以下语句的结果
 
@@ -176,28 +249,44 @@ connect by level <= 1000000;
 --默认情况下rownum的取值是按照记录插入到数据库中的顺序赋值的。
 --因此在进行排序查询时，不能直接使用rownum对返回的数据进行限制。
 --分析以下案例: 查询出入职时间最早的前5名员工
+select * from emp;
+insert into emp values(7922,'mu','CLERK',7782,sysdate,2000,200,10);
+insert into emp values(7956,'mu2','CLERK',7782,to_date('1966-04-04','yyyy-mm-dd'),2000,200,10);
 
-
-
+select empno,ename,ROWNUM,hiredate
+from emp
+    where rownum<5
+order by hiredate;
 
 --解决方案: 使用内联视图来完成top - n 查询
 --分析:  先通过内联视图将满足区间的记录全部查出来，并在内联视图中使用rownum编号，然后在主查询中再使用rownum指定满足区间下限的查询条件
-
+select * from(
+    select empno,ename,,hiredate,rownum as rn
+    from
+    (select empno,ename,hiredate from emp ORDER by hiredate)
+) where rn between 1 and 5;
 
 --体现视图的安全性:  可以将一个视图只赋权限给某一个人用
 --赋权限语法:  grant  对象权限名 on对象名 to 用户名  with grant option
-
+grant select on v_dept_less_50 to system with grant option;
 
 
 
 --安全性例子:
 --需求:   1. 创建一个用户zy,    2. zy用户只能查看scott.emp中部门编号为20的数据
+create user zy3 identified by a;
+grant resource,connect to zy3;
 
 --1. 创建一个视图
-
+create or replace view emp_deptno_20
+as 
+select * from emp where DEPTNO=20
+with check option;
 
 --2. 将这个视图的访问权限赋值给zy2,   注意，请先创建zy2
+grant select,insert,update,delete on emp_deptno_20 to zy3 with grant option;
 
+select * from SCOTT.emp_deptno_20;
 
 
 --在视图上进行DML操作时，要求如下:
@@ -206,11 +295,9 @@ connect by level <= 1000000;
 --如果视图包含连接操作符、DISTINCT 关键字、集合操作符、聚合函数或 GROUP BY 子句，则将无法更新视图
 --如果视图包含伪列或表达式，则将无法更新视图
 
-
 --删除视图
 --语法:  drop view 视图名
-
-
+drop view emp_deptno_20;
 
 
 --oracle系统常见视图
@@ -218,14 +305,6 @@ connect by level <= 1000000;
 --  dba_xxx     管理员视图
 --  all_xxx     所有视图
 --  v$_xx       性能视图
-
-
-
-
-
-
-
-
 
 
 
