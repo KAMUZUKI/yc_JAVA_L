@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+<meta charset="UTF-8">
+<title>CSS属性练习</title>
+<script type="text/javascript" src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script type="text/javascript" src="https://lib.baomitu.com/vue/2.6.12/vue.min.js"></script>
+<style type="text/css">
+body, div {
+	padding: 10px
+}
+
+div {
+	border: 1px solid #777;
+}
+
+body>div:nth-child(1) {
+	float: left;
+	width: 60%;
+	height: 100%;
+	overflow: auto
+}
+
+body>div:nth-child(2) {
+	float: right;
+	width: 35%;
+	height: 100%;
+	overflow: auto
+}
+li{
+	padding: 2px
+}
+li:hover{
+	background-color: #888;
+	color: #fff;
+}
+li>*:nth-child(2),li>*:nth-child(3){
+	float: right;
+}
+li>span{
+	width:60%;
+}
+li>input{
+	width:30%
+}
+h1{
+	background-color: #eee;
+}
+</style>
+</head>
+<body style="height: 90%">
+	<div>
+		<h1>CSS选择器</h1>
+		<fieldset id="f1">
+			<legend>页面</legend>
+			<dl class="dlc1">
+				<dt id="dt1"><a href="#">标签选择器</a></dt>
+				<dd>又称为元素选择器 ，最为基本 ，格式：标签名{}</dd>
+			</dl>
+			<dl class="dlc2">
+				<dt id="dt2"><a href="#">ID选择器</a></dt>
+				<dd>根据id选择标签 ，格式：#id{}</dd>
+			</dl>
+			<dl class="dlc3">
+				<dt id="dt3"><a href="#">Class选择器</a></dt>
+				<dd>根据class名，设置的选择器 ，格式：.class名{}</dd>
+			</dl>
+			<dl class="dlc1">
+				<dt id="dt4"><a href="#">并集选择器</a></dt>
+				<dd>创建由逗号分隔的多个选择器 ，格式：选择器，选择器，选择器{}</dd>
+			</dl>
+			<dl class="dlc2">
+				<dt id="dt5"><a href="#">后代选择器</a></dt>
+				<dd>多个选择器以空格分开，组合成包含关系 ，格式：父选择器名   子代选择器名{}</dd>
+			</dl>
+			<dl class="dlc3">
+				<dt id="dt6"><a href="#">子元素选择器</a></dt>
+				<dd>选择匹配元素中的直接后代目标元素 ，语法：第一个选择器>第二个选择器</dd>
+			</dl>
+			<dl class="dlc1">
+				<dt id="dt7"><a href="#">兄弟选择器</a></dt>
+				<dd>相邻兄弟选择器可以选择紧接着另一元素后的元素，必须得是同一个父元素 ，格式：a+b{} </dd>
+			</dl>
+			<dl class="dlc2">
+				<dt id="dt8"><a href="#">伪类选择器</a></dt>
+				<dd>根据条件的改变匹配元素，是相对于文档的固定状态来说的。</dd>
+			</dl>
+			<dl class="dlc3">
+				<dt id="dt9"><a href="#">属性选择器</a></dt>
+				<dd>属性选择器:对带有指定属性的 HTML 元素 ，格式：标签名[属性名='值']{}</dd>
+			</dl>
+		</fieldset>
+		<fieldset>
+			<legend>源码</legend>
+			<pre>
+&lt;dl class="dlc1">
+	&lt;dt id="dt1">&lt;a href="#">标签选择器&lt;/a>&lt;/dt>
+	&lt;dd>又称为元素选择器 ，最为基本 ，格式：标签名{}&lt;/dd>
+&lt;/dl>
+&lt;dl class="dlc2">
+	&lt;dt id="dt2">&lt;a href="#">ID选择器&lt;/a>&lt;/dt>
+	&lt;dd>根据id选择标签 ，格式：#id{}&lt;/dd>
+&lt;/dl>
+&lt;dl class="dlc3">
+	&lt;dt id="dt3">&lt;a href="#">Class选择器&lt;/a>&lt;/dt>
+	&lt;dd>根据class名，设置的选择器 ，格式：.class名{}&lt;/dd>
+&lt;/dl>
+&lt;dl class="dlc1">
+	&lt;dt id="dt4">&lt;a href="#">并集选择器&lt;/a>&lt;/dt>
+	&lt;dd>创建由逗号分隔的多个选择器 ，格式：选择器，选择器，选择器{}&lt;/dd>
+&lt;/dl>
+&lt;dl class="dlc2">
+	&lt;dt id="dt5">&lt;a href="#">后代选择器&lt;/a>&lt;/dt>
+	&lt;dd>多个选择器以空格分开，组合成包含关系 ，格式：父选择器名   子代选择器名{}&lt;/dd>
+&lt;/dl>
+&lt;dl class="dlc3">
+	&lt;dt id="dt6">&lt;a href="#">子元素选择器&lt;/a>&lt;/dt>
+	&lt;dd>选择匹配元素中的直接后代目标元素 ，语法：第一个选择器>第二个选择器&lt;/dd>
+&lt;/dl>
+&lt;dl class="dlc1">
+	&lt;dt id="dt7">&lt;a href="#">兄弟选择器&lt;/a>&lt;/dt>
+	&lt;dd>相邻兄弟选择器可以选择紧接着另一元素后的元素，必须得是同一个父元素 ，格式：a+b{} &lt;/dd>
+&lt;/dl>
+&lt;dl class="dlc2">
+	&lt;dt id="dt8">&lt;a href="#">伪类选择器&lt;/a>&lt;/dt>
+	&lt;dd>根据条件的改变匹配元素，是相对于文档的固定状态来说的。&lt;/dd>
+&lt;/dl>
+&lt;dl class="dlc3">
+	&lt;dt id="dt9">&lt;a href="#">属性选择器&lt;/a>&lt;/dt>
+	&lt;dd>属性选择器:对带有指定属性的 HTML 元素 ，格式：标签名[属性名='值']{}&lt;/dd>
+&lt;/dl>
+			</pre>
+		</fieldset>
+	</div>
+	<div id="lx">
+		<h2>请查看左下的源码, 根据要求定义CSS选择器选择指定的元素</h2>
+		<ol>
+			<li v-for="(q,index) in qlist">
+				<span>{{q.name}}</span>:
+				<img v-bind:style="q" src="OK.png" width="20px" >
+				<input v-bind:answer="q.answer" placeholder="请填选择器，例：#test"
+					v-on:click="a(q)"
+					v-on:change="answer(q)"
+					v-bind:value="q.answer">
+			</li>
+		</ol>
+	</div>
+
+	<script type="text/javascript">
+		function Q(name, answer, selector, msg) {
+			this.name = name;
+			this.answer = answer;
+			this.selector = selector;
+			this.msg = msg;
+			this.visibility = 'visible';
+		}
+		function q(name, answer, selector, msg) {
+			return new Q(name, answer, selector, msg);
+		}
+		var qlist = [
+			q('所有的dl元素', 'dl'),
+			q('所有的dt元素', 'dt'),
+			q('所有的dd元素', 'dd'),
+			q('所有的 class=dlc1 的元素', '.dlc1'),
+			q('所有的 class=dlc2 的元素', '.dlc2'),
+			q('所有的 dlc3类 的元素', '.dlc3'),
+			q('id=dt1 的元素', '#dt1'),
+			q('id=dt1 和 id=dt2 的元素', '#dt1,#dt2'),
+			q('class=dlc1 和 id=dt3 的元素', '.dlc1,#dt3'),
+			q('id=dt2 的元素', '#dt2'),
+			q('id=dt3 的元素', '#dt3'),
+			q('id=dt4 的元素', '#dt4'),
+			q('在dt元素后的dd元素', 'dt+dd'),
+			q('在id=dt1元素后的dd元素', '#dt1+dd'),
+			q('在dlc1类元素后的dl元素', '.dlc1+dl'),
+			q('在class=dlc2类元素后的dl元素', '.dlc2+dl'),
+			q('在class=dlc3类元素后的dl元素', '.dlc3+dl'),
+			q('class=dlc1元素子dt元素', '.dlc1>dt'),
+			q('class=dlc2元素子dt元素', '.dlc2>dt'),
+			q('class=dlc1元素后代dt元素', '.dlc1 dt'),
+			q('class=dlc2元素后代dt元素', '.dlc2 dt'),
+			q('class=dlc1元素子a元素', '.dlc1>a', null, '哈哈, 没效果吧, 仔细看看, a 不是class=dlc1元素的子元素, 是它的孙子(后代元素)'),
+			q('class=dlc1元素后代a元素', '.dlc1 a'),
+			q('class=dlc2元素子dd元素', '.dlc2>dd'),
+			];
+		qlist.sort((a,b)=>{return Math.random()>.5 ? -1 : 1});
+
+		var lx = new Vue({
+			el : '#lx',
+			data : {
+				qlist : qlist,
+			},
+			methods : {
+				answer : function(q) {
+					if (event.srcElement.value) {
+						var a1 = event.srcElement.value;
+						var a2 = q.answer;
+						$("#f1 *").css("background-color", "");
+						$("#f1 " + a1).css("background-color", "green");
+						a1 = a1.replace(/\s+/g, '');
+						a2 = a2.replace(/\s+/g, '');
+						a1 = a1.toLowerCase();
+						a2 = a2.toLowerCase();
+						if (a1 == a2){
+							if(q.msg){
+								alert(q.msg);
+							}
+						}
+					}
+				},
+				a : function(q) {
+					if (event.altKey) {
+						event.srcElement.value = q.answer;
+						this.$options.methods.answer(q);
+					}
+				}
+			}
+		})
+	</script>
+</body>
+</html>
