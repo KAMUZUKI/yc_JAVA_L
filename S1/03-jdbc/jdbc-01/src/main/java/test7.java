@@ -2,7 +2,7 @@ import java.sql.*;
 import java.util.Scanner;
 
 public class test7 {
-    public static <PrepareStatement> void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException {
         Scanner sc = new Scanner(System.in);
         System.out.println("请输入登录用户名:");
         String name=sc.nextLine();
@@ -11,7 +11,7 @@ public class test7 {
 
         Connection con= DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl","scott","a");
 //        String sql = "insert into dept values(12,'统计部','湖南')";
-        String sql = "select  * from dept where name='"+ name + "'and pwd='" + pwd + "'" ;
+        String sql = "select  * from dept where name=? and pwd=?" ;
         System.out.println("语句为："+sql);
         PreparedStatement pstmt = con.prepareStatement(sql);
         pstmt.setString(1, name);

@@ -10,10 +10,15 @@ public class jdbcConnect {
         PreparedStatement stmt = null;
         try{
             conn = DriverManager.getConnection(DB_URL,USER,PASS);
-            stmt = conn.prepareStatement("select deptno,dname,loc from dept");
+            String sql = "select * from dept";
+            System.out.println("SQL语句为：" + sql);
+            stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
             while(rs.next()){
-                System.out.println(rs.getString("area_id"));
+                int deptno=rs.getInt("DEPTNO");
+                String dname=rs.getString("DNAME");
+                String loc=rs.getString(3);
+                System.out.println(deptno+"\t"+dname+"\t"+loc);
             }
             rs.close();
             stmt.close();
@@ -30,7 +35,6 @@ public class jdbcConnect {
                 if(conn != null) conn.close();
             }catch(SQLException se){}
         }
-
     }
 
 }
