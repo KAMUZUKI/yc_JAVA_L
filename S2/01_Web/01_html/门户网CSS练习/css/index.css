@@ -1,0 +1,139 @@
+@charset "UTF-8";
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    width:1200px;
+    margin: auto;
+}
+
+header {
+    background-color: #82e1ff;
+    height:180px;
+}
+
+aside {
+    width:300px;
+    float:left;
+    height:500px;
+    background-color: #76ff3d;
+}
+
+main{
+    width:900px;
+    height:500px;
+    float:right;
+    background-color: #0aff99;
+}
+
+footer {
+    background-color: #53f5ef;
+    height:83px;
+    clear:both;
+}
+
+header{
+    height: auto;
+}
+
+/*蓝底白字*/
+.bbwc{
+    background-color: #06C0FE;
+    color: white;
+}
+
+header>h1 {
+    padding:30px 100px;
+    text-align:right;
+}
+
+header>div:nth-child(2){
+    text-align:right;
+    padding-right: 10px;
+    padding-bottom: 20px;
+}
+
+header>div:nth-child(2)>span{
+    margin:10px;
+}
+
+header>div:nth-child(3){
+    display: flex;
+    justify-content: space-around;
+    padding: 15px 0px;
+    background-color: #E2E2E2;
+}
+
+footer{
+    text-align:center;
+    padding:20px;
+    height:auto;
+    color: #2d6eff;
+}
+
+aside,main{
+    background-color: #fff;
+    padding-top:10px;
+}
+
+aside{
+    width:290px;
+}
+
+main{
+    width:890px;
+}
+
+#login,#pics{
+    height:200px;
+}
+
+#products{
+    background-color: #ccc;
+    height:300px;
+}
+
+#news{
+    background-color: #aaa;
+    height:300px;
+}
+
+/***********************产品形象**********************/
+#pics{
+    display:flex;
+    justify-content:space-around;
+}
+
+#pics>div{
+    height:180px;
+    margin: 10px;
+    text-align:left;
+}
+
+#pics>div:nth-child(1){
+    width:600px;
+}
+
+#pics>div:nth-child(2){
+    width:250px;
+}
+
+#pics>div:nth-child(1)>img{
+    height:100%;
+    width:100%;
+}
+
+#pics>div:nth-child(2)>div:nth-child(2){
+    display:flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+#pics>div:nth-child(2) img{
+    height:70px;
+    width:45%;
+    display:inline-block;
+    margin: 5px 0;
+}

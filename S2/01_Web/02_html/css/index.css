@@ -1,0 +1,28 @@
+@charset "UTF-8";
+
+*{
+    padding: 0;
+    margin: 0;
+    font-family: 微软雅黑;
+    color: #666;
+}
+
+.body{
+    width: 1200px;
+    margin: auto;
+}
+
+header>div:nth-child(1){
+    background-color: #F6F6F6;
+    padding:0.5em 0px;
+    border: 1px #aaa solid;
+}
+
+header>div:nth-child(1)>div{
+    display: flex;
+    justify-content: space-between;
+}
+
+header>div:nth-child(1)>div>label{
+    font-weight:bold;
+}
