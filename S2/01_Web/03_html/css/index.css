@@ -1,0 +1,23 @@
+@charset "UTF-8";
+
+/*首页元素样式*/
+
+main>h1{
+    background-color: #815995;
+    color: #fff;
+    padding: 10px;
+    font-size: 1.5em;
+}
+
+main>div:nth-child(2){
+    display: flex;
+    justify-content:space-around;
+    flex-wrap: wrap;
+}
+
+main>div:nth-child(2)>a>img{
+    height: 170px;
+    width: 170px;
+    display: inline-block;
+    margin: 10px 0;
+}
