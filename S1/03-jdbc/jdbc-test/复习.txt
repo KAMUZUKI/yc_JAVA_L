@@ -1,0 +1,35 @@
+1.系统信息. 
+  Runtime   jvm
+  Properties   System.getProperties()       
+  
+  数据库的元信息    databaseMetaData
+  结果集的元信息    ResultSetMetaData
+
+2. 流: 
+   按行写入数据     编号   姓名   年龄
+
+   输出流  -> 字符输出流  －＞    打印输出字符流   .  println()
+        PrintWriter oos = new PrintWriter( new OutputStreamWriter(   new FileOutputStream(new File("d:\\a.txt"), true) ) )
+        oos.println(""  );
+        oos.flush();
+
+   按行读入数据. 
+       BufferedReader reader = new BufferedReader( new InputStreamReader(   new FileInputStream(new File(path)) )) 
+       reader.readLine()
+
+3. try...resource....
+    try(        实现了closable接口对象   ){
+
+   }catch(   ){
+
+   }
+
+4. jdbc的基本操作：
+     Connection con=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl","scott","a");
+    PreparedStatement pstmt=con.prepareStatement(sql);
+
+			pstmt.setString(1,   name  );
+			pstmt.setString(2, age+"");
+			pstmt.setString(3, id+"");
+    int result=pstmt.executeUpdate();
+			

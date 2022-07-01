@@ -1,0 +1,356 @@
+@charset "UTF-8";
+
+*{
+    padding: 0px;
+    margin: 0px;
+    font-family: 微软雅黑;
+    color: #666;
+}
+
+.body{
+    width: 1200px;
+    margin: auto;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+.body>span>span:nth-child(2){
+    color: #fac55a;
+}
+
+.body>span>a{
+    color: #6638ae;
+    display: inline-block;
+    border-left: 2px solid #b3959b;
+    margin-left: 10px;
+    padding-left: 15px;
+}
+
+
+
+header>div:nth-child(1){
+    background-color: #F6F6F6;
+    padding:0.5em 0px;
+    border: 1px #aaa solid;
+}
+
+header>div:nth-child(1)>div{
+    display: flex;
+    justify-content: space-between;
+}
+
+header>div:nth-child(1)>div>label{
+    font-weight:bold;
+}
+
+
+/****************logo + 搜索框 + 购物车******************/
+#logo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0 20px 20px;
+}
+
+.search>input{
+    width: 250px;
+    height: 30px;
+    background-image: url(../天天生鲜网页CSS练习/images/search.png);
+    background-repeat: no-repeat;
+    background-position: 10px center;
+    text-indent: 40px;   /*文字缩进*/
+    border: 2px #37ab40 solid;
+}
+
+.search>button{
+    width: 80px;
+    height: 34px;
+    background-color: #37ab40;
+    border: 2px #37ab40 solid;
+    color: #fff;
+}
+
+.buycar>span{
+    width: 150px;
+    height: 32px;
+    display: inline-block;
+    background-image: url(../天天生鲜网页CSS练习/images/buycar.png);
+    background-repeat: no-repeat;
+    background-position: 10px center;
+    text-indent: 40px;   /*文字缩进*/
+    line-height: 32px;
+    border: 1px #999 inset;
+    text-align: center;
+    color: #37ab40;
+}
+
+.buycar>label{
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    background-color: #f80;
+    border: 2px #f80 solid;
+    color: #fff;
+    line-height: 30px;
+    text-align: center;
+}
+
+/***************导航栏******************/
+.Navigation{
+    height: 35px;
+    font-size: 12px;
+}
+
+.Navigation>span:nth-child(1){
+    width: 200px;
+    display: inline-block;
+    text-align: center;
+    line-height: 35px;
+    background-color: #37ab40;
+    color: #fff;
+}
+
+.navi{
+    width: 60px;
+    height: 15px;
+    line-height: 15px;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: lighter;
+}
+
+.navihas{
+    border-left: 1px #8a8a8a solid;
+}
+
+.Navigation>span:nth-child(3){
+    width: 80px;
+}
+
+/***************Banner******************/
+#banner{
+    width: 100%;
+    border-top: 2px solid #37ab40;
+}
+
+.banner{
+    width: 1200px;
+    margin: auto;
+}
+
+.banner-aside{
+    height: 270px;
+    width: 200px;
+    font-size: 12px;
+    float: left;
+}
+
+.banner-aside>div{
+    width: 200px;
+    height: 45px;
+    text-align: center;
+    border-left: 1px solid #acacac;
+    border-bottom: 1px solid #acacac;
+    vertical-align: middle;
+    box-sizing: border-box;
+}
+
+.banner-aside>div>span{
+    display: inline-block;
+    line-height: 45px;
+    vertical-align: middle;
+    text-align: center;
+    margin-left: 10px;
+    color: #6638ae;
+}
+
+.banner-aside>div>img{
+    vertical-align: middle;
+}
+
+.banner-aside-left-img{
+    padding-left: 40px;
+    position: relative;
+}
+
+.banner-aside-right-img{
+    margin-left: 50px;
+}
+
+/*************轮播图***************/
+
+/*设置box的大小*/
+.box{
+    width: 760px;
+    height: 270px;
+    overflow: hidden;
+    margin: 0 auto;
+    float: left;
+    vertical-align: middle;
+}
+/*设置box1的大小（需要能够放下内容的大小）*/
+.box1{
+    width: 760px;
+    animation:mybox 3s infinite ;
+    clear: left;
+}
+/*设置每个元素的大小。视为行内块，左浮动，可以使他们一排且无间隙*/
+.box1 div{
+    width: 760px;
+    height: 270px;
+    display: inline-block;
+    overflow: hidden;
+    position: absolute;
+    float: left;
+}
+
+/*百分比大小可设置每个元素停留的时间*/
+/*@keyframes mybox{*/
+/*    0%{*/
+/*        transform: translate(-0);*/
+/*    }*/
+/*    50%{*/
+/*        transform: translate(-400px);*/
+/*    }*/
+/*    100%{*/
+/*        transform: translate(-800px);*/
+/*    }*/
+/*}*/
+/*也可以直接写开始的位置和结束的位置*/
+/*@keyframes mybox{*/
+/*    from{*/
+/*        transform: translate(-0);*/
+/*    }*/
+/*    to{*/
+/*        transform: translate(-800px);*/
+/*    }*/
+/*}*/
+
+.box1>span{
+    display: inline-block;
+}
+
+.lunbotu-arrow-left{
+    float: left;
+    position: absolute;
+    margin: 124px 10px;
+    clear: both;
+
+}
+
+.lunbotu-arrow-right{
+    float: right;
+    position: relative;
+    margin-top: 124px;
+    margin-right: 10px;
+    clear: both;
+}
+
+.box-spot{
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    clear: both;
+    position: absolute;
+    background-color: #adff2f;
+    margin-top: 240px;
+    margin-left: 350px;
+}
+
+.banner-right{
+    width: 240px;
+    height: 270px;
+    float: left;
+
+}
+
+.banner-right>div{
+    height: 135px;
+}
+
+
+/***************main*****************/
+
+.main-top{
+    clear: both;
+    padding-top: 15px;
+}
+
+.main-top>span{
+    text-align: center;
+}
+
+.main-top>span:nth-child(1){
+    font-size: 16px;
+    font-weight: bold;
+    color: #37ab40;
+    line-height: 30px;
+    display: inline-block;
+    width: 90px;
+    vertical-align: middle;
+    text-indent: -22px;
+}
+
+.main-top>span:nth-child(2){
+    border-left: 1px solid #acacac;
+    padding-left: 5px;
+}
+
+.main-top-right{
+    font-size: 12px;
+    line-height: 12px;
+    width: 55px;
+    display: inline-block;
+    color: #6638ae;
+    vertical-align: bottom;
+    margin-bottom: 7px;
+}
+
+.main-top>span:nth-child(4){
+    float: right;
+    width: 70px;
+    margin-top: 11px;
+}
+
+.main{
+    border-top: 2px solid #37ab40;
+}
+
+.main-left-goods{
+    width: 200px;
+    height: 300px;
+    float: left;
+}
+
+.main-right-goods{
+    height: 300px;
+    width: 250px;
+    float: left;
+    text-align: center;
+    border-right: 1px solid #acacac;
+    border-bottom: 1px solid #acacac;
+    box-sizing: border-box;
+}
+
+.main-right-goods>img{
+    position: relative;
+    margin: 58px auto;
+}
+
+.main-right-goods>span{
+    display: block;
+}
+
+.main-right-goods-name{
+    position: absolute;
+    margin: 16px 103px;
+}
+
+.main-right-goods-price{
+    font-size: 18px;
+    font-weight: bolder;
+    color: #ff2424;
+    position: absolute;
+    margin: -40px 96px;
+}
