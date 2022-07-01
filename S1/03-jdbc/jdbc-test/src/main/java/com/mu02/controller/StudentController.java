@@ -52,6 +52,12 @@ public class StudentController {
             System.out.println("添加失败");
         }
     }
+    /*
+        批量添加学生信息
+    */
+    public void batchInsert() {
+        service.batchInsert();
+    }
 
     /*
         修改学生信息

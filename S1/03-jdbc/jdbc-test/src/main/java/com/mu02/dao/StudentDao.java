@@ -14,6 +14,9 @@ public interface StudentDao {
     //新增学生信息
     public abstract int insert(Student stu);
 
+    //批量学生信息
+    public abstract void batchInsert();
+
     //修改学生信息
     public abstract int update(Student stu);
 

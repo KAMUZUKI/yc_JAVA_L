@@ -2,8 +2,10 @@ package com.mu02.utils;
 
 import java.io.InputStream;
 import java.sql.*;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.Set;
 
 /*
     JDBC工具类
@@ -95,4 +97,5 @@ public class JDBCUtils {
             }
         }
     }
+
 }

@@ -33,6 +33,14 @@ public class StudentServiceImpl implements StudentService{
     }
 
     /*
+        批量添加学生信息
+     */
+    @Override
+    public void batchInsert() {
+        dao.batchInsert();
+    }
+
+    /*
         修改学生信息
      */
     @Override

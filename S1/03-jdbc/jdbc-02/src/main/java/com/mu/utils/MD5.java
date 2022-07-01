@@ -1,6 +1,6 @@
-package com.mu02.utils;
+package com.mu.utils;
 
-public class MD5{
+public class MD5 {
     /*
      *四个链接变量
      */

@@ -11,6 +11,7 @@
     <modules>
         <module>jdbc-01</module>
         <module>jdbc-test</module>
+        <module>jdbc-02</module>
     </modules>
 
     <properties>

@@ -1,3 +1,5 @@
+package com.mu02.utils;
+
 public class MD5{
     /*
      *四个链接变量
@@ -149,10 +151,10 @@ public class MD5{
         return instance;
     }
 
-    private MD5(){};
+    public MD5(){};
 
-    public static void main(String[] args){
-        String str=MD5.getInstance().getMD5("");
-        System.out.println(str);
+    public String getMd5(String tmp){
+        String str=MD5.getInstance().getMD5(tmp);
+        return str;
     }
 }
