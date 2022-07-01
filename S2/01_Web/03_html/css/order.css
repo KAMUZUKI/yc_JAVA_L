@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+main>form{
+    border-top: 1px solid #fafafa;
+    border-bottom: 1px solid #fafafa;
+    padding: 20px 0;
+    line-height: 3em;
+}
+
+main>form>label{
+    width: 80px;
+    display: inline-block;
+}

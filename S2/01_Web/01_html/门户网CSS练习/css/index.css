@@ -17,13 +17,13 @@ header {
 aside {
     width:300px;
     float:left;
-    height:500px;
+    height:auto;
     background-color: #76ff3d;
 }
 
 main{
     width:900px;
-    height:500px;
+    height:auto;
     float:right;
     background-color: #0aff99;
 }
@@ -75,7 +75,7 @@ footer{
 
 aside,main{
     background-color: #fff;
-    padding-top:10px;
+    padding: 10px 0;
 }
 
 aside{
@@ -92,12 +92,12 @@ main{
 
 #products{
     background-color: #ccc;
-    height:300px;
+    height:284px;
 }
 
 #news{
-    background-color: #aaa;
-    height:300px;
+    height:auto;
+    padding: 10px 0;
 }
 
 /***********************产品形象**********************/
@@ -136,4 +136,136 @@ main{
     width:45%;
     display:inline-block;
     margin: 5px 0;
+}
+
+
+/**************登录面板****************/
+
+#login{
+    padding: 0.5em 1em;
+}
+
+#login>span{
+    padding-bottom:0.5em;
+    display: inline-block;
+}
+
+#login>form{
+    background-color: #fff;
+    color: #06C0FE;
+    font-size: 0.8em;
+    height: 168px;
+    text-align: center;
+    padding: 1em;
+    box-sizing: border-box;
+    line-height: 2.7em;
+}
+
+#login>form>label{
+    display:inline-block;
+    width: 60px;
+    text-align: right;
+    /*padding: 0.8em;*/
+}
+
+#login>form>input{
+    width:150px;
+}
+
+#login>form>button{
+    width: 80px;
+    padding: 3px;
+    margin: 0px 5px;
+}
+
+#login>form>a{
+    display:inline-block;
+    margin: 0px 5px;
+    width: 80px;
+    color: #0F0FED;
+}
+
+#login{
+    box-sizing: border-box;
+}
+#login>form{
+    height: 152px;
+}
+/*****************产品搜索*****************/
+
+.bdlz{
+    background-color: #fff;
+    color: #0488ef;
+    border-bottom: 2px #0488ef solid;
+    padding:5px;
+    font-weight: 600;
+    font-size: 10px;
+}
+
+#products{
+    background-color: #fff;
+    padding: 10px 0;
+    box-sizing: border-box;
+}
+
+.productsBox{
+    width: 290px;
+    height: 300px;
+}
+
+.productSearch{
+    background-color: #05befe;
+    color: #fff;
+    width: 100px;
+    height: 35px;
+    margin-top: 20px;
+    margin-left: 30px;
+    display: flex;
+    justify-content:space-around;
+    flex-wrap: wrap;
+    float: left;
+}
+
+.productSearch>span:nth-child(1){
+    display: inline-block;
+    text-align: center;
+    margin: 0.5em;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+
+/*******************新闻板块********************/
+#news>div:nth-child(1){
+    display:flex;
+    justify-content: space-between;
+    border-bottom:2px #06C0FE solid;
+    padding: 5px;
+}
+
+#news>div:nth-child(2){
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.news{
+    display: inline-block;
+    width: 47%;
+    font-size: 0.8em;
+    line-height: 2.3em;
+    border-bottom: 1px #0F0FED dashed;
+}
+
+.news>span{
+    float: left;
+    vertical-align: middle;
+    color: #0F0FED;
+}
+
+.news>label{
+    float: right;
+    vertical-align: middle;
+    color: #aaaaaa;
 }
