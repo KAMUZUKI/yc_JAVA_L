@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script type="text/javascript">
+        var a = 100 //全局变量 定义在函数外的变量都是全局
+        const f = '常量'  // java public static final
+        function test() {
+            console.info(a)  //相当于 System.out
+            console.info(b)  //Variable miaght not have been initialized
+                             // b未初始化
+            console.log(a)   // 不写var 和 let 是全局
+
+            d = "你好"
+
+            try {
+                console.info(c)
+            } catch (e) {
+                console.error(e.message)
+            }
+
+            if (false) {
+                var b = 200  //局部变量，定义函数内的变量 只在函数内有效
+                let c =300  //块级作用域变量  只在当前代码块中有效
+            }
+        }
+        test()
+        console.info(d)
+
+        for (let i = 0; i < 5; i++) {
+            // 向页面输出元素
+            document.write("<h"+i+">" + i + "<h"+i+">") 
+        }
+
+        var arr = [1,2,3,4,5]  //定义数据
+        for (let n in arr) {   //for in 数组 => 循环变量是下标
+            console.log(n,arr[n])
+        }
+        console.log("=======================")
+
+        var obj = new Object()  //for in 数组 => 循环变量是属性
+        obj.name = "zhangsan"   //动态添加属性
+        obj.age = 18
+        obj.phone = "13800001111"
+        for (let n in obj){
+            console.info(n)     //中括号语法可以输出对象的属性值
+        }
+        console.log("=======================")
+
+        for (const n of arr) {
+            console.info(n)
+        }
+        console.log("=======================")
+
+        for (const n of object) {  //for of 不能应用在对象上
+            console.info(n)
+        }
+    </script>
+</body>
+</html>
