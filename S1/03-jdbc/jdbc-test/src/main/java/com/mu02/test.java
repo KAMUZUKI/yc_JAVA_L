@@ -1,28 +1,34 @@
 package com.mu02;
 
-import com.mu02.utils.MD5;
+import com.mu02.utils.JDBCUtils;
+import oracle.sql.BLOB;
+
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class test {
     public static void main(String[] args) {
-        String str = "abc";
-        MD5 md5 = new MD5();
-        String res = md5.getMd5(str);
-        System.out.println(res);
-
-        String str2 = "bca";
-        MD5 md52 = new MD5();
-        String res2 = md52.getMd5(str2);
-        System.out.println(res2);
-
-        String str3 = "cba";
-        MD5 md53 = new MD5();
-        String res3 = md53.getMd5(str3);
-        System.out.println(res3);
-
-        String str4 = "aaa";
-        String res4 = MD5.getInstance().getMD5(str4);
-        System.out.println(res4);
-
+        String sid="10104";
+        String sql="select headpic from student119 where sid=?";
+        try(
+                Connection con= JDBCUtils.getConnection();
+                PreparedStatement pstmt=con.prepareStatement(sql);
+        ){
+            pstmt.setString(1,sid);
+            ResultSet rs=pstmt.executeQuery();
+            if(rs.next()){
+                BLOB blob=(BLOB)rs.getBlob(1);
+                long flag=blob.getLength();
+                System.out.println(flag);
+                if(blob==null || flag==102) {
+                    System.out.println("blob为空");
+                }
+            }
+        }catch(Exception ex){
+            throw new RuntimeException(ex );
+        }
     }
 
 }

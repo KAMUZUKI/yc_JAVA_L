@@ -12,8 +12,29 @@
         欢迎：XXX <a>修改密码</a><a>退出</a>
     </div>
 </header>
-<aside></aside>
-<main></main>
+<aside>
+    <div><a href="index.html" target="subForm" onclick="a(1)">商品管理</a></div>
+    <div><a href="cart.html" target="subForm" onclick="a(2)">分类管理</a></div>
+    <div><a href="order.html" target="subForm" onclick="a(3)">订单管理</a></div>
+    <div><a href="detail.html" target="subForm" onclick="a(4)">客户投诉</a></div>
+</aside>
+<main>
+    <iframe name="subForm" title="mainInfo"></iframe>
+</main>
 <footer>源辰公司</footer>
+<script type="text/javascript">
+    function a(index) {
+        for (let i = 0; i <= 4; i++) {
+            let label = document.getElementById("a"+i);
+            if (i===index){
+                //设置选中样式
+                label.classList.add("current");
+            } else {
+                //移除选中样式
+                label.classList.remove("current");
+            }
+        }
+    }
+</script>
 </body>
 </html>
