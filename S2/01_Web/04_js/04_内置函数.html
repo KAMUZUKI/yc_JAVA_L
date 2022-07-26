@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>内置函数</title>
+</head>
+<body>
+<script>
+    var person = {
+        name:"zhangsan",
+        age: 18,
+        isBoy: true,
+        play(){
+            console.log("====play====")
+        }
+    }
+
+    person.age = 28
+    person.play()
+    console.log(person)
+    var s = JSON.stringify(person)
+    console.log(s)
+
+    var json = '[{"name":"zhangsan","age":18}]'
+    var arr = JSON.parse(json)
+    console.log(arr.length)
+    console.log(arr[0].name)
+
+    let a
+    eval("a = 1 + 2;")
+    console.log(a)
+    console.log("===============")
+    eval("var arr1 = json")
+    console.log(arr1)
+    eval("var arr1 = " + json)
+    console.log(arr1)
+
+    var i = parseInt("123abc")
+    console.log(i)
+    var i = new Number("123abc")
+    console.log(i)
+    
+    alert("这是一个提示信息")
+
+    var b = confirm("请确认是否要输入一个数字？")
+    if (b) {
+        let a = prompt("请输入一个数字","100")
+        alert("您输入的是：" + a)
+    }
+</script>
+</body>
+</html>

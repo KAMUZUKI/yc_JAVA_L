@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>对象语法</title>
+</head>
+<body>
+<script type="text/javascript">
+    // 定义类
+    function Computer(a,b){
+        this.a = a;
+        this.b = b;
+        this.add = function(){
+            return this.a + this.b
+        }
+        this.sub = function(){
+            return this.a - this.b
+        }
+    }
+
+    var c1 = new Computer(100,200);
+    console.log(c1.add())
+    console.log(c1.sub())
+    c2 = new Computer()  // NaN Not a Number
+    c2.a = 35
+    c2.b = 14
+    console.log(c2.add())
+    console.log(c2.sub())
+
+    // 对象语法
+    var c3 = new Object()
+    c3.a = 100
+    c3.b = 200
+    c3.add = function(){
+        return this.a + this.b
+    }
+    console.log(c3.add())
+
+    //JSON格式
+    console.log("===============")
+    var c4 = {
+        a:100,
+        b:200,
+        add:function() {
+            return this.a + this.b
+        },
+        sub:function() {
+            return this.a - this.b
+        }
+    }
+    console.log(c4.add())
+    console.log(c4.sub())
+</script>
+</body>
+</html>

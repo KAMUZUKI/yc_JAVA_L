@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script type="text/javascript">
+        // var date = new Date();
+        // date.setUTCFullYear(2000); // 设置年份为 2000 年
+        // date.setMonth(0); // 设置月份为 正月
+        // date.setUTCDate(15); // 设置日期为 15日
+        // date.setUTCHours(18); // 设置小时为 下午6点
+        // date.setUTCMinutes(30); // 设置分钟为 30分
+        // date.setUTCSeconds(17); // 设置秒为 17秒
+        // date.setUTCMilliseconds(222); // 设置毫秒为 222毫秒
+
+        // var result = [];
+        // result[0] = date.getUTCDay(); // 获取星期数;
+        // result[1] = date.getTime(); // 获取时间戳(毫秒值);
+        // result[2] = date.toString(); // 把 Date 对象转换为字符串。
+        // result[3] = date.toTimeString(); // 根据本地时间格式，把 Date 对象转换为字符串。
+        // for (var res in result) {
+        //     console.log(result[res])
+        // }
+
+        // function Hero(name, alias, arms, isGood){
+        //     this.name = name;  
+        //     this.alias = alias;
+        //     this.arms = arms;
+        //     this.isGood = isGood;
+        // }
+        // var lc = new Hero("林冲", "豹子头", "丈八蛇矛","36天罡");
+        // var result = []; // 测试结果
+        // result[0] = lc.name;
+        // result[1] = lc.alias;
+        // result[2] = lc.arms;
+        // result[3] = lc.isGood;  
+        // result; // 输出结果
+        // console.log(result)
+
+        // function Animal(name, speakStr){
+        //     this.name = "啊"+ name
+        //     this.speakStr = speakStr
+        //     this.speak = function speak(count){
+        //         console.log(count)
+        //         str = ""
+        //         for(var i = 0; i < count; i++){
+        //             str += speakStr
+        //         }
+        //         return str
+        //     }
+        // }
+
+        // var a1 = new Animal("猫", "喵");
+        // var a2 = new Animal("狗", "汪");
+        // var result = []; // 测试结果
+        // result[0] = a1.name;
+        // result[1] = a1.speak(5);
+        // result[2] = a2.name;
+        // result[3] = a2.speak(7);
+        // console.log(result)
+
+
+        // result; // 输出结果
+        // var emp = {
+        //       ename:"鲁达", 
+        //       sal:3500.75, 
+        //       hiredate:new Date(), 
+        //       skill:["","java","","css"]
+        // }
+
+        // var result = []; // 测试结果
+        // result[0] = emp.ename;
+        // result[1] = emp.sal;
+        // result[2] = emp.hiredate instanceof Date;
+        // result[3] = emp.skill[1];
+        // result[4] = emp.skill[3];
+        // result; // 输出结果
+
+        // var person = {
+        //     name: "雍正",
+        //     father: {name: "康熙"},
+        //     children: [
+        //         {name:"弘时"},
+        //         {name:"弘历(乾隆)"},
+        //         {name:"弘昼"}
+        //     ]
+        // }
+
+        // var result = []; // 测试结果
+        // result[0] = person.name;
+        // result[1] = person.father.name;
+        // result[2] = person.children[0].name;
+        // result[3] = person.children[1].name;
+        // result[4] = person.children[2].name;
+        // result; // 输出结果
+
+        // var data = '131,133,136,153,151,155,170,171,177,180,181,183';// 参考 '分组' 实现筛选
+        // var reg = /(131|133|136|153|155)/g;
+        // console.log(data.match(reg).toString()); // 要求返回 [ 131, 133, 136, 153, 155, 170, 171, 177 ]
+    
+        // var reg = /(\d{3})(-)(\d{3})(-)(\d{4})/,
+    	// str = '313-555-1234';
+        // console.log(str.match(reg).toString());
+
+        // var data = '43040319880203303';// 参考 '反向引用' 实现替换
+        // console.log(data.replace( /(19880203)/g,"1988年02月03日"));
+
+        // var data = 'start.bat,up.exe,down.exe,left.sh,right.sh,end.bat';// 参考 '前瞻' 获取所有的exe文件的前缀名
+        // console.log(data.match(/(start)(?=.bat,)|(left)(?=.sh,)|(right)(?=.sh,)|(end)(?=.bat)/g).toString()); 
+            
+        var data = 'test:0,root:12,admin:345,yc:7890';
+        //参考 '预定义类,量词,边界词' 定义正则表达式
+        var reg = /(^test+)|(root+)/g;
+        console.log(data.match(reg).toString()); // 要求返回 [ "test", "root" ]
+  </script>
+</body>
+</html>

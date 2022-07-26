@@ -8,55 +8,17 @@
 </head>
 <body>
     <script type="text/javascript">
-        function a(){
-            console.info("a")
+        var json = [
+            {"name": "zhangsan", "age":23,"habby":"唱歌"},
+            {"name": "lisi", "age":24,"habby":"跳舞"},
+            {"name": "wangwu", "age":25,"habby":"跑步"}
+        ]
+
+        var obj = JSON.stringify(json)
+        for (var person of obj){
+            console.log(person)
         }
-        var b = function(){
-            console.info("b")
-        }
-        a()
-        b()
         
-        function a(txt){
-            console.info("txt =" + txt)
-            for(let value of arguments){
-            console.log(value)
-        }
-
-        function innerFn(){
-            //1内部函数
-        }
-        }
-
-        
-        a("测试")
-        a(0)
-        a(1,2,3)
-        console.info("----------------------")
-        //fn=>回调函数
-        function call(fn,arg1,arg2){//传入一个函数对象
-            fn(arg1,arg2)//执行传入函数
-        }
-
-        call(a,"abc","123");
-        call(b,"abc","123");
-
-        console.info("-----1  具名函数-------")
-        function opNums(a,b,fn){
-            return fn(a,b)
-        }
-
-        function add(a,b){
-            return a+b
-        }
-
-        console.info(opNums(5,3,add))
-        console.info("---------2 置名函数---------")
-        console.info(opNums(5,3,function(a,b){
-            return a-b;
-        }))
-        console.info("---------3 箭头函数---------")
-        console.info(opNums(5,3,(a,b)=>a * b ))
     </script>
 </body>
 </html>

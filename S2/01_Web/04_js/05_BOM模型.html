@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOM模型</title>
+</head>
+<body>
+    <button onclick="window.open('http://taobao.com','_self')">淘宝(替换当前页)</button>
+    <button onclick="window.open('http://taobao.com','_self')">百度(在新标签页显示，默认)</button>
+    <button onclick="window.open('定时任务.html','_blank')">定时任务</button>
+    <button onclick="window.open('./03_数组.html','_blank')">数组</button>
+
+    <button onclick="location.href='http://jd.com'">京东(只能在当前页打开)</button>
+    <button onclick="location.href='./接收地址参数.html?a=100&b=200'">接收地址参数</button>
+
+    <script type="text/javascript">
+        document.writeln("<br>"+navigator.appName)
+        document.writeln("<br>"+navigator.appVersion)
+        document.writeln("<br>"+location.href)
+    </script>
+</body>
+</html>

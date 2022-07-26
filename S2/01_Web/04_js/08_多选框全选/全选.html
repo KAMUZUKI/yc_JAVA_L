@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>全选全不选</title>
+</HEAD>
+
+<BODY>
+    <FORM>
+        <table width="570" border="1">
+            <TR>
+                <TD colspan="4" align="center">
+                    <h3>世界顶级跑车你认识几款？</h3>
+                </TD>
+            </TR>
+            <TR>
+                <td colspan="4" align="center"><INPUT id="car" type="checkbox" name="car">我是超级车迷，我全部认识</td>
+            </TR>
+            <tr>
+                <td width="86" align="center"><INPUT type="checkbox" name="logo"></td>
+                <td width="178" align="center"><IMG src="images/frali.jpg">
+                    <p>法拉利</p>
+                </td>
+                <td width="78" align="center"><INPUT type="checkbox" name="logo"></td>
+                <td width="208" align="center"><IMG src="images/skoda.jpg">
+                    <p>斯柯达</p>
+                </td>
+            </tr>
+            <tr>
+                <td align="center"><INPUT type="checkbox" name="logo"></td>
+                <td align="center"><IMG src="images/binli.jpg">
+                    <p>宾利</p>
+                </td>
+                <td align="center"><INPUT type="checkbox" name="logo"></td>
+                <td align="center"><IMG src="images/lamborghini.jpg">
+                    <p>兰博基尼</p>
+                </td>
+            </tr>
+            <TR>
+                <td align="center"><INPUT type="checkbox" name="logo"></td>
+                <td align="center"><IMG src="images/porsche.jpg">
+                    <p>保时捷</p>
+                </td>
+                <td align="center"><INPUT type="checkbox" name="logo"></td>
+                <td align="center"><IMG src="images/alefromeo.jpg">
+                    <p>阿尔法罗密欧</p>
+                </td>
+            </tr>
+        </table>
+    </FORM>
+</BODY>
+<script>
+    var inputs = document.getElementsByTagName("input")
+
+    for (let item of inputs) {
+        if (item.id == "car") {
+            item.onclick = function(){
+                let check = event.target.checked
+                for (let j of inputs) {
+                    j.checked = check
+                }
+                refreshBg()
+            }
+        }else{
+            item.onclick = function(){
+                let check = event.target.checked
+                if(check){
+                    let allCheck = true
+                    for (let j = 0; j < inputs.length; j++) {
+                        if (!inputs[j].checked) {
+                            allCheck = false
+                            break
+                        }
+                    }
+                    inputs[0].checked = allCheck
+                } else {
+                    inputs[0].checked = false
+                }
+                refreshBg()
+            }
+        }
+    } 
+
+    function refreshBg(){
+        for (let i = 1; i < inputs.length; i++){
+            let check = inputs[i].checked
+            let td = inputs[i].parentElement.nextElementSibling
+            td.style.backgroundColor = check ? "#ddd":"#fff"
+        }
+    }
+</script>
+</HTML>
