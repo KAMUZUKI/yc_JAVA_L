@@ -30,11 +30,11 @@
                 }
                 // data.total 总行数 data.rows 当前页数据
                 data.rows.forEach(book => {
-                    let html = `<tr id="${book.id}">
-                                    <td>${book.bookname}</td>
-                                    <td>${book.bookauthor}</td>
-                                    <td>${book.bookpress}</td>
-                                    <td>${book.pressdate}</td>
+                    let html = `<tr id="tr${book.id}">
+                                    <td>${book.bookname == null ? "" : book.bookname}</td>
+                                    <td>${book.bookauthor || ""}</td>
+                                    <td>${book.bookpress|| ""}</td>
+                                    <td style="text-align: center">${fmtDate(book.pressdate)}</td>
                                     <td>
                                         <a href="#" onclick="mod(${book.id})">修改</a>
                                         <a href="#" onclick="del(${book.id})">删除</a>
@@ -46,6 +46,20 @@
             }
             //ajax方法
             $.get(url, callback)
+        }
+
+        function fmtDate(time) {
+            if (!time) return ""
+            let date = new Date(time)
+            let ret = `${date.getFullYear()}年
+                       ${fmtDateField(date.getMonth() + 1)}月
+                       ${fmtDateField(date.getDate())}日 
+                    `
+            return ret
+        }
+
+        function fmtDateField(number) {
+            return number < 10 ? "0" + number : number
         }
 
         function buildPages(total) {
