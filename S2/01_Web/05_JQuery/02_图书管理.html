@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图书管理</title>
+    <script src="../jquery.js"></script>
+    <script src="./02_book.js"></script>
+    <script>
+        let page = 1
+        let size = 10
+        function query(name, author) {
+            let url = "http://47.106.66.89:2222/easy/books/page?"
+            if (name && name.length > 0) {
+                url += "bookname=" + name
+            }
+            if (author && author.length > 0) {
+                url += "&bookauthor=" + author
+            }
+            url += "&page=" + page + "&size=" + size
+            var $table = $("table")
+            function callback(data) { // 回调函数
+                buildPages(data.total)  //生成页码条
+                // 清空表格中的数据
+                var $trs = $("table tr")
+                for (let i = $trs.length - 1; i > 0; i--) {  //从前往后删除
+                    $trs.get(i).remove()
+                }
+                // data.total 总行数 data.rows 当前页数据
+                data.rows.forEach(book => {
+                    let html = `<tr id="${book.id}">
+                                    <td>${book.bookname}</td>
+                                    <td>${book.bookauthor}</td>
+                                    <td>${book.bookpress}</td>
+                                    <td>${book.pressdate}</td>
+                                    <td>
+                                        <a href="#" onclick="mod(${book.id})">修改</a>
+                                        <a href="#" onclick="del(${book.id})">删除</a>
+                                    </td>
+                                </tr>`
+                    var $tr = $(html)
+                    $table.append($tr)
+                })
+            }
+            //ajax方法
+            $.get(url, callback)
+        }
+
+        function buildPages(total) {
+            // 计算总页数
+            let pages = parseInt(total/size)
+            if (total % size != 0) {
+                pages ++
+            }
+            let html = ""
+            for (let i = 1; i < pages; i++) {       
+                let style = '';
+                if (i == page) {
+                    style = `style='background-color:#aaa'`
+                }
+                html += `<span onclick="toPage(${i})" ${style}>${i}</span>` 
+            }
+            $("#pages").html(html)
+        }
+
+        function toPage(i) {
+            // 设置当前页
+            page = i
+            // 查询
+            query(bookname.value, author.value)
+        }
+    </script>
+</head>
+
+<body>
+    <h2 class="center">图书管理</h2>
+    <form class="center">
+        <label>书名:</label><input id="bookname"><br>
+        <label>作者:</label><input id="author"><br>
+        <button type="button">查询</button>
+        <button type="button">新增</button>
+    </form>
+    <table class="center" style="margin: 10px auto;width: 70%" border="1" cellpadding="0">
+        <tr>
+            <th>书名</th>
+            <th>作者</th>
+            <th>出版社</th>
+            <th>出版时间</th>
+            <th>操作</th>
+        </tr>
+    </table>
+
+    <div id="pages" class="center" style="text-align:right">
+        <span>1</span>
+        <span>2</span>
+        <span>3</span>
+    </div>
+
+    <div id="dialog">
+        <div>
+            <h3>图书信息编辑</h3>
+            <hr>
+            <form>
+                <label>书名:</label><input id="iptName"><span></span><br>
+                <label>作者:</label><input id="iptAuthor"><span></span><br>
+                <label>出版社:</label><input id="iptPress"><span></span><br>
+                <label>出版时间:</label><input id="iptTime"><span></span><br>
+                <div style="text-align: center">
+                    <button type="button">保存</button>
+                    <button type="button">关闭</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
+
+<style>
+    #pages>span {
+        display: inline-block;
+        padding: 3px 5px;
+        width: 25px;
+        background-color: #ccc;
+        margin: 3px;
+        text-align: center;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .center {
+        margin: 10px auto;
+        width: 70%;
+    }
+
+    #dialog {
+        width: 100%;
+        height: 100%;
+        background-color: #0005;
+        position: absolute;
+        top: 0px;
+        display: none;
+    }
+
+    #dialog>div {
+        width: 600px;
+        height: 300px;
+        margin: 100px auto;
+        background-color: #eee;
+    }
+
+    #dialog>div>h3 {
+        padding: 10px;
+        margin: 0;
+    }
+
+    #dialog>div>form {
+        padding: 20px 50px;
+        line-height: 50px;
+    }
+
+    #dialog>div>form * {
+        vertical-align: center;
+    }
+
+    #dialog>div>form>label {
+        display: line-block;
+        width: 100px;
+    }
+
+    #dialog form span {
+        color: red;
+    }
+</style>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jQuery入门</title>
+    <script src = "../jquery.js"></script>
+</head>
+<body>
+    <h1>jQuery</h1>
+    <ul>
+        <li>jQuery 是一个 JavaScript库</li>
+        <li>jQuery 极大地简化了 JavaScript 编程</li>
+        <li>jQuery 很容易学习</li>
+    </ul>
+    <input placeholder="请输入" mydata1="test1" mydata2="test2">
+</body>
+<script>
+    var h1 = jQuery("h1")
+    console.log(h1.text())
+    $("li").css("color","red")
+
+    var h2 = document.querySelector("h1")
+
+    console.info(h1)  //jQuery对象 内部封装了 dom 对象
+    console.info(h2)  //dom 对象
+
+    // dom对象与jQuery对象互转
+    // jQuery 转 dom
+    console.info(h1[0])
+    console.info(h1.get(0))
+    // dom 转 jQuery
+    var $h2 = $(h2)
+    console.info($h2)
+    $h2.text("jQuery介绍")  //dom 的 innerText
+    //dom 的innerText
+    $h2.html("<a href='http://jquery.cuishifeng.cn/index.html'>jQuery API</a>")
+    console.info($h2.html())  // 带参数的设置，不带参数的是取值
+
+    console.info($("input").attr("placeholder"))  // 取值
+    $("input").attr("placeholder","请输入用户名")  // 设置
+
+    $("input").attr("value","张三")  //设置
+
+    //$("input").attr("mydata1","test1")
+    //$("input").prop("mydata2","test2")
+    
+    console.info($("input").attr("placeholder"))  //自定义属性 + 原生属性
+    console.info($("input").attr("mydata2"))
+    console.info($("input").prop("placeholder"))  // 原生属性
+    console.info($("input").prop("mydata2"))
+
+</script>
+</html>
