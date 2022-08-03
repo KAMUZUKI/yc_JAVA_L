@@ -74,7 +74,7 @@ $(function () {
             book.bookpress = iptPress.value
             book.pressdate = parseInt(iptTime.value)
         }
-        let url = "http://47.106.66.89:2222/easy/books/save"
+        let url = "http://47.106.66.89:8080/easy/books/save"
 
         book.bookpress = iptPress.value
         book.pressdate =  iptTime.value
@@ -113,7 +113,7 @@ function mod(id) {
 
 function del(id) {
     if (confirm("请确认是否要删除该图书")) {
-        let url = "http://47.106.66.89:2222/easy/books/remove?id=" + id
+        let url = "http://47.106.66.89:8080/easy/books/remove?id=" + id
         $.get(url, data => {
             if (data.code) {
                 query()

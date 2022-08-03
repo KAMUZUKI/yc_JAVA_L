@@ -61,13 +61,12 @@ $(function () {
         var iptName = document.getElementById("iptName")
         var iptGender = document.getElementById("iptGender")
         var iptEmail = document.getElementById("iptEmail")
-        user.id = iptId.value
         // 判断用户名
         if (/^\S{2,10}/.test(iptName.value) == false) {
             iptName.nextElementSibling.innerText = "用户名必须是2~10字符"
             res = false
         } else {
-            user.name = iptName.value
+            user.uname = iptName.value
         }
         //判断性别
         if (/[12]{1}/.test(iptGender.value) == false) {
@@ -77,9 +76,9 @@ $(function () {
             user.gender = iptGender.value
         }
         //判断邮箱
-        var atpos = iptEmail.indexOf("@");
-        var dotpos = iptEmail.lastIndexOf(".");
-        if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= iptEmail.length) {
+        var atpos = iptEmail.value.indexOf("@");
+        var dotpos = iptEmail.value.lastIndexOf(".");
+        if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= iptEmail.value.length) {
             iptEmail.nextElementSibling.innerText = "请输入正确的邮箱"
             res = false
         }else{
@@ -89,7 +88,17 @@ $(function () {
         if (res == false) {
             return
         }
-        
+        //获取当前时间戳
+        user.regtime = new Date().valueOf()
+        user.id = iptId.value
+        user.upass = "123456"
+        user.head = "1.gif"
+        user.q1 = "问题一"
+        user.a1 = "答案一"
+        user.q2 = "问题二"
+        user.a2 = "答案二"
+        user.q3 = "问题三"
+        user.a3 = "答案三"
         let url = "http://47.106.66.89:8080/easy/tbl_user/save"
 
         // 2001年09月09日 ==> 2001-09-09
@@ -106,6 +115,7 @@ $(function () {
             if (data.code == 1) {
                 query()  //重新查询表格 ==> 刷新
                 $("#dialog").css("display", "none")  // 关闭窗口
+                alert("新增成功")
             } else {
                 alert(data.msg)  //提示服务器返回的报错提示信息
             }
@@ -120,8 +130,8 @@ function mod(id) {
     var $tds = $("#tr" + id + ">td")
     iptId.value = $tds.get(0).innerText
     iptName.value = $tds.get(1).innerText
-    iptGender.value = $tds.get(2).innerText
-    iptEmail.value = $tds.get(3).innerText
+    iptGender.value = $tds.get(3).innerText
+    iptEmail.value = $tds.get(4).innerText
     $("#dialog").css("display", "block")
 }
 

@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width= device-width, initial-scale=1.0">
     <title>用户管理</title>
-    <script src="../jquery.js"></script>
+    <script src="../../jquery.js"></script>
     <script src="./02_user.js"></script>
     <script>
         let page = 1
@@ -32,12 +32,13 @@
                 for (let i = $trs.length - 1; i > 0; i--) {  //从前往后删除
                     $trs.get(i).remove()
                 }
-                data.forEach(user => {
+                data.rows.forEach(user => {
                     let html = `<tr id="tr${user.id}">
+                            <td>${user.id}</td>
                             <td>${user.uname}</td>
                             <td style="text-align: center">${fmtDate(user.regtime)}</td>
                             <td>${user.gender}</td>
-                            <td>${user.email}</td>
+                            <td>${user.email == null?"":user.email}</td>
                             <td>
                                 <a href="#" onclick="mod(${user.id})">修改</a>
                                 <a href="#" onclick="del(${user.id})">删除</a>
@@ -103,18 +104,16 @@
     </form>
     <table class="center" style="margin: 10px auto;width: 70%" border="1" cellpadding="0">
         <tr>
-            <th>书名</th>
-            <th>作者</th>
-            <th>出版社</th>
-            <th>出版时间</th>
-            <th>操作</th>
+            <th>ID</th>
+            <th>用户</th>
+            <th>入职时间</th>
+            <th>性别</th>
+            <th>邮箱</th>
         </tr>
     </table>
 
     <div id="pages" class="center" style="text-align:right">
         <span>1</span>
-        <span>2</span>
-        <span>3</span>
     </div>
 
     <div id="dialog">
