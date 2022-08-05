@@ -1,54 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>商品列表</title>
     <link href="css/style.css" rel="stylesheet">
+    <script src="../../jquery.js"></script>
 </head>
+
 <body>
-<div id="app"><h3>最新商品</h3>
-    <ul id="list">
-        <li><a href="#"><img src="products/1/cs10001.jpg" width="170" height="170"> <span class="name">韩版连帽加厚毛衣女外套</span>
-            <div class="price"><span>￥228/份</span>
-                <button onclick="location.href='购物车.html'">添加购物车</button>
-            </div>
-        </a></li>
-        <li><a href="#"><img src="products/1/cs10002.jpg" width="170" height="170"> <span class="name">女装立领长袖拼接PU皮毛呢外套</span>
-            <div class="price"><span>￥172/份</span>
-                <button onclick="location.href='购物车.html'">添加购物车</button>
-            </div>
-        </a></li>
-        <li><a href="#"><img src="products/1/cs10003.jpg" width="170" height="170"> <span class="name">韩版女装翻领羔绒夹棉格子毛呢外套</span>
-            <div class="price"><span>￥119/份</span>
-                <button onclick="location.href='购物车.html'">添加购物车</button>
-            </div>
-        </a></li>
-        <li><a href="#"><img src="products/1/cs10004.jpg" width="170" height="170"> <span class="name">韩版女装翻领羔绒夹棉格子毛呢外套</span>
-            <div class="price"><span>￥119/份</span>
-                <button onclick="location.href='购物车.html'">添加购物车</button>
-            </div>
-        </a></li>
-        <li><a href="#"><img src="products/1/cs10005.jpg" width="170" height="170"> <span class="name">韩版女装翻领羔绒夹棉格子毛呢外套</span>
-            <div class="price"><span>￥119/份</span>
-                <button onclick="location.href='购物车.html'">添加购物车</button>
-            </div>
-        </a></li>
-        <li><a href="#"><img src="products/1/cs10006.jpg" width="170" height="170"> <span class="name">冬装韩版女装翻领羔绒夹棉格子毛呢外套</span>
-            <div class="price"><span>￥119/份</span>
-                <button onclick="location.href='购物车.html'">添加购物车</button>
-            </div>
-        </a></li>
-        <li><a href="#"><img src="products/1/cs10007.jpg" width="170" height="170"> <span class="name">新款优雅奢华毛领白鸭绒轻薄羽绒服</span>
-            <div class="price"><span>￥590/份</span>
-                <button onclick="location.href='购物车.html'">添加购物车</button>
-            </div>
-        </a></li>
-        <li><a href="#"><img src="products/1/cs10008.jpg" width="170" height="170"> <span class="name">秋冬季毛呢外套女中长款圆领小香风呢子大衣</span>
-            <div class="price"><span>￥336/份</span>
-                <button onclick="location.href='购物车.html'">添加购物车</button>
-            </div>
-        </a></li>
-    </ul>
-</div>
+    <div id="app">
+        <h3>最新商品</h3>
+        <ul id="list">
+            
+        </ul>
+    </div>
+    <script>
+        //ready() 页面加载完成事件
+        $(() => {
+            // jQuery 提供的静态的 ajax 方法
+            let url = "http://47.106.66.89:8080/easy/dm_product/page?size=8&page=1"
+            $.get(url, (data) => {
+                // data 是服务器返回的数据
+                console.info("一共有：" + data.total + "个商品")
+                let html = ''
+                for (let p of data.rows) {
+                    html += `
+                    <li>
+                        <a href="#"><img src="${p.image}" width="170" height="170">
+                            <span class="name">${p.pname}</span>
+                            <div class="price"><span>￥${p.shop_price}/份</span>
+                                <button onclick="location.href='购物车.html'">添加购物车</button>    
+                            </div>
+                        </a>    
+                    </li>
+                    `
+                }
+                // html() ==> innerHTML
+                $("#list").html(html)
+
+                // 添加所有的服装之后，再添加点击事件
+                //获取所有的button
+                var buttons = document.querySelectorAll("button")
+                buttons.forEach(btn => {
+                    btn.onclick = function () {
+                        //获取按钮所在 li 元素
+                        let li = event.target.parentNode.parentNode.parentNode
+                        //从当前 li 开始找 span 元素
+                        let name = li.querySelector(".name").innerText
+                        let image = li.querySelector("img").src
+                        let price = li.getElementsByTagName("span")[1].innerText
+                        price = price.replace(/.*?(\d+).*/, "$1")
+                        // 反引号
+                        let url = `购物车.html?name=${name}&image=${image}&price=${price}`
+                        location.href = url
+                    }
+                })
+            })
+        })
+
+    </script>
 </body>
+
 </html>

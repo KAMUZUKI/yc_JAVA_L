@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>美女时钟</title>
+<script>
+	//定义图片类
+	function Img(path){
+		this.path = path
+		this.x = 0
+		this.y = 0
+		this.size = 0
+		this.color = "#fff"
+		this.bgcolor = "transparent"  //透明
+		this.rotate = 0  //旋转
+	}
+
+	var imgs = [
+		new Img("./images/girltime.jpg"),
+		new Img("./images/girltime.png"),
+		new Img("./images/girltime1.jpg")
+	]
+
+	var selectedImg = imgs[0]
+	var beforeIndex
+	function ready(){
+		var radios = document.querySelectorAll("input[name='i']")
+		for (let radio of radios) {
+			radio.onclick = function(){
+				let index = event.target.value
+				if (beforeIndex!=null) {
+					//存数据
+					let json = JSON.stringify(selectedImg)
+			        let date = new Date()
+			        localStorage.setItem(beforeIndex, json)
+				}
+				//获取存储的数据
+				let getJson = localStorage.getItem(parseInt(index))
+            	if (getJson!=null) {
+					let img = JSON.parse(getJson)
+					selectedImg = img
+				}else{index
+					index = parseInt(index)
+					selectedImg = imgs[index]
+				}
+				refresh()
+				
+				//将值同步渲染到控件
+				var div = document.getElementById("sytleattr")
+				var inputs = div.getElementsByTagName("input")
+				inputs[0].value = selectedImg.path
+				inputs[1].value = selectedImg.x
+				inputs[2].value = selectedImg.y
+				inputs[3].value = selectedImg.rotate
+				inputs[4].value = selectedImg.size
+				inputs[5].value = selectedImg.color
+				inputs[6].value = selectedImg.bgcolor
+				beforeIndex = index
+			}
+		}
+		var img = document.getElementById("img")
+		img.src = imgs[0].path
+	}
+
+	//刷新图片
+	function refresh(){
+		var img = document.getElementById("img")
+		var ul = img.nextElementSibling
+		img.src = selectedImg.path
+		ul.style.left = selectedImg.x + "px"
+		ul.style.top = selectedImg.y + "px"
+		ul.style.fontSize = selectedImg.size + "px"
+		ul.style.color = selectedImg.color
+		ul.style.backgroundColor = selectedImg.bgcolor
+		ul.style.fontSize = selectedImg.size + "px"
+		ul.style.transform = `rotate(${selectedImg.rotate}deg`
+		ul.style.width = "76px"
+		ul.style.height = "48px"
+	}
+</script>
+</head>
+<body onload="ready()">
+	<div id="main">
+		<div id="imgdiv">
+			<img id="img" src="images/girltime.png" width="630px">
+			<ul>
+				<li>星期一</li>
+				<li>21:23:02</li>
+			</ul>
+		</div>
+		<div>
+			<span>
+				<label for="i0">图片1</label>
+				<input type="radio" name="i" value="0" id="i0">
+			</span>
+			<span>
+				<label for="i1">图片2</label>
+				<input type="radio" name="i" value="1" id="i1">
+			</span>
+			<span>
+				<label for="i2">图片3</label>
+				<input type="radio" name="i" value="2" id="i2">
+			</span>
+		</div>
+		<div id="sytleattr">
+			<label>图片:</label><input style="width:480px">
+			<label>X坐标:</label><input type="number" 
+				onchange="selectedImg.x=parseInt(this.value);refresh()">
+			<label>Y坐标: </label><input type="number"
+				onchange="selectedImg.y=parseInt(this.value);refresh()">
+			<label>旋转: </label><input type="number"
+				onchange="selectedImg.rotate=parseInt(this.value);refresh()">
+			<label>字体大小: </label><input type="number"
+				onchange="selectedImg.size=parseInt(this.value);refresh()">
+			<label>字体颜色: </label><input 
+				onchange="selectedImg.color=this.value;refresh()">
+			<label>背景颜色: </label><input 
+				onchange="selectedImg.bgcolor=this.value;refresh()">
+		</div>
+	</div>
+</body>
+<style type="text/css">
+*{
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+	font-size: 18px;
+}
+body{
+	background: #eee;
+	text-align: center;
+}
+div{
+	margin: 10px;
+}
+#imgdiv {
+	display:inline-block;
+	position: relative;
+}
+ul{
+	position: absolute;
+	font-weight: bold;
+	color: #fff;
+	left: 0px;
+	top: 0px;
+}
+#sytleattr {
+	display:inline-block;
+	width:630px;
+	text-align: left;
+	line-height: 30px
+}
+#sytleattr>input {
+	width:80px;
+	text-align: center;
+}
+label{
+	display:inline-block;
+	width:100px;
+	text-align: right;
+	padding: 0px 5px
+}
+ul>li{
+	/* font-size: inherit; */
+	color:inherit; 
+}
+</style>
+</html>

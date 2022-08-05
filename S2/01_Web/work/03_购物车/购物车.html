@@ -1,68 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>购物车</title>
-    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">、
+    <script src="../../jquery.js"></script>
 </head>
+
 <body>
-<div id="app"><h3>购物车</h3>
+<div id="app">
+    <h3>购物车</h3>
     <div class="clist">
         <table>
             <tbody>
-            <tr>
-                <th>图片</th>
-                <th>商品</th>
-                <th>价格</th>
-                <th>数量</th>
-                <th>小计</th>
-                <th>操作</th>
-            </tr>
-            <tr>
-                <td align="center"><img src="products/1/cs10008.jpg"></td>
-                <td><a target="_blank">秋冬季毛呢外套女中长款圆领小香风呢子大衣</a></td>
-                <td>￥336</td>
-                <td>
-                    <button>-</button>
-                    <span>5</span>
-                    <button>+</button>
-                </td>
-                <td width="140"><span>￥1680</span></td>
-                <td><a href="#" class="delete">删除</a></td>
-            </tr>
-            <tr>
-                <td align="center"><img src="products/1/cs10004.jpg"></td>
-                <td><a target="_blank">韩版女装翻领羔绒夹棉格子毛呢外套</a></td>
-                <td>￥119</td>
-                <td>
-                    <button>-</button>
-                    <span>2</span>
-                    <button>+</button>
-                </td>
-                <td width="140"><span>￥238</span></td>
-                <td><a href="#" class="delete">删除</a></td>
-            </tr>
-            <tr>
-                <td align="center"><img src="products/1/cs10003.jpg"></td>
-                <td><a target="_blank">韩版女装翻领羔绒夹棉格子毛呢外套</a></td>
-                <td>￥119</td>
-                <td>
-                    <button>-</button>
-                    <span>7</span>
-                    <button>+</button>
-                </td>
-                <td width="140"><span>￥833</span></td>
-                <td><a href="#" class="delete">删除</a></td>
-            </tr>
-            <tr>
-                <td id="tdSum" colspan="6" align="right"><label><label>合计金额</label>：<span>￥2751</span></label>
-                    <button onclick="location.href='浏览商品.html'">继续挑选</button>
-                    <button>提交订单</button>
-                </td>
-            </tr>
+                <tr>
+                    <th>图片</th>
+                    <th>商品</th>
+                    <th>价格</th>
+                    <th>数量</th>
+                    <th>小计</th>
+                    <th>操作</th>
+                </tr>
+
+                <tr>
+                    <td id="tdSum" colspan="6" align="right"><label><label>合计金额</label>:<span>￥2751</span></label>
+                        <button onclick="location.href='浏览商品.html'">继续挑选</button>
+                        <button>提交订单</button>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
 </div>
+<script>
+    //解析参数
+    let params = location.search.substring(1)
+    var paramArr = params.split("&")
+    var product = {}
+
+    paramArr.forEach(param => {
+        var nv = param.split("=")
+        console.info(nv[0] + " = " + decodeURI(nv[1]))
+        //动态给 product 添加属性
+        product[nv[0]] = decodeURI(nv[1])
+    })
+
+    if (product.name) {
+        // 保存数据到 localStorage
+        let json = JSON.stringify(product)
+        let date = new Date()
+        localStorage.setItem("p" + date.getTime(), json)
+    }
+    // 取出所有商品
+    let products = []
+    for (let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i)
+        if (key.indexOf("p") == 0) {
+            let json = localStorage.getItem(key)
+            let p = JSON.parse(json)
+            p.id = key
+            // js ==> 动态语言，运行时添加属性
+            products.push(p)
+        }
+    }
+
+    for (let product of products) {
+        //let product = JSON.parse(json)
+        if (!product.name) continue
+        var html = `
+            <td align="center"><img src="${product.image}"></td>
+            <td><a target="_blank">${product.name}</a></td>
+            <td>${product.price}
+            <td id="${product.id}">
+                <button>-</button>
+                <span>1</span>
+                <button>+</button>
+            </td>
+            <td width="140"><span>￥${product.price}</span></td>
+            <td><a href="#" class="delete">删除</a></td>
+        `
+        var tbody = document.querySelector(".clist>table>tbody")
+        var trs = tbody.querySelectorAll("tr")
+        var lastTr = trs[trs.length - 1]
+        console.info(lastTr)
+        var newTr = document.createElement("tr")
+        newTr.innerHTML = html
+        tbody.insertBefore(newTr, lastTr)
+    }
+
+/**
+ * localStorage: 使用本地存储对象可以实现 商品存储
+ * HTML5 新增的对象
+ */ 
+</script>
+<script src="cart.js"></script>
 </body>
+
 </html>
