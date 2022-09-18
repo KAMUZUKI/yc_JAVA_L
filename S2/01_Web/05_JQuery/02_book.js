@@ -72,14 +72,14 @@ $(function () {
         }
         if (iptPress != null && iptTime != null) {
             book.bookpress = iptPress.value
-            book.pressdate = parseInt(iptTime.value)
+            // book.pressdate = parseInt(iptTime.value)
         }
         let url = "http://47.106.66.89:8080/easy/books/save"
 
-        book.bookpress = iptPress.value
-        book.pressdate =  iptTime.value
+        // book.bookpress = iptPress.value
+        // book.pressdate =  iptTime.value
         // 2001年09月09日 ==> 2001-09-09
-        book.pressdate = book.bookpress.replace(/(\d+)\D+(\d+)\D+(\d+)\D+/,"$1-$2-$3")
+        book.bookpress = book.bookpress.replace(/(\d+)\D+(\d+)\D+(\d+)\D+/,"$1-$2-$3")
         
         // book.bookdate = iptTime.value
         // 如果全局 modId 不为空 ==> 修改保存
@@ -89,6 +89,7 @@ $(function () {
         }
         $.post(url, book, data => {
             // code == 1 表示成功
+            console.log(book)
             if (data.code == 1) {
                 query()  //重新查询表格 ==> 刷新
                 $("#dialog").css("display", "none")  // 关闭窗口

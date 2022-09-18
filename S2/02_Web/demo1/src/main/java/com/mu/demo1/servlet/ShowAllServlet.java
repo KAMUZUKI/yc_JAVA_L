@@ -3,15 +3,11 @@ package com.mu.demo1.servlet;
 import com.mu.demo1.bean.Cust;
 import com.mu.demo1.dao.DbHelper;
 
-import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 

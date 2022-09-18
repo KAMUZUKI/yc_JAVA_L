@@ -1,16 +1,71 @@
 package com.mu.demo1.servlet;
 
+import com.google.gson.Gson;
+import com.mu.demo1.bean.JsonModel;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Locale;
 import java.util.Map;
 
-//abstract：即这个类不能当作servlet使用，只能继承用
-public abstract class CommonServlet<T> extends HttpServlet {
-    //protected：这个功能只能它的子类使用，其他类不行
+/**
+ * abstract：即这个类不能当作servlet使用，只能继承用
+ * @author MUZUKI
+ */
+
+public abstract class CommonServlet extends HttpServlet {
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+        req.setCharacterEncoding("utf-8");
+        super.service(req,resp);
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doPost(req,resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String op=request.getParameter("op");
+        try{
+            Method m = this.getClass().getDeclaredMethod(op,HttpServletRequest.class,HttpServletResponse.class);
+            if(m == null){
+                out404("资源地址:"+op,response);
+            }else{
+                m.invoke(this,request,response);
+            }
+        }catch(NoSuchMethodException ex){
+            ex.printStackTrace();
+            out404(ex.getMessage(),response);
+        }catch(Exception ex){
+            ex.printStackTrace();
+            out500(ex.getMessage(),response);
+        }
+    }
+
+    protected void out500(String message,HttpServletResponse response)throws IOException{
+        response.setContentType("text/html;charset=utf-8");
+        PrintWriter out = response.getWriter();
+        out.println(message);
+        out.println("</b>");
+        out.flush();
+    }
+
+    protected void out404(String message,HttpServletResponse response)throws IOException{
+        response.setContentType("text/html;charset=utf-8");
+        PrintWriter out = response.getWriter();
+        out.println("查无此资源，错误404：<b>");
+        out.println(message);
+        out.println("</b>");
+        out.flush();
+    }
+
     /**
      * 将一个Request转为 T 对象
      */
@@ -67,11 +122,19 @@ public abstract class CommonServlet<T> extends HttpServlet {
         return obj;
     }
 
-
     private String getFieldName(Method setMethod){
         String fieldName = setMethod.getName().substring("set".length());
         //将fieldName的首字母改小写
         fieldName=fieldName.substring(0,1).toLowerCase()+fieldName.substring(1);
         return fieldName;
+    }
+
+    protected void writeJson(JsonModel jm, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json;charset=utf-8");
+        PrintWriter out = response.getWriter();
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(jm);
+        out.print(jsonString);
+        out.flush();
     }
 }

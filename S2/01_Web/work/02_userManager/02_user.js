@@ -1,49 +1,11 @@
-function query(id, uname, gender, email) {
-    let url = "http://47.106.66.89:8080/easy/tbl_user/page?"
-    if (id && id.length > 0) {
-        url += "id=" + id
-    }
-    if (uname && uname.length > 0) {
-        url += "&uname=" + uname
-    }
-    if (gender && gender.length > 0) {
-        url += "&gender=" + gender
-    }
-    if (email && email.length > 0) { 
-        url += "&email=" + email
-    }
-    var $table = $("table")
-    function callback(data) { // 回调函数
-        // 清空表格中的数据
-        var $trs = $("table tr")
-        for (let i = $trs.length - 1; i > 0; i--) {  //从前往后删除
-            $trs.get(i).remove()
-        }
-        data.forEach(user => {
-            let html = `<tr id="tr${user.id}">
-                            <td>${user.uname}</td>
-                            <td>${user.regtime}</td>
-                            <td>${user.gender}</td>
-                            <td>${user.email}</td>
-                            <td>
-                                <a href="#" onclick="mod(${user.id})">修改</a>
-                                <a href="#" onclick="del(${user.id})">删除</a>
-                            </td>
-                        </tr>`
-            var $tr = $(html)
-            $table.append($tr)
-        })
-    }
-    //ajax方法
-    $.get(url, callback)
-}
+
 
 $(function () {
     query()  // 不传参数 ==> 查询全部
     // 添加查询按钮点击事件
     var $btns = $("form button")
     $btns.get(0).onclick = function () {
-        query(id.value, uname.value,gender.value,email.value)
+        query(id.value, uname.value,gender.value,email.value,startTime.value,endTime.value)
     }
     // 新增按钮
     $btns.get(1).onclick = function () {
@@ -62,17 +24,19 @@ $(function () {
         var iptGender = document.getElementById("iptGender")
         var iptEmail = document.getElementById("iptEmail")
         // 判断用户名
-        if (/^\S{2,10}/.test(iptName.value) == false) {
+        if (/^\S{2,10}$/.test(iptName.value) == false) {
             iptName.nextElementSibling.innerText = "用户名必须是2~10字符"
             res = false
         } else {
+            iptName.nextElementSibling.innerText = ""
             user.uname = iptName.value
         }
         //判断性别
-        if (/[12]{1}/.test(iptGender.value) == false) {
+        if (/^[12]{1}$/.test(iptGender.value) == false) {
             iptGender.nextElementSibling.innerText = "用户性别1为女2为男"
             res = false
         }else{
+            iptGender.nextElementSibling.innerText = ""
             user.gender = iptGender.value
         }
         //判断邮箱
@@ -82,6 +46,7 @@ $(function () {
             iptEmail.nextElementSibling.innerText = "请输入正确的邮箱"
             res = false
         }else{
+            iptEmail.nextElementSibling.innerText = ""
             user.email = iptEmail.value
         }
         //验证信息是否正确
@@ -89,8 +54,8 @@ $(function () {
             return
         }
         //获取当前时间戳
-        user.regtime = new Date().valueOf()
-        user.id = iptId.value
+        // user.regtime = new Date().valueOf()
+        // user.regtime = '1036425600000'
         user.upass = "123456"
         user.head = "1.gif"
         user.q1 = "问题一"
@@ -111,6 +76,7 @@ $(function () {
             user.id = modId
         }
         $.post(url, user, data => {
+            console.log(user)
             // code == 1 表示成功
             if (data.code == 1) {
                 query()  //重新查询表格 ==> 刷新

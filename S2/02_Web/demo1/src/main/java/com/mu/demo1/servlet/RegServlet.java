@@ -4,8 +4,6 @@ package com.mu.demo1.servlet;
 import com.mu.demo1.bean.Cust;
 import com.mu.demo1.dao.DbHelper;
 import com.mu.demo1.utils.Md5;
-import com.mu.demo1.bean.Cust;
-import com.mu.demo1.dao.DbHelper;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
