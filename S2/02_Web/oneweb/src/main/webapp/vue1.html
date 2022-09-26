@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>学习</title>
+  <script src="js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <h2>hello {{name}}</h2>
+</div>
+<script>
+    //Vue 的对象会被挂到DOM的根对象window
+    //指定了vue容器它要管理id=app的组件，且创建了一个属性name，值为bjc
+    new Vue({
+        el:"#app",  //由vue来托管页面的id名为app的组件
+        data:{
+            name:"bjc"
+        }
+    });
+</script>
+</body>
+</html>
