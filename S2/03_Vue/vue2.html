@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>vue生命周期学习</title>
+        <script src="../js/vue.js"></script>
+    </head>
+    <body>
+        <div id="app">
+            <h1>{{message}}，这是在outerHtml中</h1>
+        </div>
+    </body>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+              message: 10
+            },
+            
+            //要学习什么？   在每个钩子函数执行时，界面组件有了吗? 内容出来没有. 各个钩子函数的执行顺序.
+            
+            beforeCreate: function() {
+                console.group('------beforeCreate创建前状态------');  //信息组合
+                console.log("%c%s", "color:red" , "el     : " + this.$el);         //  $表示取属性          
+                console.log("%c%s", "color:red","data   : " + this.$data); 
+                console.log("%c%s", "color:red","message: " + this.message) 
+            },
+            created: function() {
+                console.group('------created创建完毕状态------');
+                console.log("%c%s", "color:red","el     : " + this.$el); 
+                console.log("%c%s", "color:red","data   : " + this.$data);              //值   此时created 可以取出,但页面还没有渲染.
+                console.log("%c%s", "color:red","message: " + this.message); 
+            },
+            beforeMount: function() {
+                console.group('------beforeMount挂载前状态------');
+                console.log("%c%s", "color:red","el     : " + (this.$el)); 
+                console.log(this.$el);                                             //  页面有了，但页面中的  vue的标签没有解析和渲染. 
+                console.log("%c%s", "color:red","data   : " + this.$data);
+                console.log("%c%s", "color:red","message: " + this.message);
+            },
+            mounted: function() {
+                console.group('------mounted 挂载结束状态------');
+                console.log("%c%s", "color:red","el     : " + this.$el);    //  不以 %c 输出，以源码输出     
+                console.log(this.$el);                                // 此时   页面中的vue的标签 解析了，出现值. 
+                console.log("%c%s", "color:red","data   : " + this.$data);
+                console.log("%c%s", "color:red","message: " + this.message);
+            },
+            beforeUpdate: function () {
+                console.group('beforeUpdate 更新前状态===============》');
+                console.log("%c%s", "color:red","el     : " + this.$el);
+                console.log(this.$el);   
+                console.log("%c%s", "color:red","data   : " + this.$data); 
+                console.log("%c%s", "color:red","message: " + this.message); 
+            },
+            updated: function () {
+                console.group('updated 更新完成状态===============》');
+                console.log("%c%s", "color:red","el     : " + this.$el);
+                console.log(this.$el); 
+                console.log("%c%s", "color:red","data   : " + this.$data); 
+                console.log("%c%s", "color:red","message: " + this.message); 
+            },
+            beforeDestroy: function () {
+                console.group('beforeDestroy 销毁前状态===============》');
+                console.log("%c%s", "color:red","el     : " + this.$el);
+                console.log(this.$el);    
+                console.log("%c%s", "color:red","data   : " + this.$data); 
+                console.log("%c%s", "color:red","message: " + this.message); 
+            },
+            destroyed: function () {
+                console.group('destroyed 销毁完成状态===============》');
+                console.log("%c%s", "color:red","el     : " + this.$el);
+                console.log(this.$el);  
+                console.log("%c%s", "color:red","data   : " + this.$data); 
+                console.log("%c%s", "color:red","message: " + this.message)
+            }
+        })
+    </script>
+</html>

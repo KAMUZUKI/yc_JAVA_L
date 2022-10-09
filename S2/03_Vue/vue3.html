@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./js/vue.js"></script>
+</head>
+<body>
+    <div id="box">
+        <h1>{{counter}}</h1>
+        <button v-on:click="increment">+</button>
+        <button @click="increment">+</button>
+        <button @click="decrement">-</button>
+    </div>
+    <script>
+        const app = new Vue({
+            el : '#box',
+            data: {
+                counter:0
+            },
+            methods: {
+                increment(){
+                    this.counter++
+                    console.log(this.counter)
+                },
+                decrement(){
+                    this.counter--
+                    console.log(this.counter)
+                }
+            }
+        });
+    </script>
+</body>
+</html>
