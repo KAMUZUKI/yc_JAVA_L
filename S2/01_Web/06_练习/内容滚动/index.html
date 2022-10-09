@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>内容滚动</title>
+    <style>
+        html, body {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        fieldset {
+            display: inline-block;
+            margin: 20px;
+        }
+
+        div {
+            width: 300px;
+            height: 200px;
+            background-color: #eee;
+            overflow: auto;
+            padding: 10px;
+            border-radius: 5px;
+            line-height: 1.5em
+        }
+    </style>
+</head>
+<body onload="load()">
+<fieldset>
+    <legend>底部跳转版</legend>
+    <div id="a">
+        <h3>JavaScript的历史</h3>
+        为什么起名叫JavaScript？原因是当时Java语言非常红火，所以网景公司希望借Java的名气来推广，但事实上JavaScript除了语法上有点像Java，其他部分基本上没啥关系。
+        因为网景开发了JavaScript，一年后微软又模仿JavaScript开发了JScript，为了让JavaScript成为全球标准，几个公司联合ECMA（European Computer Manufacturers Association）组织定制了JavaScript语言的标准，被称为ECMAScript标准。
+        ECMA-262标准。
+        <h3>JavaScript的介绍</h3>
+        JavaScript是一种轻量级的脚本语言。
+        所谓“脚本语言”，指的是它不具备开发操作系统的能力，而是只用来编写控制其他大型应用程序的“脚本”。
+        JS即Javascript,  javaScript是一种广泛用于客户端Web开发的脚本语言，常用来给HTML网页添加动态功能，比如响应用户的各种操作。
+        <hr>
+    </div>
+</fieldset>
+<fieldset>
+    <legend>底部无缝衔接版</legend>
+    <div id="b">
+        <h3>JavaScript的历史</h3>
+        为什么起名叫JavaScript？原因是当时Java语言非常红火，所以网景公司希望借Java的名气来推广，但事实上JavaScript除了语法上有点像Java，其他部分基本上没啥关系。
+        因为网景开发了JavaScript，一年后微软又模仿JavaScript开发了JScript，为了让JavaScript成为全球标准，几个公司联合ECMA（European Computer Manufacturers Association）组织定制了JavaScript语言的标准，被称为ECMAScript标准。
+        ECMA-262标准。
+        <h3>JavaScript的介绍</h3>
+        JavaScript是一种轻量级的脚本语言。
+        所谓“脚本语言”，指的是它不具备开发操作系统的能力，而是只用来编写控制其他大型应用程序的“脚本”。
+        JS即Javascript,  javaScript是一种广泛用于客户端Web开发的脚本语言，常用来给HTML网页添加动态功能，比如响应用户的各种操作。
+        <hr>
+    </div>
+    速度：<input type="number" class="speedControl" onclick="isclick()">
+</fieldset>
+</body>
+<script>
+    b.speed = 0;
+    function load() {
+        a.onmousedown = ()=>{
+            a.stop = true; 
+        } 
+        a.onmouseup = ()=>{
+            a.stop = false;
+        }
+
+        window.setInterval(()=>{
+            if (a.stop) return;
+
+            if (a.scrollHeight - (a.scrollTop + a.offsetHeight) > 1) {
+                a.scrollTop += 1;
+            } else{
+                a.scrollTop = 0;
+            }
+        },10)
+
+        //实现无缝衔接
+        b.innerHTML += b.innerHTML;
+        window.setInterval(()=>{
+            if (b.scrollTop < (b.scrollHeight / 2 - 10)) {
+                b.scrollTop += b.speed;
+            } else {
+                b.scrollTop = 0;
+            }
+            
+        },10);
+        
+        
+    }
+
+    function isclick(){
+            b.speed = document.getElementsByClassName("speedControl").value;
+            console.log(b.speed)
+    }
+</script>
+</html>
+
