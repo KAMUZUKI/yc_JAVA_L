@@ -23,6 +23,7 @@
 .idea
 .metadata
 out/
+lib/
 homework/
 image/
 images/
