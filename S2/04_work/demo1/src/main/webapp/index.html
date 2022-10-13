@@ -38,14 +38,22 @@
 	</div>
 	<!--  <div class="look">浏览记录</div> -->
 	<div class="shoppingcar">
-		<div class="carbag" id="carbag">
-			<p>购物车<span id="del">[清空]</span></p>
+		<div class="carbag" id="carbag" :class="{isShow:isHide==true,isHide:isHide==false}">
+			<p>购物车<span id="del" @click="clearAll()">[清空]</span></p>
 			<table id="bagcontent" cellpadding="0" cellspacing="0">
-				
+				<tr v-for="cartfood in cartfoods">
+					<td class="bagcontent">{{cartfood.food.fname}}</td>
+					<td class="bagnum">
+						<button @click="addCart(cartfood.food.fid,-1)">-</button>
+						<span>{{cartfood.num}}</span>
+						<button @click="addCart(cartfood.food.fid,1)">+</button>
+					</td>
+				</tr>
 			</table>
 		</div>
-		<div class="carprice">￥0</div>
-		<div class="carinfo">购物车是空的</div>
+		<div class="carprice" @click="showCart()">￥{{cartprice}}</div>
+		<div class="carinfo" v-if="cartfoods.lenth<=0">购物车是空的</div>
+		<div class="carinfo" v-else>立即下单</div>
 	</div>
 	<div class="footer">
 		Copyright © 2016 Xiaomengsheng Incorporated Company. All rights reserved.
@@ -119,30 +127,59 @@
 				 username:"a",
 				 pwd:"a",
 				 valcode:"",
-				 data:[],
+				 data:[], //所有的菜品列表
+				 cartfoods:[], //购物车中的商品列表
+				 cartprice:0.0,	//购物车中的商品总价
+
+				 isHide:false,
 	    	 },
 			 methods: {
+				 clearAll:function(){
+					 if (confirm("确定清空购物车吗？")){
+						 axios.post("resorder.action?op=clearAll").then( result=> {
+							 if (result.data.code==1){
+								 this.cartfoods=[];
+								 this.cartprice=0.0;
+								 isHide=false;
+							 }
+						 });
+					 }else {
+						 return;
+					 }
+				 },
+				 showCart:function(){
+					 this.isHide=!this.isHide;
+				 },
 				 addCart:function (fid,num){
+					 //1.判断是否登陆过
 					if (this.username==null||this.username==''){
 						alert("请登录");
 						return;
 					}
+					//发出请求服务器
 					var params=new URLSearchParams();
 					params.append("op","order");
 					params.append("num",num);
 					params.append("fid",fid);
 					axios.post("resorder.action",params).then(data=>{
 						var jsonmodel = data.data;
-						if (jsonmodel.code==1){
+						if (jsonmodel.code==-1){
 							alert("请登录");
 							return;
 						}else if (jsonmodel.code==0){
 							alert("添加购物车失败");
 							return;
 						}else {
-
+							this.showCartInfo(jsonmodel.data);
 						}
 					})
+				 },
+				 showCartInfo:function (data){
+					 this.cartfoods=data;
+					 this.cartprice=0.0;
+					 this.cartfoods.forEach((item,index)=>{
+						 this.cartprice+=item.smallCount;
+					 })
 				 },
 				 showFood:function (fid){
 					this.data.forEach((item,index)=>{
@@ -167,7 +204,7 @@
 					params.append("username",this.username);
 					params.append("pwd",this.pwd);
 					params.append("valcode",this.valcode);
-					axios.post("resuser.action?op=login",params).then(data=>{
+					axios.post("resuser.action",params).then(data=>{
 						let result = data.data;
 						if (result.code==0){
 							alert("登录失败，原因:"+result.msg);
@@ -190,10 +227,19 @@
 				 },
 				 findAllFoods:function () {
 					 return axios.get("resfood.action?op=findAllFoods");
+				 },
+				 showCartInit:function(){
+					 var params=new URLSearchParams();
+					 params.append("op","getCartInfo");
+					 axios.post("resorder.action",params).then(result=>{
+						 if (result.data.code==1){
+							 this.showCartInfo(result.data.data);
+						 }
+					 });
 				 }
 			 },
 			 mounted:function (){
-				 axios.all([this.checkLogin(),this.findAllFoods()]).then(axios.spread(function (d1,d2){
+				 axios.all([this.checkLogin(),this.findAllFoods(),this.showCartInit()]).then(axios.spread(function (d1,d2){
 					 let jsonmodel1=d1.data;
 					 if (jsonmodel1.code==1){
 						 vm.$data.username=jsonmodel1.data.username;

@@ -20,10 +20,30 @@ import java.util.Map;
 
 @WebServlet(name = "ResorderServlet",value = "/resorder.action")
 public class ResorderServlet extends CommonServlet {
+    protected void getCartInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+        Map<Integer, CartItem> cart = (Map<Integer, CartItem>) session.getAttribute("cart");
+        JsonModel jsonModel = new JsonModel();
+        if(session.getAttribute("cart")!=null){
+            jsonModel.setCode(1);
+            jsonModel.setData(cart.values());
+        }else{
+            jsonModel.setCode(0);
+        }
+        super.writeJson(jsonModel,response);
+    }
+
+    protected void clearAll(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        JsonModel jsonModel = new JsonModel();
+        HttpSession session = request.getSession();
+        session.removeAttribute("cart");
+        jsonModel.setCode(1);
+        writeJson(jsonModel,response);
+    }
+
     /**
      * 购物车的操作
      */
-
     protected void order(HttpServletRequest request, HttpServletResponse response) throws IOException {
         JsonModel jm = new JsonModel();
         //1.判断 是否登录
@@ -58,7 +78,7 @@ public class ResorderServlet extends CommonServlet {
         }
         CartItem ci = null;
         //购物车
-        if (!cart.containsKey(fid)){
+        if (cart.containsKey(fid)){
             //如果为true，说明购物车中已经有了这个商品，则增加数量
             ci=cart.get(fid);
             int newNum = ci.getNum()+num;
