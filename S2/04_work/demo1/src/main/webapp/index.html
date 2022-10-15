@@ -8,9 +8,9 @@
 <link rel="stylesheet" href="css/index.css" />
 </head>
 <body>
- 
+
   <div id="app">
- 
+
 	<div class="head">
 		小萌神订餐网
 		<div class="right">
@@ -53,7 +53,7 @@
 		</div>
 		<div class="carprice" @click="showCart()">￥{{cartprice}}</div>
 		<div class="carinfo" v-if="cartfoods.lenth<=0">购物车是空的</div>
-		<div class="carinfo" v-else>立即下单</div>
+		<div class="carinfo" v-else @click="orderflag=!orderflag">立即下单</div>
 	</div>
 	<div class="footer">
 		Copyright © 2016 Xiaomengsheng Incorporated Company. All rights reserved.
@@ -77,7 +77,7 @@
 				</tr>
 				<tr>
 					<td class="labname"><label for="yzm">验证码：</label></td>
-					<td><input type="text" name="yzm" placeholder="请输入验证码" 
+					<td><input type="text" name="yzm" placeholder="请输入验证码"
 					id="yzm" v-model="valcode"/></td>
 					<td><img @click="refreshImg()" src="code.action" id="yzm_img" alt="valcode"/></td>
 				</tr>
@@ -85,7 +85,7 @@
 		</form>
 		<input type="button" value="login" class="btn" id="btn" @click="login()"/>
 	</div>
-	
+
 	    <!-- 订单信息 -->
 		<div class="login" id="myinfo" v-if="orderflag">
 			<span id="unshowinfo" >X</span>
@@ -93,23 +93,23 @@
 				<table>
 					<tr>
 						<td class="labname"><label for="address">送货地址:</label></td>
-						<td><input name="address"  type="text" placeholder="请输入送货地址" id="address" /></td>
+						<td><input name="address"  type="text" placeholder="请输入送货地址" id="address" v-model="orderInfo.address"/></td>
 					</tr>
 					<tr>
 						<td class="labname"><label for="tel">联系电话:</label></td>
-						<td><input type="text"  id="tel" placeholder="请输入联系电话" name="tel" /></td>
+						<td><input type="text"  id="tel" placeholder="请输入联系电话" name="tel" v-model="orderInfo.tel"/></td>
 					</tr>
 					<tr>
 						<td class="labname"><label for="deliverytime">送货时间:</label></td>
-						<td><input type="text"  name="deliverytime" id="deliverytime" placeholder="请输入送货时间（默认马上发货）" /></td>
+						<td><input type="text"  name="deliverytime" id="deliverytime" placeholder="请输入送货时间（默认马上发货）" v-model="orderInfo.deliverytime"/></td>
 					</tr>
 					<tr>
 						<td class="labname"><label for="ps">附言:</label></td>
-						<td><input type="text" id="ps" placeholder="请输入附言" name="ps" /></td>
+						<td><input type="text" id="ps" placeholder="请输入附言" name="ps" v-model="orderInfo.ps"/></td>
 					</tr>
 				</table>
 			</form>
-			<input type="button" value="提交" class="btn"  id="submit">
+			<input type="button" value="提交" class="btn"  id="submit" @click="confirmOrder()">
 		</div>
 </div>
 
@@ -132,8 +132,27 @@
 				 cartprice:0.0,	//购物车中的商品总价
 
 				 isHide:false,
+
+				 orderInfo:{
+					 address:'湖南',
+					 tel:'12345',
+					 deliverytime:'2022-12-12',
+					 ps:'快快'
+				 }
 	    	 },
 			 methods: {
+				 confirmOrder:function(){
+					var params = new URLSearchParams();
+					axios.post("custOp.action?op=confirmOrder",params).then(result=>{
+						if(result.data.code==1){
+							alert("下单成功");
+							this.cartfoods = [];
+							this.cartprice = 0.0;
+							this.isHide = false;
+							this.orderflag = false;
+					 	}
+					});
+				 },
 				 clearAll:function(){
 					 if (confirm("确定清空购物车吗？")){
 						 axios.post("resorder.action?op=clearAll").then( result=> {
@@ -257,6 +276,6 @@
 			 }
 	     });
 	</script>
-	
+
 </body>
 </html>

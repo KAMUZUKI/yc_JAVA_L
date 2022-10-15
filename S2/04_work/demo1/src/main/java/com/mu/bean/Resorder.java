@@ -16,7 +16,7 @@ public class Resorder implements Serializable {
     private String address;
     private String tel;
     private String ordertime;
-    private String deliveryTime;
+    private String deliverytime;
     private String ps;
     private Integer status;
 }
