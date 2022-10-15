@@ -88,7 +88,7 @@
 
 	    <!-- 订单信息 -->
 		<div class="login" id="myinfo" v-if="orderflag">
-			<span id="unshowinfo" >X</span>
+			<span id="unshowinfo" @click="orderflag=false">X</span>
 			<form name="forminfo">
 				<table>
 					<tr>
@@ -142,7 +142,7 @@
 	    	 },
 			 methods: {
 				 confirmOrder:function(){
-					var params = new URLSearchParams();
+					var params = new URLSearchParams(this.orderInfo);
 					axios.post("custOp.action?op=confirmOrder",params).then(result=>{
 						if(result.data.code==1){
 							alert("下单成功");

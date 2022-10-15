@@ -48,7 +48,7 @@ public class ResorderServlet extends CommonServlet {
         JsonModel jm = new JsonModel();
         //1.判断 是否登录
         HttpSession session = request.getSession();
-        if (session.getAttribute("resuer")!=null){
+        if (session.getAttribute("resuser")==null){
             jm.setCode(-1);
             super.writeJson(jm,response);
             return;

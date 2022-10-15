@@ -30,7 +30,7 @@ public class OrderBiz {
             conn.setAutoCommit(false);
             String sql = "insert into resorder(userid,address,tel,ordertime,deliverytime,ps,status) values(?,?,?,now(),?,?,0)";
             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            pstmt.setInt(1,resuser.getUserid());
+            pstmt.setString(1,resuser.getUserid()+"");
             pstmt.setString(2,resorder.getAddress());
             pstmt.setString(3,resorder.getTel());
             pstmt.setString(4,resorder.getDeliverytime());
