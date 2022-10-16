@@ -1,9 +1,9 @@
-package com.mu.servlet;
+package com.mu.web.servlet;
 
 import com.mu.bean.CartItem;
 import com.mu.bean.Resfood;
 import com.mu.dao.DbHelper;
-import com.mu.model.JsonModel;
+import com.mu.web.model.JsonModel;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,11 +48,12 @@ public class ResorderServlet extends CommonServlet {
         JsonModel jm = new JsonModel();
         //1.判断 是否登录
         HttpSession session = request.getSession();
-        if (session.getAttribute("resuser")==null){
-            jm.setCode(-1);
-            super.writeJson(jm,response);
-            return;
-        }
+        // 使用过滤器
+//        if (session.getAttribute("resuser")==null){
+//            jm.setCode(-1);
+//            super.writeJson(jm,response);
+//            return;
+//        }
         //根据id查出 热水food对象，再放到 购物车
         // a。根据fid查数据库
         int fid = Integer.parseInt(request.getParameter("fid"));

@@ -1,8 +1,8 @@
-package com.mu.servlet;
+package com.mu.web.servlet;
 
 import com.mu.bean.Resuser;
 import com.mu.dao.DbHelper;
-import com.mu.model.JsonModel;
+import com.mu.web.model.JsonModel;
 import com.mu.utils.Md5;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

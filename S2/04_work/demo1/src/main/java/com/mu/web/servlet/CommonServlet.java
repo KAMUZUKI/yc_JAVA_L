@@ -1,6 +1,6 @@
-package com.mu.servlet;
+package com.mu.web.servlet;
 
-import com.mu.model.JsonModel;
+import com.mu.web.model.JsonModel;
 import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
@@ -36,7 +36,7 @@ public abstract class CommonServlet extends HttpServlet {
     @Override
     public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
         //解决request中参数编码的问题
-        request.setCharacterEncoding("utf-8");
+        //request.setCharacterEncoding("utf-8");
         //TODO: 网站后台管理的功能：
         //1.统计客户端系统类型 客户端类型
         //2.取客户端的ip， 求出客户端的地址

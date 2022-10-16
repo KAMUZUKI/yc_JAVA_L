@@ -1,4 +1,4 @@
-package com.mu.model;
+package com.mu.web.model;
 
 import lombok.Data;
 

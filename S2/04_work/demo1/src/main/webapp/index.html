@@ -16,7 +16,7 @@
 		<div class="right">
 			<span class="showlogin" id="showlogin" @click="loginflag=!loginflag" v-if="!islogin">登录</span>
 			<span id="exitspan" v-if="islogin">
-				欢迎您：{{username}}<a href="javascript:void">历史</a> | <a href="" @click.prevent="logout()">退出</a>
+				欢迎您：{{username}}<a href="" @click.prevent="">历史</a> | <a href="" @click.prevent="logout()">退出</a>
 			</span>
 		</div>
 	</div>
@@ -36,6 +36,24 @@
 			</li>
 		</ul>
 	</div>
+
+  	<div style="background-color: white;color:red">
+		<a @click.prevent = "clickPage(1)">第一页</a>
+		<a @click.prevent = "clickPage(pagebean.pre)" :page-data="pagebean.pre">上一页{{pagebean.pre}}</a>
+		<a @click.prevent = "clickPage(pagebean.next)" :page-data="pagebean.next">下一页{{pagebean.next}}</a>
+		<a @click.prevent = "clickPage(pagebean.totalpages)" :page-data="pagebean.totalpages">最后一页{{pagebean.totalpages}}</a>
+		总共{{pagebean.total}}条记录/共分{{pagebean.totalpages}}页
+		每页显示{{pagebean.pagesize}}条记录,当前第{{pagebean.pageno}}页
+		按<select name="sortby" v-model="pagebean.sortby">
+			<option value="fid">菜品编号</option>
+			<option value="realprice">菜品价格</option>
+		  </select>
+		<select name="sort" v-model="pagebean.sort">
+			<option value="asc">升序</option>
+			<option value="desc">降序</option>
+		  </select>
+	</div>
+
 	<!--  <div class="look">浏览记录</div> -->
 	<div class="shoppingcar">
 		<div class="carbag" id="carbag" :class="{isShow:isHide==true,isHide:isHide==false}">
@@ -86,31 +104,31 @@
 		<input type="button" value="login" class="btn" id="btn" @click="login()"/>
 	</div>
 
-	    <!-- 订单信息 -->
-		<div class="login" id="myinfo" v-if="orderflag">
-			<span id="unshowinfo" @click="orderflag=false">X</span>
-			<form name="forminfo">
-				<table>
-					<tr>
-						<td class="labname"><label for="address">送货地址:</label></td>
-						<td><input name="address"  type="text" placeholder="请输入送货地址" id="address" v-model="orderInfo.address"/></td>
-					</tr>
-					<tr>
-						<td class="labname"><label for="tel">联系电话:</label></td>
-						<td><input type="text"  id="tel" placeholder="请输入联系电话" name="tel" v-model="orderInfo.tel"/></td>
-					</tr>
-					<tr>
-						<td class="labname"><label for="deliverytime">送货时间:</label></td>
-						<td><input type="text"  name="deliverytime" id="deliverytime" placeholder="请输入送货时间（默认马上发货）" v-model="orderInfo.deliverytime"/></td>
-					</tr>
-					<tr>
-						<td class="labname"><label for="ps">附言:</label></td>
-						<td><input type="text" id="ps" placeholder="请输入附言" name="ps" v-model="orderInfo.ps"/></td>
-					</tr>
-				</table>
-			</form>
-			<input type="button" value="提交" class="btn"  id="submit" @click="confirmOrder()">
-		</div>
+	<!-- 订单信息 -->
+	<div class="login" id="myinfo" v-if="orderflag">
+		<span id="unshowinfo" @click="orderflag=false">X</span>
+		<form name="forminfo">
+			<table>
+				<tr>
+					<td class="labname"><label for="address">送货地址:</label></td>
+					<td><input name="address"  type="text" placeholder="请输入送货地址" id="address" v-model="orderInfo.address"/></td>
+				</tr>
+				<tr>
+					<td class="labname"><label for="tel">联系电话:</label></td>
+					<td><input type="text"  id="tel" placeholder="请输入联系电话" name="tel" v-model="orderInfo.tel"/></td>
+				</tr>
+				<tr>
+					<td class="labname"><label for="deliverytime">送货时间:</label></td>
+					<td><input type="text"  name="deliverytime" id="deliverytime" placeholder="请输入送货时间（默认马上发货）" v-model="orderInfo.deliverytime"/></td>
+				</tr>
+				<tr>
+					<td class="labname"><label for="ps">附言:</label></td>
+					<td><input type="text" id="ps" placeholder="请输入附言" name="ps" v-model="orderInfo.ps"/></td>
+				</tr>
+			</table>
+		</form>
+		<input type="button" value="提交" class="btn"  id="submit" @click="confirmOrder()">
+	</div>
 </div>
 
 	<!--  在网页里面引入javascript    jquery:DOM   大家注意顺序  -->
@@ -138,6 +156,17 @@
 					 tel:'12345',
 					 deliverytime:'2022-12-12',
 					 ps:'快快'
+				 },
+
+				 pagebean:{
+					 pageno:1,
+					 pagesize:5,
+					 total:0,
+					 totalpages:0,
+					 sortby:'fid',
+					 sort:'asc',
+					 pre:1,
+					 next:1,
 				 }
 	    	 },
 			 methods: {
@@ -150,7 +179,9 @@
 							this.cartprice = 0.0;
 							this.isHide = false;
 							this.orderflag = false;
-					 	}
+					 	}else {
+							alert("下单失败");
+						}
 					});
 				 },
 				 clearAll:function(){
@@ -255,10 +286,37 @@
 							 this.showCartInfo(result.data.data);
 						 }
 					 });
-				 }
+				 },
+				 clickPage:function(pageno){
+					 var promise=this.showPage(pageno);
+					 promise.then(result=>{
+						 this.displayPage(result.data)
+					 });
+				 },
+				 showPage:function (pageno){
+					 var params=new URLSearchParams();
+					 params.append("pageno",pageno);
+					 params.append("sortby",this.pagebean.sortby);
+					 params.append("sort",this.pagebean.sort);
+					 //返回一个Promise
+					 return axios.post("resfood.action?op=findFoodsByPage",params);
+				 },
+				 displayPage:function (result){
+					 let jsonmodel2 = result;
+					 if (jsonmodel2.code==1){
+						 //显示数据到界面
+						 //绑定到model中
+						 jsonmodel2.data.dataset.forEach((item,index)=>{
+							 //给每个菜品对象添加一个属性，用于控制菜品的显示状态
+							 item.status = false;
+						 })
+						 vm.$data.data=jsonmodel2.data.dataset;
+						 vm.$data.pagebean=jsonmodel2.data;
+					 }
+				 },
 			 },
 			 mounted:function (){
-				 axios.all([this.checkLogin(),this.findAllFoods(),this.showCartInit()]).then(axios.spread(function (d1,d2){
+				 axios.all([this.checkLogin(),this.showPage(1),this.showCartInit()]).then(axios.spread(function (d1,d2){
 					 let jsonmodel1=d1.data;
 					 if (jsonmodel1.code==1){
 						 vm.$data.username=jsonmodel1.data.username;
@@ -267,10 +325,7 @@
 					 }
 					 let jsonmodel2=d2.data;
 					 if (jsonmodel2.code==1){
-						 jsonmodel2.data.forEach((item,index)=>{
-							 item.status=false;
-						 });
-						 vm.$data.data=jsonmodel2.data;
+						 vm.displayPage(jsonmodel2);
 					 }
 				 }))
 			 }

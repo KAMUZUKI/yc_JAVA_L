@@ -79,7 +79,7 @@ public class DbHelper {
 	 * @param value
 	 * @return double
 	 */
-	public double selectAggreation(String sql,Object...value) {
+	public double selectAggreation(String sql,Object...value) throws Exception{
 		double result=0;
 		try(Connection con=getConnection();
 			PreparedStatement pstmt=con.prepareStatement(sql)){
@@ -90,6 +90,8 @@ public class DbHelper {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
+			throw e;
 		}
 		return result;
 	}

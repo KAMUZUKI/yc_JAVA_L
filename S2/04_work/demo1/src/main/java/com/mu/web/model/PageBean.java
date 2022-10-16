@@ -1,4 +1,4 @@
-package com.mu.model;
+package com.mu.web.model;
 
 import java.util.List;
 
@@ -11,7 +11,15 @@ public class PageBean<T> {
     /**
      * 每页多少条
      */
-    private int pagesize=10;
+    private int pagesize=5;
+    /**
+     * 排序列名
+     */
+    private String sortby;
+    /**
+     * 排序方式 asc/desc
+     */
+    private String sort;
     /**
      * 数据库查询
      * 总记录数
@@ -32,7 +40,23 @@ public class PageBean<T> {
     /**
      * 总共多少页
      */
-    private int totalPages;
+    private int totalpages;
+
+    public String getSortby() {
+        return sortby;
+    }
+
+    public void setSortby(String sortby) {
+        this.sortby = sortby;
+    }
+
+    public String getSort() {
+        return sort;
+    }
+
+    public void setSort(String sort) {
+        this.sort = sort;
+    }
 
     public void setTotal(long total) {
         this.total = total;
@@ -55,7 +79,7 @@ public class PageBean<T> {
     }
 
     public void setTotalPages(int totalPages) {
-        this.totalPages = totalPages;
+        this.totalpages = totalPages;
     }
 
     public void setDataset(List<T> dataset) {
@@ -83,7 +107,7 @@ public class PageBean<T> {
     }
 
     public int getTotalPages() {
-        return totalPages;
+        return totalpages;
     }
 
     public List<T> getDataset() {

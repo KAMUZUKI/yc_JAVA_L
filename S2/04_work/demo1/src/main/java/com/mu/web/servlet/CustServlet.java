@@ -1,10 +1,10 @@
-package com.mu.servlet;
+package com.mu.web.servlet;
 
 import com.mu.bean.CartItem;
 import com.mu.bean.Resorder;
 import com.mu.bean.Resuser;
 import com.mu.biz.OrderBiz;
-import com.mu.model.JsonModel;
+import com.mu.web.model.JsonModel;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;

@@ -1,4 +1,4 @@
-package com.mu.servlet;
+package com.mu.web.servlet;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
