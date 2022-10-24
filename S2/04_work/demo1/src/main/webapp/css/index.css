@@ -127,7 +127,7 @@ body{
 
 .look{
 	width:350px;
-	height:65px;
+	height:auto;
 	background:rgba(45,154,152,0.8);
 	position:fixed;
 	top:100px;
@@ -138,6 +138,11 @@ body{
 	text-align:center;
 	padding-top:20px;
 }
+
+.look ul li{
+	list-style-type:none;
+}
+
 
 .shoppingcar{
 	width:350px;

@@ -2,9 +2,13 @@ package com.mu.biz;
 
 import com.mu.bean.Resfood;
 import com.mu.dao.DbHelper;
+import com.mu.dao.RedisHelper;
+import com.mu.utils.MuConstants;
 import com.mu.web.model.PageBean;
+import redis.clients.jedis.Jedis;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author : MUZUKI
@@ -15,6 +19,12 @@ public class ResfoodBiz {
     public PageBean findByPage(PageBean pageBean) throws Exception {
         List<Resfood> dataset = this.findByPage(pageBean.getPageno(), pageBean.getPagesize(), pageBean.getSortby(), pageBean.getSort());
         long total = this.countAll();
+
+        Jedis jedis = RedisHelper.getRedisInstance();
+        for (Resfood resfood : dataset) {
+            int fid = resfood.getFid();
+            resfood.setPraise(jedis.scard(fid + MuConstants.REDIS_FOOD_PRAISE));
+        }
         pageBean.setTotal(total);
         pageBean.setDataset(dataset);
         //其它的分页数据s

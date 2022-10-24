@@ -16,13 +16,13 @@
 		<div class="right">
 			<span class="showlogin" id="showlogin" @click="loginflag=!loginflag" v-if="!islogin">登录</span>
 			<span id="exitspan" v-if="islogin">
-				欢迎您：{{username}}<a href="" @click.prevent="">历史</a> | <a href="" @click.prevent="logout()">退出</a>
+				欢迎您：{{username}}<a href="" @click.prevent="historyflag=!historyflag">历史</a> | <a href="" @click.prevent="logout()">退出</a>
 			</span>
 		</div>
 	</div>
 	<div class="content">
 		<ul class="allfoods" id="allfoods">
-			<li v-for="item in data">
+			<li v-for="(item,index) in data">
 				<h3 @click="showFood(item.fid)">{{item.fname}}</h3>
 				<div :id=`fid_${item.fid}` class="fooddesc" v-show="item.status">
 					<img :src=`image/${item.fphoto}` class="foodimg" />
@@ -31,6 +31,8 @@
 						<p class="normalprice">原价:￥{{item.normprice}}</p>
 						<p class="realprice">特价:￥{{item.realprice}}</p>
 						<p class="buybtn" @click="addCart(item.fid,1)">加入购物车</p>
+						<p>赞{{item.praise}}<span v-if="islogin" @click="clickPraise(item.fid,index)">来一发</span></p>
+
 					</article>
 				</div>
 			</li>
@@ -54,7 +56,13 @@
 		  </select>
 	</div>
 
-	<!--  <div class="look">浏览记录</div> -->
+	<div class="look" v-if="historyflag">
+		<span @click="getHistory()">浏览记录(点我刷新)</span>
+		<hr/>
+		<ul>
+			<li v-for="item in reversehistory">{{item.fid}} - {{item.fname}}</li>
+		</ul>
+	</div>
 	<div class="shoppingcar">
 		<div class="carbag" id="carbag" :class="{isShow:isHide==true,isHide:isHide==false}">
 			<p>购物车<span id="del" @click="clearAll()">[清空]</span></p>
@@ -148,8 +156,10 @@
 				 data:[], //所有的菜品列表
 				 cartfoods:[], //购物车中的商品列表
 				 cartprice:0.0,	//购物车中的商品总价
+				 history:[],
 
 				 isHide:false,
+				 historyflag:false,
 
 				 orderInfo:{
 					 address:'湖南',
@@ -170,6 +180,25 @@
 				 }
 	    	 },
 			 methods: {
+				 clickPraise:function (fid,index){
+					 var params=new URLSearchParams();
+					 params.append("op","clickPraise");
+					 params.append("fid",fid);
+					 axios.post("resfood.action",params).then(result => {
+						 var jsonModel=result.data;
+						 if(jsonModel.code==1){
+							 var d=this.data[index];
+							 //这样操作不行
+							 //this.data[index].parise=jsonModel.data.parise;
+
+							 d.praise=jsonModel.data.praise;
+							//利用数组提供 响应式的方法实现数据的更新
+							 //将data中的下标为 index的元素，从这个元素向后替换一个元素，用d替换
+							 this.data.splice(index,1,d);
+						 }
+					 })
+
+				 },
 				 confirmOrder:function(){
 					var params = new URLSearchParams(this.orderInfo);
 					axios.post("custOp.action?op=confirmOrder",params).then(result=>{
@@ -232,9 +261,16 @@
 					 })
 				 },
 				 showFood:function (fid){
-					this.data.forEach((item,index)=>{
-						item.status = fid == item.fid;
-					})
+					 var params=new URLSearchParams();
+					 params.append("fid",fid);
+					 axios.post("resfood.action?op=traceBrowseFood",params).then(result => {
+						 if (result.data.code == 1) {
+							 console.log("添加浏览记录成功");
+						 }
+					 });
+					 this.data.forEach((item, index) => {
+						 item.status = fid == item.fid;
+					 });
 				 },
 				 logout: function(){
 					axios.post("resuser.action?op=logout").then(data=>{
@@ -244,6 +280,7 @@
 							this.pwd='';
 							this.valcode='';
 							this.islogin=false;
+							this.history=[];
 						}
 					});
 				 },
@@ -314,9 +351,23 @@
 						 vm.$data.pagebean=jsonmodel2.data;
 					 }
 				 },
+				 getHistory:function (){
+					 axios.post("resfood.action?op=getHistory").then(result=>{
+						 var resultData = result.data;
+						 this.history=[];
+						 if (resultData.code==1){
+							 this.history=result.data.data;
+						 }
+					 });
+				 }
+			 },
+			 computed: {
+				reversehistory:function (){
+					return this.history.reverse();
+				}
 			 },
 			 mounted:function (){
-				 axios.all([this.checkLogin(),this.showPage(1),this.showCartInit()]).then(axios.spread(function (d1,d2){
+				 axios.all([this.checkLogin(),this.showPage(1),this.showCartInit(),this.getHistory()]).then(axios.spread(function (d1,d2){
 					 let jsonmodel1=d1.data;
 					 if (jsonmodel1.code==1){
 						 vm.$data.username=jsonmodel1.data.username;
