@@ -2,6 +2,7 @@
 # Compiled class file
 *.class
 *.iml
+.mp4
 
 # Log file
 *.log
