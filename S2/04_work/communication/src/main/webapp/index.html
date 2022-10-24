@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Film</title>
+    <script src="./js/vue.js"></script>
+    <script src="./js/axios.js"></script>
+    <style>
+
+        #app{
+            width: 85%;
+            margin: 0 auto;
+        }
+
+        .film{
+            float: left;
+        }
+
+        .chat{
+            width: 200px;
+            height: 300px;
+            border: 2px solid lightblue;
+            margin-left: 20px;
+            float: left;
+        }
+
+        .chat-box{
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="login">
+            <h2>Log in</h2>
+            <form name="myform">
+                <table>
+                    <tr>
+                        <td class="labname"><label for="username">用户名：</label></td>
+                        <td><input type="text" name="username" placeholder="请输入用户名"
+                                   id="username" v-model="username"/></td>
+                    </tr>
+                    <tr>
+                        <td class="labname"><label for="pwd">密码：</label></td>
+                        <td><input type="password" name="pwd" placeholder="请输入密码"
+                                   id="pwd" v-model="pwd"/></td>
+                    </tr>
+                    <tr>
+                        <td class="labname"><label for="yzm">验证码：</label></td>
+                        <td><input type="text" name="yzm" placeholder="请输入验证码"
+                                   id="yzm" v-model="valcode"/></td>
+                        <td><img @click="refreshImg()" src="code.action" id="yzm_img" alt="valcode"/></td>
+                    </tr>
+                </table>
+            </form>
+            <input type="button" value="login" class="btn" id="btn" @click="login()"/>
+            <input type="button" value="register" class="btn"@click="register()"/>
+        </div>
+
+        <div class="film">
+            <video id="video" controls width="800">
+                <source src="static/Blueming.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <div class="chat">
+            <div class="chat-box">
+                <div class="chat-content">
+                    <div class="chat-message">
+                        <div class="chat-message-content">
+                            <p>Hi {{username}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" placeholder="Type a message">
+                <button>Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let vm = new Vue({
+            el:'#app',
+            data:{
+                username: 'a',
+                pwd:"a",
+                valcode:"",
+            },
+            methods:{
+                login:function () {
+                    var params=new URLSearchParams();
+                    params.append("op","login");
+                    params.append("username",this.username);
+                    params.append("pwd",this.pwd);
+                    params.append("valcode",this.valcode);
+                    axios.post("resuser.action",params).then(data=>{
+                        let result = data.data;
+                        if (result.code==0){
+                            alert("登录失败，原因:"+result.msg);
+                            return;
+                        }
+                        this.username = result.data.username;
+                        this.loginflag = false;
+                        this.islogin = true;
+                        alert("登陆成功");
+                    });
+                },
+                logout:function () {
+                    axios.post("resuser.action?op=logout").then(data=>{
+                        var result=data.data;
+                        if (result.code==1){
+                            this.username='';
+                            this.pwd='';
+                            this.valcode='';
+                            this.islogin=false;
+                            this.history=[];
+                        }
+                    });
+                },
+                register:function () {
+                    var params = new URLSearchParams();
+                    params.append('op', 'register');
+                    params.append('username', this.username);
+                    params.append('pwd', this.pwd);
+                    params.append('valcode', this.valcode);
+                    axios.post("resuser.action", params).then( result=> {
+                        let data = result.data;
+                        if(data.code == 1) {
+                            this.username = data.username;
+                        }else {
+                            alert(data.msg);
+                        }
+                    })
+                },
+                refreshImg:function () {
+                    // 通过event事件对象的target属性获取当前正在点击的img标签
+                    var imgEle = event.target;
+                    // 设置img标签的src属性
+                    imgEle.src = "code.action?" + Math.random();
+                },
+            }
+        });
+    </script>
+</body>
+</html>
