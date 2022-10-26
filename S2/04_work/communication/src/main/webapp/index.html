@@ -9,57 +9,90 @@
 
         #app{
             width: 85%;
+            height:100%;
             margin: 0 auto;
+            border: 1px solid lightblue;
+        }
+
+        .login{
+            margin-left: 15%;
         }
 
         .film{
             float: left;
+            margin-top: 30px;
         }
 
         .chat{
             width: 200px;
-            height: 300px;
+            height: 395px;
             border: 2px solid lightblue;
             margin-left: 20px;
+            margin-top:30px;
             float: left;
         }
 
         .chat-box{
-            overflow: auto;
+            overflow-y: auto;
+            height: 340px;
+        }
+
+        .content{
+            margin: 0 auto;
+            height: 500px;
+            width: 1024px;
+            border: 2px solid lightgreen;
+        }
+
+        .chat-input{
+            width: 200px;
+            height: 30px;
+            margin-top: 10px;
+        }
+
+        .chat-message-content{
+            margin-top:10px;
+            height: auto;
+            border: 1px solid rgb(239, 71, 71);
         }
     </style>
 </head>
 <body>
-    <div id="app">
-        <div class="login">
-            <h2>Log in</h2>
-            <form name="myform">
-                <table>
-                    <tr>
-                        <td class="labname"><label for="username">用户名：</label></td>
-                        <td><input type="text" name="username" placeholder="请输入用户名"
-                                   id="username" v-model="username"/></td>
-                    </tr>
-                    <tr>
-                        <td class="labname"><label for="pwd">密码：</label></td>
-                        <td><input type="password" name="pwd" placeholder="请输入密码"
-                                   id="pwd" v-model="pwd"/></td>
-                    </tr>
-                    <tr>
-                        <td class="labname"><label for="yzm">验证码：</label></td>
-                        <td><input type="text" name="yzm" placeholder="请输入验证码"
-                                   id="yzm" v-model="valcode"/></td>
-                        <td><img @click="refreshImg()" src="code.action" id="yzm_img" alt="valcode"/></td>
-                    </tr>
-                </table>
-            </form>
-            <input type="button" value="login" class="btn" id="btn" @click="login()"/>
-            <input type="button" value="register" class="btn"@click="register()"/>
-        </div>
+<div id="app">
+    <div class="login" v-if="loginflag">
+        <h2>Log in</h2>
+        <form name="myform">
+            <table>
+                <tr>
+                    <td class="labname"><label for="username">用户名：</label></td>
+                    <td><input type="text" name="username" placeholder="请输入用户名"
+                               id="username" v-model="username"/></td>
+                </tr>
+                <tr>
+                    <td class="labname"><label for="pwd">密码：</label></td>
+                    <td><input type="password" name="pwd" placeholder="请输入密码"
+                               id="pwd" v-model="pwd"/></td>
+                </tr>
+                <tr>
+                    <td class="labname"><label for="yzm">验证码：</label></td>
+                    <td><input type="text" name="yzm" placeholder="请输入验证码"
+                               id="yzm" v-model="valcode"/></td>
+                    <td><img @click="refreshImg()" src="code.action" id="yzm_img" alt="valcode"/></td>
+                </tr>
+            </table>
+        </form>
+        <input type="button" value="login" class="btn" id="btn" @click="login()"/>
+        <input type="button" value="register" class="btn"@click="register()"/>
+    </div>
 
+    <span id="exitspan" v-if="islogin" style="margin-left: 15%;">
+            欢迎您：{{username}}<a href="" @click.prevent="logout()">退出</a>
+        </span>
+
+    <div class="content">
         <div class="film">
             <video id="video" controls width="800">
-                <source src="static/Blueming.mp4" type="video/mp4">
+                <source src="static/film.mp4" type="video/mp4">
             </video>
         </div>
 
@@ -68,80 +101,106 @@
                 <div class="chat-content">
                     <div class="chat-message">
                         <div class="chat-message-content">
-                            <p>Hi {{username}}</p>
+                            <p style="line-height:0">Hi {{username}}</p>
+                        </div>
+                        <div class="chat-message-content" v-for="(message,index) in message">
+                            <span>{{message.sender}}</span>
+                            <p style="font-size:10px">{{message.data}}</p>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="chat-input">
-                <input type="text" placeholder="Type a message">
-                <button>Send</button>
+                <input id="messageInput" type="text" v-model="messageInput" placeholder="Type a message">
+                <button @click="addMessage()">Send</button>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        let vm = new Vue({
-            el:'#app',
-            data:{
-                username: 'a',
-                pwd:"a",
-                valcode:"",
+<script>
+    let vm = new Vue({
+        el:'#app',
+        data:{
+            username: 'a',
+            pwd:"a",
+            valcode:"",
+            islogin:false,
+            loginflag:true,
+            messageInput:"",
+            message:[
+                {id:'1',sender:"zhangsan",data:"Hello World1"},
+                {id:'2',sender:"lisi",data:"Hello World2"},
+                {id:'3',sender:"wangwu",data:"Hello World3"},
+                {id:'4',sender:"zhaoliu",data:"Hello World4"},
+            ]
+        },
+        methods:{
+            login:function () {
+                var params=new URLSearchParams();
+                params.append("op","login");
+                params.append("username",this.username);
+                params.append("pwd",this.pwd);
+                params.append("valcode",this.valcode);
+                axios.post("resuser.action",params).then(data=>{
+                    let result = data.data;
+                    if (result.code==0){
+                        alert("登录失败，原因:"+result.msg);
+                        return;
+                    }
+                    this.username = result.data.username;
+                    this.loginflag = false;
+                    this.islogin = true;
+                    alert("登陆成功");
+                });
             },
-            methods:{
-                login:function () {
-                    var params=new URLSearchParams();
-                    params.append("op","login");
-                    params.append("username",this.username);
-                    params.append("pwd",this.pwd);
-                    params.append("valcode",this.valcode);
-                    axios.post("resuser.action",params).then(data=>{
-                        let result = data.data;
-                        if (result.code==0){
-                            alert("登录失败，原因:"+result.msg);
-                            return;
-                        }
-                        this.username = result.data.username;
-                        this.loginflag = false;
-                        this.islogin = true;
-                        alert("登陆成功");
-                    });
-                },
-                logout:function () {
-                    axios.post("resuser.action?op=logout").then(data=>{
-                        var result=data.data;
-                        if (result.code==1){
-                            this.username='';
-                            this.pwd='';
-                            this.valcode='';
-                            this.islogin=false;
-                            this.history=[];
-                        }
-                    });
-                },
-                register:function () {
-                    var params = new URLSearchParams();
-                    params.append('op', 'register');
-                    params.append('username', this.username);
-                    params.append('pwd', this.pwd);
-                    params.append('valcode', this.valcode);
-                    axios.post("resuser.action", params).then( result=> {
-                        let data = result.data;
-                        if(data.code == 1) {
-                            this.username = data.username;
-                        }else {
-                            alert(data.msg);
-                        }
-                    })
-                },
-                refreshImg:function () {
-                    // 通过event事件对象的target属性获取当前正在点击的img标签
-                    var imgEle = event.target;
-                    // 设置img标签的src属性
-                    imgEle.src = "code.action?" + Math.random();
-                },
+            logout:function () {
+                axios.post("resuser.action?op=logout").then(data=>{
+                    var result=data.data;
+                    if (result.code==1){
+                        this.username='';
+                        this.pwd='';
+                        this.valcode='';
+                        this.islogin=false;
+                        this.loginflag=true;
+                    }
+                });
+            },
+            register:function () {
+                var params = new URLSearchParams();
+                params.append('op', 'register');
+                params.append('username', this.username);
+                params.append('pwd', this.pwd);
+                params.append('valcode', this.valcode);
+                axios.post("resuser.action", params).then( result=> {
+                    let data = result.data;
+                    if(data.code == 1) {
+                        this.username = data.username;
+                    }else {
+                        alert(data.msg);
+                    }
+                })
+            },
+            refreshImg:function () {
+                // 通过event事件对象的target属性获取当前正在点击的img标签
+                var imgEle = event.target;
+                // 设置img标签的src属性
+                imgEle.src = "code.action?" + Math.random();
+            },
+            addMessage:function(){
+                if(this.messageInput==""){
+                    alert("请输入内容");
+                    return;
+                }
+                let id = this.message.length
+                let sender = this.username
+                let message = this.messageInput
+                console.log(message)
+                this.message.push({id:id,sender:sender,data:message});
+                this.messageInput = ""
             }
-        });
-    </script>
+        }
+    });
+</script>
 </body>
 </html>

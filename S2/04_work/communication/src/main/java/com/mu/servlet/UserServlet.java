@@ -92,7 +92,7 @@ public class UserServlet extends CommonServlet{
         Resuser resuser = null;
 
         try {
-            logger.info("enter resuser.action register");
+            logger.info("enter register.action register");
             resuser = super.parseRequestToT(request,Resuser.class);
             String valcode = request.getParameter("valcode");
             HttpSession session = request.getSession();
@@ -106,20 +106,17 @@ public class UserServlet extends CommonServlet{
                     return;
                 }
             }
-
             resuser.setPwd(Md5.MD5Encode(resuser.getPwd()));
-            String sql = "select * from resuser where username=? and pwd=?";
+            String sql = "insert into testuser (uname,upwd) values (?,?)";
             DbHelper db = new DbHelper();
-            List<Resuser> list = db.select(sql,Resuser.class,resuser.getUsername(),resuser.getPwd());
-            if (list!=null&&list.size()>0){
-                Resuser rs = list.get(0);
-                rs.setPwd("不要偷看");
+            int isRegister = db.doUpdata(sql,resuser.getUsername(),resuser.getPwd());
+            if (isRegister>0){
                 jm.setCode(1);
-                jm.setData(rs);
-                session.setAttribute("resuser",rs);
+                jm.setMsg("注册成功");
+                session.setAttribute("resuser",resuser);
             }else{
                 jm.setCode(0);
-                jm.setMsg("用户名或密码错误");
+                jm.setMsg("注册失败");
             }
         }catch (Exception e){
             jm.setCode(0);

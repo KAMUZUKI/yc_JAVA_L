@@ -1,387 +1,206 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>小萌神订餐网</title>
-<!-- 图标 -->
-<link rel="short icon" href="image/eat0.ico" />
-<link rel="stylesheet" href="css/index.css" />
+	<meta charset="UTF-8">
+	<title>Film</title>
+	<script src="./js/vue.js"></script>
+	<script src="./js/axios.js"></script>
+	<style>
+
+		#app{
+			width: 85%;
+			height:100%;
+			margin: 0 auto;
+			border: 1px solid lightblue;
+		}
+
+		.login{
+			margin-left: 15%;
+		}
+
+		.film{
+			float: left;
+			margin-top: 30px;
+		}
+
+		.chat{
+			width: 200px;
+			height: 395px;
+			border: 2px solid lightblue;
+			margin-left: 20px;
+			margin-top:30px;
+			float: left;
+		}
+
+		.chat-box{
+			overflow-y: auto;
+			height: 340px;
+		}
+
+		.content{
+			margin: 0 auto;
+			height: 500px;
+			width: 1024px;
+			border: 2px solid lightgreen;
+		}
+
+		.chat-input{
+			width: 200px;
+			height: 30px;
+			margin-top: 10px;
+		}
+
+		.chat-message-content{
+			margin-top:10px;
+			height: auto;
+			border: 1px solid rgb(239, 71, 71);
+		}
+	</style>
 </head>
 <body>
-
-  <div id="app">
-
-	<div class="head">
-		小萌神订餐网
-		<div class="right">
-			<span class="showlogin" id="showlogin" @click="loginflag=!loginflag" v-if="!islogin">登录</span>
-			<span id="exitspan" v-if="islogin">
-				欢迎您：{{username}}<a href="" @click.prevent="historyflag=!historyflag">历史</a> | <a href="" @click.prevent="logout()">退出</a>
-			</span>
-		</div>
-	</div>
-	<div class="content">
-		<ul class="allfoods" id="allfoods">
-			<li v-for="(item,index) in data">
-				<h3 @click="showFood(item.fid)">{{item.fname}}</h3>
-				<div :id=`fid_${item.fid}` class="fooddesc" v-show="item.status">
-					<img :src=`image/${item.fphoto}` class="foodimg" />
-					<article class="foodprice">
-						<p>菜品描述:{{item.detail}}</p>
-						<p class="normalprice">原价:￥{{item.normprice}}</p>
-						<p class="realprice">特价:￥{{item.realprice}}</p>
-						<p class="buybtn" @click="addCart(item.fid,1)">加入购物车</p>
-						<p>赞{{item.praise}}<span v-if="islogin" @click="clickPraise(item.fid,index)">来一发</span></p>
-
-					</article>
-				</div>
-			</li>
-		</ul>
-	</div>
-
-  	<div style="background-color: white;color:red">
-		<a @click.prevent = "clickPage(1)">第一页</a>
-		<a @click.prevent = "clickPage(pagebean.pre)" :page-data="pagebean.pre">上一页{{pagebean.pre}}</a>
-		<a @click.prevent = "clickPage(pagebean.next)" :page-data="pagebean.next">下一页{{pagebean.next}}</a>
-		<a @click.prevent = "clickPage(pagebean.totalpages)" :page-data="pagebean.totalpages">最后一页{{pagebean.totalpages}}</a>
-		总共{{pagebean.total}}条记录/共分{{pagebean.totalpages}}页
-		每页显示{{pagebean.pagesize}}条记录,当前第{{pagebean.pageno}}页
-		按<select name="sortby" v-model="pagebean.sortby">
-			<option value="fid">菜品编号</option>
-			<option value="realprice">菜品价格</option>
-		  </select>
-		<select name="sort" v-model="pagebean.sort">
-			<option value="asc">升序</option>
-			<option value="desc">降序</option>
-		  </select>
-	</div>
-
-	<div class="look" v-if="historyflag">
-		<span @click="getHistory()">浏览记录(点我刷新)</span>
-		<hr/>
-		<ul>
-			<li v-for="item in reversehistory">{{item.fid}} - {{item.fname}}</li>
-		</ul>
-	</div>
-	<div class="shoppingcar">
-		<div class="carbag" id="carbag" :class="{isShow:isHide==true,isHide:isHide==false}">
-			<p>购物车<span id="del" @click="clearAll()">[清空]</span></p>
-			<table id="bagcontent" cellpadding="0" cellspacing="0">
-				<tr v-for="cartfood in cartfoods">
-					<td class="bagcontent">{{cartfood.food.fname}}</td>
-					<td class="bagnum">
-						<button @click="addCart(cartfood.food.fid,-1)">-</button>
-						<span>{{cartfood.num}}</span>
-						<button @click="addCart(cartfood.food.fid,1)">+</button>
-					</td>
-				</tr>
-			</table>
-		</div>
-		<div class="carprice" @click="showCart()">￥{{cartprice}}</div>
-		<div class="carinfo" v-if="cartfoods.lenth<=0">购物车是空的</div>
-		<div class="carinfo" v-else @click="orderflag=!orderflag">立即下单</div>
-	</div>
-	<div class="footer">
-		Copyright © 2016 Xiaomengsheng Incorporated Company. All rights reserved.
-		<br />
-		订餐，就上小萌神订餐网!
-	</div>
-
-	<div class="login" id="login" v-if="loginflag">
-		<span id="unshow" @click="loginflag=!loginflag">X</span>
+<div id="app">
+	<div class="login" v-if="!loginflag">
+		<h2>Log in</h2>
 		<form name="myform">
-			<table>s
+			<table>
 				<tr>
 					<td class="labname"><label for="username">用户名：</label></td>
 					<td><input type="text" name="username" placeholder="请输入用户名"
-					id="username" v-model="username"/></td>
+							   id="username" v-model="username"/></td>
 				</tr>
 				<tr>
 					<td class="labname"><label for="pwd">密码：</label></td>
 					<td><input type="password" name="pwd" placeholder="请输入密码"
-					id="pwd" v-model="pwd"/></td>
+							   id="pwd" v-model="pwd"/></td>
 				</tr>
 				<tr>
 					<td class="labname"><label for="yzm">验证码：</label></td>
 					<td><input type="text" name="yzm" placeholder="请输入验证码"
-					id="yzm" v-model="valcode"/></td>
+							   id="yzm" v-model="valcode"/></td>
 					<td><img @click="refreshImg()" src="code.action" id="yzm_img" alt="valcode"/></td>
 				</tr>
 			</table>
 		</form>
 		<input type="button" value="login" class="btn" id="btn" @click="login()"/>
+		<input type="button" value="register" class="btn"@click="register()"/>
 	</div>
 
-	<!-- 订单信息 -->
-	<div class="login" id="myinfo" v-if="orderflag">
-		<span id="unshowinfo" @click="orderflag=false">X</span>
-		<form name="forminfo">
-			<table>
-				<tr>
-					<td class="labname"><label for="address">送货地址:</label></td>
-					<td><input name="address"  type="text" placeholder="请输入送货地址" id="address" v-model="orderInfo.address"/></td>
-				</tr>
-				<tr>
-					<td class="labname"><label for="tel">联系电话:</label></td>
-					<td><input type="text"  id="tel" placeholder="请输入联系电话" name="tel" v-model="orderInfo.tel"/></td>
-				</tr>
-				<tr>
-					<td class="labname"><label for="deliverytime">送货时间:</label></td>
-					<td><input type="text"  name="deliverytime" id="deliverytime" placeholder="请输入送货时间（默认马上发货）" v-model="orderInfo.deliverytime"/></td>
-				</tr>
-				<tr>
-					<td class="labname"><label for="ps">附言:</label></td>
-					<td><input type="text" id="ps" placeholder="请输入附言" name="ps" v-model="orderInfo.ps"/></td>
-				</tr>
-			</table>
-		</form>
-		<input type="button" value="提交" class="btn"  id="submit" @click="confirmOrder()">
+	<span id="exitspan" v-if="islogin" style="margin-left: 15%;">
+            欢迎您：{{username}}<a href="" @click.prevent="logout()">退出</a>
+        </span>
+
+	<div class="content">
+		<div class="film">
+			<video id="video" controls width="800">
+				<source src="static/film.mp4" type="video/mp4">
+			</video>
+		</div>
+
+		<div class="chat">
+			<div class="chat-box">
+				<div class="chat-content">
+					<div class="chat-message">
+						<div class="chat-message-content">
+							<p style="line-height:0">Hi {{username}}</p>
+						</div>
+						<div class="chat-message-content" v-for="(message,index) in message">
+							<span>{{message.sender}}</span>
+							<p style="font-size:10px">{{message.data}}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="chat-input">
+				<input id="messageInput" type="text" v-model="messageInput" placeholder="Type a message">
+				<button @click="addMessage()">Send</button>
+			</div>
+		</div>
 	</div>
 </div>
 
-	<!--  在网页里面引入javascript    jquery:DOM   大家注意顺序  -->
-	<script src="js/jquery-1.9.1.js"></script>
-	<script src="js/vue.js"></script>
-	<script src="js/axios.js"></script>
-	<script type="text/javascript">
-	     let vm=new Vue({
-	    	 el:"#app",
-	    	 data:{
-	    		 orderflag:false,     //送货地址div
-	    		 loginflag:false,
-				 islogin:false,
-				 username:"a",
-				 pwd:"a",
-				 valcode:"",
-				 data:[], //所有的菜品列表
-				 cartfoods:[], //购物车中的商品列表
-				 cartprice:0.0,	//购物车中的商品总价
-				 history:[],
-
-				 isHide:false,
-				 historyflag:false,
-
-				 orderInfo:{
-					 address:'湖南',
-					 tel:'12345',
-					 deliverytime:'2022-12-12',
-					 ps:'快快'
-				 },
-
-				 pagebean:{
-					 pageno:1,
-					 pagesize:5,
-					 total:0,
-					 totalpages:0,
-					 sortby:'fid',
-					 sort:'asc',
-					 pre:1,
-					 next:1,
-				 }
-	    	 },
-			 methods: {
-				 clickPraise:function (fid,index){
-					 var params=new URLSearchParams();
-					 params.append("op","clickPraise");
-					 params.append("fid",fid);
-					 axios.post("resfood.action",params).then(result => {
-						 var jsonModel=result.data;
-						 if(jsonModel.code==1){
-							 var d=this.data[index];
-							 //这样操作不行
-							 //this.data[index].parise=jsonModel.data.parise;
-
-							 d.praise=jsonModel.data.praise;
-							//利用数组提供 响应式的方法实现数据的更新
-							 //将data中的下标为 index的元素，从这个元素向后替换一个元素，用d替换
-							 this.data.splice(index,1,d);
-						 }
-					 })
-
-				 },
-				 confirmOrder:function(){
-					var params = new URLSearchParams(this.orderInfo);
-					axios.post("custOp.action?op=confirmOrder",params).then(result=>{
-						if(result.data.code==1){
-							alert("下单成功");
-							this.cartfoods = [];
-							this.cartprice = 0.0;
-							this.isHide = false;
-							this.orderflag = false;
-					 	}else {
-							alert("下单失败");
-						}
-					});
-				 },
-				 clearAll:function(){
-					 if (confirm("确定清空购物车吗？")){
-						 axios.post("resorder.action?op=clearAll").then( result=> {
-							 if (result.data.code==1){
-								 this.cartfoods=[];
-								 this.cartprice=0.0;
-								 isHide=false;
-							 }
-						 });
-					 }else {
-						 return;
-					 }
-				 },
-				 showCart:function(){
-					 this.isHide=!this.isHide;
-				 },
-				 addCart:function (fid,num){
-					 //1.判断是否登陆过
-					if (this.username==null||this.username==''){
-						alert("请登录");
+<script>
+	let vm = new Vue({
+		el:'#app',
+		data:{
+			username: 'a',
+			pwd:"a",
+			valcode:"",
+			islogin:false,
+			loginflag:false,
+			messageInput:"",
+			message:[
+				{id:'1',sender:"zhangsan",data:"Hello World1"},
+				{id:'2',sender:"lisi",data:"Hello World2"},
+				{id:'3',sender:"wangwu",data:"Hello World3"},
+				{id:'4',sender:"zhaoliu",data:"Hello World4"},
+			]
+		},
+		methods:{
+			login:function () {
+				var params=new URLSearchParams();
+				params.append("op","login");
+				params.append("username",this.username);
+				params.append("pwd",this.pwd);
+				params.append("valcode",this.valcode);
+				axios.post("resuser.action",params).then(data=>{
+					let result = data.data;
+					if (result.code==0){
+						alert("登录失败，原因:"+result.msg);
 						return;
 					}
-					//发出请求服务器
-					var params=new URLSearchParams();
-					params.append("op","order");
-					params.append("num",num);
-					params.append("fid",fid);
-					axios.post("resorder.action",params).then(data=>{
-						var jsonmodel = data.data;
-						if (jsonmodel.code==-1){
-							alert("请登录");
-							return;
-						}else if (jsonmodel.code==0){
-							alert("添加购物车失败");
-							return;
-						}else {
-							this.showCartInfo(jsonmodel.data);
-						}
-					})
-				 },
-				 showCartInfo:function (data){
-					 this.cartfoods=data;
-					 this.cartprice=0.0;
-					 this.cartfoods.forEach((item,index)=>{
-						 this.cartprice+=item.smallCount;
-					 })
-				 },
-				 showFood:function (fid){
-					 var params=new URLSearchParams();
-					 params.append("fid",fid);
-					 axios.post("resfood.action?op=traceBrowseFood",params).then(result => {
-						 if (result.data.code == 1) {
-							 console.log("添加浏览记录成功");
-						 }
-					 });
-					 this.data.forEach((item, index) => {
-						 item.status = fid == item.fid;
-					 });
-				 },
-				 logout: function(){
-					axios.post("resuser.action?op=logout").then(data=>{
-						var result=data.data;
-						if (result.code==1){
-							this.username='';
-							this.pwd='';
-							this.valcode='';
-							this.islogin=false;
-							this.history=[];
-						}
-					});
-				 },
-				 login:function (){
-					console.log("enter");
-					var params=new URLSearchParams();
-					params.append("op","login");
-					params.append("username",this.username);
-					params.append("pwd",this.pwd);
-					params.append("valcode",this.valcode);
-					axios.post("resuser.action",params).then(data=>{
-						let result = data.data;
-						if (result.code==0){
-							alert("登录失败，原因:"+result.msg);
-							return;
-						}
-						this.username = result.data.username;
-						this.loginflag = false;
-						this.islogin = true;
-						alert("登陆成功");
-					});
-				 },
-				 checkLogin:function (){
-					 return axios.get("resuser.action?op=checkLogin")
-				 },
-				 refreshImg:function () {
-					 // 通过event事件对象的target属性获取当前正在点击的img标签
-					 var imgEle = event.target;
-					 // 设置img标签的src属性
-					 imgEle.src = "code.action?" + Math.random();
-				 },
-				 findAllFoods:function () {
-					 return axios.get("resfood.action?op=findAllFoods");
-				 },
-				 showCartInit:function(){
-					 var params=new URLSearchParams();
-					 params.append("op","getCartInfo");
-					 axios.post("resorder.action",params).then(result=>{
-						 if (result.data.code==1){
-							 this.showCartInfo(result.data.data);
-						 }
-					 });
-				 },
-				 clickPage:function(pageno){
-					 var promise=this.showPage(pageno);
-					 promise.then(result=>{
-						 this.displayPage(result.data)
-					 });
-				 },
-				 showPage:function (pageno){
-					 var params=new URLSearchParams();
-					 params.append("pageno",pageno);
-					 params.append("sortby",this.pagebean.sortby);
-					 params.append("sort",this.pagebean.sort);
-					 //返回一个Promise
-					 return axios.post("resfood.action?op=findFoodsByPage",params);
-				 },
-				 displayPage:function (result){
-					 let jsonmodel2 = result;
-					 if (jsonmodel2.code==1){
-						 //显示数据到界面
-						 //绑定到model中
-						 jsonmodel2.data.dataset.forEach((item,index)=>{
-							 //给每个菜品对象添加一个属性，用于控制菜品的显示状态
-							 item.status = false;
-						 })
-						 vm.$data.data=jsonmodel2.data.dataset;
-						 vm.$data.pagebean=jsonmodel2.data;
-					 }
-				 },
-				 getHistory:function (){
-					 axios.post("resfood.action?op=getHistory").then(result=>{
-						 var resultData = result.data;
-						 this.history=[];
-						 if (resultData.code==1){
-							 this.history=result.data.data;
-						 }
-					 });
-				 }
-			 },
-			 computed: {
-				reversehistory:function (){
-					return this.history.reverse();
+					this.username = result.data.username;
+					this.loginflag = false;
+					this.islogin = true;
+					alert("登陆成功");
+				});
+			},
+			logout:function () {
+				axios.post("resuser.action?op=logout").then(data=>{
+					var result=data.data;
+					if (result.code==1){
+						this.username='';
+						this.pwd='';
+						this.valcode='';
+						this.islogin=false;
+						this.history=[];
+					}
+				});
+			},
+			register:function () {
+				var params = new URLSearchParams();
+				params.append('op', 'register');
+				params.append('username', this.username);
+				params.append('pwd', this.pwd);
+				params.append('valcode', this.valcode);
+				axios.post("resuser.action", params).then( result=> {
+					let data = result.data;
+					if(data.code == 1) {
+						this.username = data.username;
+					}else {
+						alert(data.msg);
+					}
+				})
+			},
+			refreshImg:function () {
+				// 通过event事件对象的target属性获取当前正在点击的img标签
+				var imgEle = event.target;
+				// 设置img标签的src属性
+				imgEle.src = "code.action?" + Math.random();
+			},
+			addMessage:function(){
+				if(this.messageInput==""){
+					alert("请输入内容");
+					return;
 				}
-			 },
-			 mounted:function (){
-				 axios.all([this.checkLogin(),this.showPage(1),this.showCartInit(),this.getHistory()]).then(axios.spread(function (d1,d2){
-					 let jsonmodel1=d1.data;
-					 if (jsonmodel1.code==1){
-						 vm.$data.username=jsonmodel1.data.username;
-						 vm.$data.loginflag=false;
-						 vm.$data.islogin=true;
-					 }
-					 let jsonmodel2=d2.data;
-					 if (jsonmodel2.code==1){
-						 vm.displayPage(jsonmodel2);
-					 }
-				 }))
-			 }
-	     });
-	</script>
-
+				let id = this.message.length
+				let sender = this.username
+				let message = this.messageInput
+				console.log(message)
+				this.message.push({id:id,sender:sender,data:message});
+				this.messageInput = ""
+			}
+		}
+	});
+</script>
 </body>
 </html>
