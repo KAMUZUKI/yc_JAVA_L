@@ -92,7 +92,7 @@
     <div class="content">
         <div class="film">
             <video id="video" controls width="800">
-                <source src="static/film.mp4" type="video/mp4">
+                <source src="static/Blueming.mp4" type="video/mp4">
             </video>
         </div>
 
@@ -105,7 +105,9 @@
                         </div>
                         <div class="chat-message-content" v-for="(message,index) in message">
                             <span>{{message.sender}}</span>
-                            <p style="font-size:10px">{{message.data}}</p>
+                            <textarea rows="5" cols="23" readonly >
+                                {{message.data}}
+                            </textarea>
                         </div>
                     </div>
                 </div>
@@ -151,7 +153,7 @@
                     this.username = result.data.username;
                     this.loginflag = false;
                     this.islogin = true;
-                    alert("登陆成功");
+                    alert("登录成功");
                 });
             },
             logout:function () {
@@ -165,6 +167,11 @@
                         this.loginflag=true;
                     }
                 });
+            },
+            checklogin(){
+                var params =new URLSearchParams();
+                params.append("op","checkLogin");
+                return axios.post("resuser.action",params);
             },
             register:function () {
                 var params = new URLSearchParams();
@@ -192,15 +199,50 @@
                     alert("请输入内容");
                     return;
                 }
-                let id = this.message.length
-                let sender = this.username
-                let message = this.messageInput
-                console.log(message)
-                this.message.push({id:id,sender:sender,data:message});
-                this.messageInput = ""
+                var params = new URLSearchParams();
+                params.append('op', 'sendMessageOp');
+                params.append('message', this.messageInput);
+                axios.post("message.action", params).then( result=> {
+                    result = result.data;
+                    if(result.code == 1) {
+                        this.messageInput = "";
+                        this.message.push(result.data);
+                    }else {
+                        alert(result.msg);
+                    }
+                });
+            },
+            getAllmessage(){
+                var params=new URLSearchParams();
+                params.append("op","getAllMessage");
+                return axios.post("message.action",params);
             }
-        }
+        },
+        mounted(){
+            axios.all([this.checklogin(),this.getAllmessage()]).then(axios.spread( function(d1,d2){
+                if(d1.data.code===1){
+                    console.log(d1);
+                    vm.$data.islogin=!vm.$data.islogin;
+                    vm.$data.user.uname=d1.data.data.uname;
+                }
+
+                if(d2.data.code===1){
+                    console.log(d2);
+                    vm.$data.message=d2.data.data;
+                }
+            }))
+        },
     });
+
+    setInterval(()=>{
+        var params =new URLSearchParams();
+        params.append("op","getAllMessage");
+        axios.post("message.action",params).then((result)=>{
+            if(result.data.code===1){
+                vm.$data.message=result.data.data;
+            }
+        })
+    },1000)
 </script>
 </body>
 </html>
