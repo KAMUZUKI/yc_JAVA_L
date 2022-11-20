@@ -1,6 +1,6 @@
 package com.mu.bean;
 
-
+import lombok.Data;
 
 /**
  * @author : MUZUKI
@@ -8,7 +8,7 @@ package com.mu.bean;
  * @description : 评论实体类
  **/
 
-
+@Data
 public class Comment {
     /**
      * 评论id
@@ -34,66 +34,4 @@ public class Comment {
      * 评论人的头像
      */
     private String head;
-
-
-    @Override
-    public String toString() {
-        return "Comment{" +
-                "id=" + id +
-                ", articleId=" + articleId +
-                ", content='" + content + '\'' +
-                ", createBy='" + createBy + '\'' +
-                ", createTime='" + createTime + '\'' +
-                ", head='" + head + '\'' +
-                '}';
-    }
-
-    public String getHead() {
-        return head;
-    }
-
-    public void setHead(String head) {
-        this.head = head;
-    }
-
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getArticleId() {
-        return articleId;
-    }
-
-    public void setArticleId(Integer articleId) {
-        this.articleId = articleId;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy;
-    }
-
-    public String getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
-    }
 }

@@ -18,6 +18,13 @@
     </properties>
 
     <dependencies>
+        <!--websocket-->
+        <dependency>
+            <groupId>javax.websocket</groupId>
+            <artifactId>javax.websocket-api</artifactId>
+            <version>1.1</version>
+            <scope>provided</scope>
+        </dependency>
         <!--mail-->
         <dependency>
             <groupId>javax.mail</groupId>
