@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <TITLE>论坛--注册</TITLE>
+
+    <Link rel="stylesheet" type="text/css" href="style/style.css"/>
+
+    <style>
+        input{
+            margin-left: 20px;
+        }
+    </style>
+
+</HEAD>
+<BODY>
+<DIV>
+    <IMG src="image/logo.gif">
+</DIV>
+<!--      用户信息、登录、注册        -->
+
+<DIV class="h">
+    您尚未　<a href="login.html">登录</a>
+    &nbsp;| &nbsp; <A href="reg.html">注册</A> |
+</DIV>
+
+
+<BR/>
+<!--      导航        -->
+<DIV>
+    &gt;&gt;<B><a href="index.html">论坛首页</a></B>
+</DIV>
+<!--      用户注册表单        -->
+<DIV class="t" style="MARGIN-TOP: 15px" align="center" id="app">
+    <FORM name="regForm" action="" method="post">
+        <br/>用 户&nbsp;名 &nbsp;
+        <INPUT class="input" tabIndex="1" tryp="text" maxLength="20" size="35" name="uName" v-model="uname">用户名为汉字、数字、字母组成
+        <br/>密 码 &nbsp;
+        <INPUT class="input" tabIndex="2" type="password" maxLength="20" size="40" name="uPass" v-model="upass">
+        <br/>重复密码 &nbsp;
+        <INPUT class="input" tabIndex="3" type="password" maxLength="20" size="40" name="uPass1" v-model="upass1">
+        <br/>性 别 &nbsp;
+        女<input type="radio" name="gender" value="女" v-model="sex">
+        男<input type="radio" name="gender" value="男" v-model="sex"/>
+        <br/>请选择头像 <br/>
+        <img src="image/head/1.gif"/><input type="radio" name="head" value="1.gif" v-model="head">
+        <img src="image/head/2.gif"/><input type="radio" name="head" value="2.gif" v-model="head">
+        <img src="image/head/3.gif"/><input type="radio" name="head" value="3.gif" v-model="head">
+        <img src="image/head/4.gif"/><input type="radio" name="head" value="4.gif" v-model="head">
+        <img src="image/head/5.gif"/><input type="radio" name="head" value="5.gif" v-model="head">
+        <BR/>
+        <img src="image/head/6.gif"/><input type="radio" name="head" value="6.gif" v-model="head">
+        <img src="image/head/7.gif"/><input type="radio" name="head" value="7.gif" v-model="head">
+        <img src="image/head/8.gif"/><input type="radio" name="head" value="8.gif" v-model="head">
+        <img src="image/head/9.gif"/><input type="radio" name="head" value="9.gif" v-model="head">
+        <img src="image/head/10.gif"/><input type="radio" name="head" value="10.gif" v-model="head">
+        <BR/>
+        <img src="image/head/11.gif"/><input type="radio" name="head" value="11.gif" v-model="head">
+        <img src="image/head/12.gif"/><input type="radio" name="head" value="12.gif" v-model="head">
+        <img src="image/head/13.gif"/><input type="radio" name="head" value="13.gif" v-model="head">
+        <img src="image/head/14.gif"/><input type="radio" name="head" value="14.gif" v-model="head">
+        <img src="image/head/15.gif"/><input type="radio" name="head" value="15.gif" v-model="head">
+        <br/>
+        <INPUT class="btn" tabIndex="4" type="submit" value="注 册" @click.prevent="reg()">
+    </FORM>
+</DIV>
+<!--      声明        -->
+<BR>
+<CENTER class="gray">源辰信息</CENTER>
+
+<script src="js/jquery-1.9.1.js"></script>
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+
+<script type="text/javascript">
+    let vm = new Vue({
+        el: "#app",
+        data: {
+            uname: "",//用户名
+            upass: "",//密码
+            upass1: "",//再次输入的密码
+            sex: "",//性别
+            head: "",//头像
+        },
+
+        methods: {
+            reg: function () {
+                var flag = new RegExp("[`~!@#$^&*()=|{}':;',\\[\\].<>《》/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？ ]");
+                if(this.uname.length==0||this.upass.length==0||this.sex.length==0||this.head.length==0){
+                    alert("请输入完整信息!")
+                    return;
+                }
+                if(flag.test(this.uname)){
+                    alert("用户名中存在非法字符!");
+                    return;
+                }
+                if(this.upass!=this.upass1){
+                    alert("两次输入的密码不一致!")
+                    return;
+                }
+                var params = new URLSearchParams();
+                params.append("op", "reg");
+                params.append("uname", this.uname);
+                params.append("upass", this.upass);
+                params.append("sex", this.sex);
+                params.append("head", this.head);
+                axios.post("user.action", params).then(result => {
+                    if (result.data.code == 1) {
+                        alert("注册成功！");
+                        window.location.href = "login.html";
+                    } else {
+                        alert("注册失败:" + result.data.msg);
+                    }
+                });
+            }
+        },
+        mounted: function () {
+        }
+    });
+</script>
+
+</BODY>
+</HTML>

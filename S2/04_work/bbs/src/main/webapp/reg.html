@@ -1,0 +1,160 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<TITLE>论坛--注册</TITLE>
+
+<Link rel="stylesheet" type="text/css" href="style/style.css"/>
+
+</HEAD>
+<div id="app">
+	<DIV>
+		<IMG src="image/logo.gif">
+	</DIV>
+	<!--      用户信息、登录、注册        -->
+
+	<DIV class="h" v-if="islogin==false">
+		您尚未　<a href="login.html">登录</a>
+		&nbsp;| &nbsp; <A href="reg.html">注册</A> |
+	</DIV>
+	<div class="h" v-else>
+		<span>欢迎您:{{uname}} </span> | <a href="" @click.prevent="logout">安全退出</a>|<a href="login.html"  >切换用户</a>
+	</div>
+
+
+
+	<BR/>
+	<!--      导航        -->
+	<DIV>
+		&gt;&gt;<B><a href="index.html">论坛首页</a></B>
+	</DIV>
+	<!--      用户注册表单        -->
+	<DIV  class="t" style="MARGIN-TOP: 15px" align="center">
+		<FORM name="regForm" action="" method="post">
+			<br/>用&nbsp;户&nbsp;名 &nbsp;
+				<INPUT class="input" tabIndex="1" tryp="text" maxLength="20" size="35" name="uName" v-model="uname" @blur="checkUname()">
+			<br/>密&nbsp;&nbsp;&nbsp;&nbsp;码 &nbsp;
+				<INPUT class="input" tabIndex="2" type="password" maxLength="20" size="40" name="uPass" v-model="upass">
+			<br/>重复密码 &nbsp;
+				<INPUT class="input" tabIndex="3" type="password" maxLength="20" size="40" name="uPass1" v-model="upass1" @blur="checkUpass()">
+			<br/>性别 &nbsp;
+				女<input type="radio" name="gender" value="1" v-model="gender">
+				男<input type="radio" name="gender" value="2" checked="checked" v-model="gender" />
+			<br/>请选择头像 <br/>
+			<image src="image/head/1.gif"/><input type="radio" name="head" value="1.gif" checked="checked" v-model="head" >
+			<img src="image/head/2.gif"/><input type="radio" name="head" value="2.gif" v-model="head">
+			<img src="image/head/3.gif"/><input type="radio" name="head" value="3.gif" v-model="head">
+			<img src="image/head/4.gif"/><input type="radio" name="head" value="4.gif" v-model="head">
+			<img src="image/head/5.gif"/><input type="radio" name="head" value="5.gif" v-model="head">
+			<BR/>
+			<img src="image/head/6.gif"/><input type="radio" name="head" value="6.gif" v-model="head">
+			<img src="image/head/7.gif"/><input type="radio" name="head" value="7.gif" v-model="head">
+			<img src="image/head/8.gif"/><input type="radio" name="head" value="8.gif" v-model="head">
+			<img src="image/head/9.gif"/><input type="radio" name="head" value="9.gif" v-model="head">
+			<img src="image/head/10.gif"/><input type="radio" name="head" value="10.gif" v-model="head">
+			<BR/>
+			<img src="image/head/11.gif"/><input type="radio" name="head" value="11.gif" v-model="head">
+			<img src="image/head/12.gif"/><input type="radio" name="head" value="12.gif" v-model="head">
+			<img src="image/head/13.gif"/><input type="radio" name="head" value="13.gif" v-model="head">
+			<img src="image/head/14.gif"/><input type="radio" name="head" value="14.gif" v-model="head">
+			<img src="image/head/15.gif"/><input type="radio" name="head" value="15.gif" v-model="head">
+			<br/>验证码 &nbsp;<input type="text" name="yzm" placeholder="请输入验证码"  id="yzm" v-model="valcode"  />
+			<img src="code.action" id="yzm_img"  /><a href="" @click.prevent="changeCode()">看不清？刷新一次</a>
+			<br/>
+				<INPUT class="btn" tabIndex="4" type="button" value="注 册" :disabled="isOk" @click="reg()">
+		</FORM>
+	</DIV>
+	<!--      声明        -->
+	<BR>
+	<CENTER class="gray">源辰信息</CENTER>
+
+</div>
+</BODY>
+
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+<script>
+	var vm=new Vue({
+		el:"#app",
+		data:{
+			uname:"",
+			upass:"a",
+			upass1:"a",
+			valcode:"",
+			gender:1,
+			head:"1.gif",
+			islogin:false,
+			isOk:false,
+		},
+		methods:{
+			reg:function(){
+				let params=new URLSearchParams();
+				params.append("op","reg");
+				params.append("uname",this.uname);
+				params.append("upass",this.upass);
+				params.append("head",this.head);
+				params.append("gender",this.gender);
+				params.append("valcode",this.valcode);
+				axios.post("tbl_user.action",params).then(result=>{
+					let Json=result.data;
+					if(Json.code==1){
+						alert(this.uname+" 注册成功");
+						this.uname="";
+					}
+				})
+			},
+			checkLogin:function(){
+				return axios.get("tbl_user.action?op=checkLogin");
+			},
+			checkUpass:function () {
+				if(this.upass1!=this.upass){
+					this.upass1="";
+					this.isOk=true;
+					alert("与第一次密码不一致");
+				}else{
+					this.isOk=false;
+				}
+			},
+			checkUname:function(){
+				let params=new URLSearchParams();
+				params.append("op","checkUname");
+				params.append("uname",this.uname);
+				axios.post("tbl_user.action",params).then(result=>{
+					let Js2=result.data;
+					if(Js2.code==1){
+						this.isOk=false;
+						return;
+					}else if(Js2.code==0){
+						this.isOk=true;
+						this.uname="";
+						alert("此用户名已经被使用，请换一个");
+					}
+				});
+			},
+			changeCode:function(){
+				var img=document.getElementById("yzm_img");
+				img.src='code.action?tm='+Math.random();
+			},
+		},
+		mounted:function(){
+			axios.all([this.checkLogin()]).then(axios.spread(function (d1) {
+				let Json1=d1.data;
+				if(Json1.code==1){
+					vm.$data.uname=Json1.data.uname;
+					vm.$data.islogin=true;
+				}
+
+			})  )
+
+		}
+
+
+
+	})
+
+</script>
+
+
+
+
+</HTML>

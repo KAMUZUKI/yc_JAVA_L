@@ -1,0 +1,311 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <TITLE>论坛--看贴</TITLE>
+    <Link rel="stylesheet" type="text/css" href="style/style.css"/>
+    <style>
+        /*[v-cloak]是一个样式规则    */
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</HEAD>
+
+<BODY>
+<div id="app">
+
+
+    <DIV>
+        <IMG src="image/logo.gif">
+    </DIV>
+
+    <!--      用户信息、登录、注册        -->
+
+    <DIV class="h">
+        <div v-if="!islog">
+            您尚未　<a href="login.html" @click.prevent="gotoLogin()">登录</a>
+            &nbsp;| &nbsp; <A href="reg.html">注册</A> |
+        </div>
+        <div v-if="islog">
+            欢迎您: {{uname}}
+            <button @click="logout()">退出</button>
+        </div>
+    </DIV>
+
+    <!--      主体        -->
+    <DIV><br/>
+        <!--      导航        -->
+        <DIV>
+            &gt;&gt;<B><a href="index.html">论坛首页</a></B>
+            >><B><a href="list.html">{{boardname}}</a></B>
+            >><B><a href="detail.html">{{topic.title}}</a></B>
+        </DIV>
+        <br/>
+        <!--      回复、新帖        -->
+        <DIV>
+            <A href="post.html" @click.prevent="toreply()"><IMG src="image/reply.gif" border="0" id=td_post></A>
+            <A href="post.html" @click.prevent="topost()"><IMG src="image/post.gif" border="0" id=td_post></A>
+        </DIV>
+        <!--         翻 页         -->
+        <DIV>
+            <a href="detail.html" @click.prevent="clickPage(pagebean.pre)">上一页</a>|
+            <a href="detail.html" @click.prevent="clickPage(pagebean.next)">下一页</a>
+        </DIV>
+        <!--      本页主题的标题        -->
+        <DIV>
+            <TABLE cellSpacing="0" cellPadding="0" width="100%">
+                <TR>
+                    <TH class="h">本页主题: {{topic.title}}</TH>
+                </TR>
+                <TR class="tr2">
+                    <TD>&nbsp;</TD>
+                </TR>
+            </TABLE>
+        </DIV>
+
+        <!--      主题        -->
+
+        <DIV class="t">
+            <TABLE style="BORDER-TOP-WIDTH: 0px; TABLE-LAYOUT: fixed" cellSpacing="0" cellPadding="0" width="100%">
+                <TR class="tr1">
+                    <TH style="WIDTH: 20%">
+                        <B>发帖人:{{topic.uname}}</B><BR/>
+                        <img :src=`image/head/${topic.head}`>
+                        <BR/>
+                        注册:{{topic.regtime}}<BR/>
+                    </TH>
+                    <TH>
+                        <H4>{{topic.title}}</H4>
+                        <DIV v-html="topic.content">{{topic.content}}</DIV>
+                        <DIV class="tipad gray">
+                            发表：[{{topic.publishtime}}] &nbsp;
+                            最后修改:[{{topic.modifytime}}]
+                            <div v-if="isMe(topic.uname)">
+                                <A href="" @click.prevent="del('topic',topic.topicid)">[删除]</A>
+                                <A href="" @click.prevent="modify('topic',topic.topicid)">[修改]</A>
+                            </div>
+                        </DIV>
+                    </TH>
+                </TR>
+            </TABLE>
+        </DIV>
+
+        <!--      回复        -->
+
+        <DIV class="t">
+            <TABLE style="BORDER-TOP-WIDTH: 0px; TABLE-LAYOUT: fixed" cellSpacing="0" cellPadding="0" width="100%">
+                <TR class="tr1" v-for="(value,index) in dataset">
+                    <TH style="WIDTH: 20%">
+                        <B>回复人: {{value.uname}}</B><BR/><BR/>
+                        <img :src=`image/head/${value.head}`>
+                        <BR/>
+                        注册:{{value.regtime}}<BR/>
+                    </TH>
+                    <TH>
+                        <H4>标题:{{value.title}}</H4>
+                        <DIV v-html="value.content">{{value.content}}</DIV>
+                        <DIV class="tipad gray">
+                            发表：[{{value.publishtime}}] &nbsp;
+                            最后修改:[{{value.modifytime}}]
+                            <div v-if="isMe(value.uname)">
+                                <A href="" @click.prevent="del('reply',value.replyid)">[删除]</A>
+                                <A href="" @click.prevent="modify('reply',value.replyid)">[修改]</A>
+                            </div>
+
+                        </DIV>
+                    </TH>
+                </TR>
+            </TABLE>
+        </DIV>
+
+
+    </DIV>
+</div>
+<!--      声明        -->
+<BR>
+<CENTER class="gray">源辰信息</CENTER>
+
+
+<script src="js/jquery-1.9.1.js"></script>
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+
+<script type="text/javascript">
+    let vm = new Vue({
+        el: "#app",
+        data: {
+            uname: "",//用户名
+            upass: "",//密码
+            valcode: "",//验证码
+
+            boardname: "",//从index界面或者list界面传过来的，用于显示导航
+            title: "",//从index界面或者list界面传过来的,用于显示导航
+
+            islog: false,//是否登录:false显示未登录界面,true显示登陆界面
+
+            topic: {
+                topicid: '',
+            },
+            pagebean: {},
+            dataset: []
+        },
+
+        methods: {
+
+            //删除帖子或者回复,通过函数的第一个参数来判断,第一个参数是'topic'就是帖子,'reply'就是回复
+            del: function (torr, id) {
+                var params = new URLSearchParams();
+                params.append("op", "delete");
+                params.append("id", id);
+                params.append("torr", torr);
+                axios.post("topic.action", params).then(result => {
+                    if (result.data.code == 1) {
+                        alert("删除成功!");
+                        window.location.href = "detail.html";
+                    } else if (result.data.code == 2) {
+                        alert("删除成功!");
+                        window.location.href = "list.html";
+                    } else {
+                        alert("删除失败:" + result.data.msg);
+                    }
+                });
+            },
+
+            //修改帖子或者回复,通过函数的第一个参数来判断,第一个参数是'topic'就是帖子,'reply'就是回复
+            modify: function (torr, id) {
+                sessionStorage.setItem("torr",torr);
+                //找到要修改的回复或帖子的信息
+                var params = new URLSearchParams();
+                params.append("op", "getmessage");
+                params.append("id", id);
+                params.append("torr", torr);
+                axios.post("topic.action", params).then(result => {
+                    if (result.data.code == 1) {
+                        //code==1就是一个topic
+                        //alert("成功获取要修改的信息!");
+                        data=JSON.stringify(result.data.data);
+                        //获取到信息之后将信息传到post界面
+                        sessionStorage.setItem("mol",data);
+                        window.location.href = "modify.html";
+                    } else if (result.data.code == 2) {
+                        //code==2就是一个reply
+                        //获取到信息之后将信息传到post界面
+                        data=JSON.stringify(result.data.data);
+                        //获取到信息之后将信息传到post界面
+                        sessionStorage.setItem("mol",data);
+                        window.location.href = "modify.html";
+                        //window.location.href = "detail.html";
+                    } else {
+                        alert("获取失败失败:" + result.data.msg);
+                    }
+                });
+            },
+
+            //退出登录
+            logout: function () {
+                axios.post("user.action?op=logout").then(data => {
+                    var result = data.data;
+                    if (result.code == 1) {
+                        this.islog = false;
+                        this.uname = "";
+                        this.upass = "";
+                    }
+                })
+            },
+            //判断是否登录
+            checkLogin: function () {
+                return axios.get("user.action?op=checkLogin");
+                //window.location.href="detail.html";
+            },
+
+
+            //判断是不是我发的，是的话渲染修改和删除按钮
+            isMe(uname) {
+                if (this.uname != "" && this.uname == uname) {
+                    return true;
+                }
+                return false;
+            },
+
+            clickPage: function (pageno) {
+                this.getData(pageno);
+            },
+
+            gotoLogin: function () {
+                const data = {ui: "detail.html"};
+                sessionStorage.setItem("ui", JSON.stringify(data))
+                window.location.href = "login.html";
+            },
+
+            //根据list界面传过来的topicid发送查询数据的请求
+            getData: function (pageno) {
+                var params = new URLSearchParams();
+                params.append("op", "getDetailData");
+                params.append("topicid", this.topic.topicid);
+                params.append("pageno", pageno);
+                return axios.post("topic.action", params);
+            },
+
+            //用户点了回复帖子的按钮,将需要的参数传过去,将页面转到post界面
+            toreply: function () {
+                this.checkLogin().then(result => {
+                    if (result.data.code == 1) {
+                        const data = {topicname: this.topic.title};
+                        sessionStorage.setItem("topicname", JSON.stringify(data));
+                        window.location.href = "post.html";
+                    } else {
+                        alert("请先登录!");
+                        return;
+                    }
+                });
+            },
+
+            //用户点了发表帖子的按钮,将参数传过去,将界面转到post界面
+            topost: function () {
+                this.checkLogin().then(result => {
+                    if (result.data.code == 1) {
+                        window.location.href = "post.html";
+                    } else {
+                        alert("请先登录!");
+                        return;
+                    }
+                });
+            }
+
+
+        },
+
+        mounted: function () {
+
+            axios.all([this.checkLogin(), this.getData(1)]).then(axios.spread(function (d1, d2) {
+                let jsonmodel1 = d1.data;
+                if (jsonmodel1.code == 1) {
+                    //vm.$data指的是model中的数据
+                    //this.username:这是view-model中的数据
+                    vm.$data.uname = jsonmodel1.data.uname;
+                    vm.$data.islog = true;
+                }
+                let jsonmodel2 = d2.data;
+                if (jsonmodel2.code == 1) {
+                    //vm.$data指的是model中的数据
+                    //this.username:这是view-model中的数据
+                    vm.$data.topic = jsonmodel2.data.topic;
+                    vm.$data.pagebean = jsonmodel2.data.pageBean;
+                    vm.$data.dataset = jsonmodel2.data.pageBean.dataset;
+                }
+            }));
+
+        },
+        created() {
+            var topic = JSON.parse(sessionStorage.getItem("topic"));
+            this.topic.topicid = topic.topicid;
+            this.boardname = topic.boardname;
+            //this.title = topic.title;
+        },
+
+    });
+</script>
+</BODY>
+</HTML>
+

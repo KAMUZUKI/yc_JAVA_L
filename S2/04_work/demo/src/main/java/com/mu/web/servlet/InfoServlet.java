@@ -23,8 +23,7 @@ import java.util.List;
 @WebServlet(name = "InfoServlet", value = "/info.action")
 public class InfoServlet extends CommonServlet {
     //info.action?op=getAritcleById
-    protected void getAritcleById(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+    protected void getArticleById(HttpServletRequest request, HttpServletResponse response) throws IOException {
         DbHelper db = new DbHelper();
         JsonModel jm = new JsonModel();
         Article article = new Article();
@@ -37,7 +36,6 @@ public class InfoServlet extends CommonServlet {
             article=super.parseRequestToT(request,Article.class);
             list = db.select(sql, Article.class, article.getId());
             if (list.size() > 0) {
-
                 jm.setCode(1);
                 jm.setData(list.get(0));
                 super.writeJson(jm, response);
@@ -227,7 +225,7 @@ public class InfoServlet extends CommonServlet {
 
 
     //info.action?op=getAllAritcle
-    protected void getAllAritcle(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void getAllArticle(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 
 

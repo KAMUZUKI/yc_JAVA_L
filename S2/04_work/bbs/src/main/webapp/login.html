@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <TITLE>论坛--登录</TITLE>
+    <Link rel="stylesheet" type="text/css" href="style/style.css"/>
+    <style scoped>
+        /*[v-cloak]是一个样式规则    */
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</HEAD>
+<BODY>
+<div id="app">
+    <DIV>
+        <IMG src="image/logo.gif">
+    </DIV>
+    <!--      用户信息、登录、注册        -->
+
+    <DIV class="h" v-if="islogin==false" v-cloak>
+        您尚未　<a href="login.html">登录</a>
+        &nbsp;| &nbsp; <A href="reg.html">注册</A> |
+    </DIV>
+    <div class="h" v-else>
+        <span>欢迎您:{{uname}} </span> | <a href="" @click.prevent="logout">安全退出</a>|<a href="login.html">切换用户</a>
+    </div>
+
+    <BR/>
+    <!--      导航        -->
+    <DIV>
+        &gt;&gt;<B><a href="index.html">论坛首页</a></B>
+    </DIV>
+    <!--      用户登录表单        -->
+    <DIV class="t" style="MARGIN-TOP: 15px" align="center">
+        <FORM name="loginForm" action="index.html" method="post">
+            <br/>用户名 &nbsp;<INPUT class="input" tabIndex="1" type="text" maxLength="20" size="35" name="uName"
+                                  v-model="uname">
+            <br/>密　码 &nbsp;<INPUT class="input" tabIndex="2" type="password" maxLength="20" size="40" name="uPass"
+                                  v-model="upass">
+            <br/>验证码 &nbsp;<input type="text" name="yzm" placeholder="请输入验证码" id="yzm" v-model="valcode"/>
+            <img src="code.action" id="yzm_img"/><a href="" @click.prevent="changeCode()">看不清？刷新一次</a>
+            <br/><INPUT class="btn" tabIndex="6" type="button" value="登 录" @click="login()">
+
+        </FORM>
+    </DIV>
+    <!--      声明        -->
+    <BR/>
+    <CENTER class="gray">源辰信息</CENTER>
+</div>
+</BODY>
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+<script>
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            uname: "a",
+            upass: "a",
+            islogin: false,
+            valcode: "",
+
+        },
+        methods: {
+            login: function () {
+                let params = new URLSearchParams();
+                params.append("op", "login");
+                params.append("uname", this.uname);
+                params.append("upass", this.upass);
+                params.append("valcode", this.valcode);
+                axios.post("tbl_user.action", params).then(result => {
+                    let Js1 = result.data;
+                    if (Js1.code == 0) {
+                        alert(Js1.msg);
+                        return;
+                    }
+                    alert("登录成功");
+                    this.uname = Js1.data.uname;
+                    this.islogin = true;
+                    location.href = ("index.html");
+                })
+            },
+            checkLogin: function () {
+                return axios.get("tbl_user.action?op=checkLogin");
+            },
+            logout: function () {
+                axios.post("tbl_user.action?op=logout").then(data => {
+                    var result = data.data;
+                    if (result.code == 1) {
+                        this.uname = "";
+                        this.upass = "";
+                        this.islogin = false;
+                    }
+                });
+            },
+            changeCode: function () {
+                var img = document.getElementById("yzm_img");
+                img.src = 'code.action?tm=' + Math.random();
+            },
+        },
+        mounted: function () {
+            axios.all([this.checkLogin()]).then(axios.spread(function (d1) {
+                let Json1 = d1.data;
+                if (Json1.code == 1) {
+                    vm.$data.uname = Json1.data.uname;
+                    vm.$data.islogin = true;
+                }
+            }))
+        }
+    })
+</script>
+</HTML>
