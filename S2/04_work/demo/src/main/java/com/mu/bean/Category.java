@@ -1,13 +1,13 @@
 package com.mu.bean;
 
-
+import lombok.Data;
 
 /**
  * @author : MUZUKI
  * @date : 2022-11-06 19:23
  * @description : 栏目实体类
  **/
-
+@Data
 public class Category {
     /**
      * 栏目id
@@ -24,37 +24,5 @@ public class Category {
     /**
      * 栏目说明
      */
-    private String introduce;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getSort() {
-        return sort;
-    }
-
-    public void setSort(Integer sort) {
-        this.sort = sort;
-    }
-
-    public String getIntroduce() {
-        return introduce;
-    }
-
-    public void setIntroduce(String introduce) {
-        this.introduce = introduce;
-    }
+    private String description;
 }

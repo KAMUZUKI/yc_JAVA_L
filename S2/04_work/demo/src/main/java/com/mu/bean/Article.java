@@ -1,6 +1,9 @@
 package com.mu.bean;
 
 
+import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author : MUZUKI
@@ -8,7 +11,7 @@ package com.mu.bean;
  * @description : 文章实体类
  **/
 
-
+@Data
 public class Article {
     /**
      * 文章id
@@ -63,107 +66,13 @@ public class Article {
      */
     private Integer agreeCnt;
 
-    public Integer getId() {
-        return id;
-    }
+    /**
+     * 评论数
+     */
+    private Integer commentCnt;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getKeyWords() {
-        return keyWords;
-    }
-
-    public void setKeyWords(String keyWords) {
-        this.keyWords = keyWords;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public String getTitleImgs() {
-        return titleImgs;
-    }
-
-    public void setTitleImgs(String titleImgs) {
-        this.titleImgs = titleImgs;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
-    }
-
-    public Integer getReadCnt() {
-        return readCnt;
-    }
-
-    public void setReadCnt(Integer readCnt) {
-        this.readCnt = readCnt;
-    }
-
-    public Integer getAgreeCnt() {
-        return agreeCnt;
-    }
-
-    public void setAgreeCnt(Integer agreeCnt) {
-        this.agreeCnt = agreeCnt;
-    }
+    /**
+     * 用户点过赞的文章
+     */
+    private Integer[] likeData;
 }

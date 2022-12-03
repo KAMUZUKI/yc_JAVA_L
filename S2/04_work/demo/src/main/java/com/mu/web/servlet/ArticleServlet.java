@@ -14,19 +14,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * @date : 2022-11-06 19:32
+ * @description : 文章服务
+ **/
 @WebServlet(name = "ArticleServlet", value = "/article.action")
 public class ArticleServlet extends CommonServlet {
 
-    //article.action?op=deleteArticle
+    /**
+     * article.action?op=deleteArticle
+     * 删除文章
+     */
     protected void deleteArticle(HttpServletRequest request,HttpServletResponse response) throws IOException {
         JsonModel jm = new JsonModel();
         DbHelper db = new DbHelper();
-        Article article = new Article();
+        int articleId = Integer.parseInt(request.getParameter("articleId"));
         String sql = "delete from article where id = ?";
         int result = 0;
         try{
-            article = super.parseRequestToT(request,Article.class);
-            result = db.doUpdata(sql,article.getId());
+            result = db.doUpdata(sql,articleId);
         }catch (Exception e){
             e.printStackTrace();
             jm.setCode(0);
@@ -43,7 +49,10 @@ public class ArticleServlet extends CommonServlet {
     }
 
 
-    //article.action?op=alterArticle
+    /**
+     * article.action?op=alterArticle
+     * 修改文章
+     */
     protected void alterArticle(HttpServletRequest request,HttpServletResponse response) throws IOException {
         JsonModel jm = new JsonModel();
         DbHelper db = new DbHelper();
@@ -79,11 +88,6 @@ public class ArticleServlet extends CommonServlet {
      * 用来存redis,用户给文章点赞->文章对应的点赞数+1,取消赞->文章的点赞数-1,用户点击文章->文章浏览量+1
      * redis:
      * 浏览量:键key->readCnt:值value->ArticleId_
-     *
-     * @param request
-     * @param response
-     * @throws ServletException
-     * @throws IOException
      */
     protected void changeData(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         JsonModel jm = new JsonModel();
@@ -106,13 +110,6 @@ public class ArticleServlet extends CommonServlet {
                 //添加文章被哪些用户点过赞
                 jedis.sadd(articleId + Constants.REDIS_ARTICLE_PRAISE, userId + "");
             }
-//            //查出数量
-//            if (jedis.sismember(articleId + Constants.REDIS_ARTICLE_PRAISE, userId + "")) {
-//                //用户对文章点赞数量
-//                userpraiseCnt = jedis.scard(userId + Constants.REDIS_USER_PRAISE);
-//                //文章被用户的点赞数量
-//                articlepraiseCnt = jedis.scard(articleId + Constants.REDIS_ARTICLE_PRAISE);
-//            }
         } catch (Exception e) {
             e.printStackTrace();
             jm.setCode(0);
@@ -123,7 +120,4 @@ public class ArticleServlet extends CommonServlet {
         jm.setCode(1);
         super.writeJson(jm, response);
     }
-
-
-
 }
