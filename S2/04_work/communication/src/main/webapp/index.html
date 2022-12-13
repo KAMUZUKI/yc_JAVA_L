@@ -40,12 +40,12 @@
         .content{
             margin: 0 auto;
             height: 500px;
-            width: 1024px;
+            width: 1048px;
             border: 2px solid lightgreen;
         }
 
         .chat-input{
-            width: 200px;
+            width: 210px;
             height: 30px;
             margin-top: 10px;
         }
@@ -77,7 +77,7 @@
                     <td class="labname"><label for="yzm">验证码：</label></td>
                     <td><input type="text" name="yzm" placeholder="请输入验证码"
                                id="yzm" v-model="valcode"/></td>
-                    <td><img @click="refreshImg()" src="code.action" id="yzm_img" alt="valcode"/></td>
+                    <td><img @click="refreshImg()" src="code.action" id="yzm_img" alt="valcode"/>点击刷新</td>
                 </tr>
             </table>
         </form>
@@ -92,7 +92,7 @@
     <div class="content">
         <div class="film">
             <video id="video" controls width="800">
-                <source src="static/Blueming.mp4" type="video/mp4">
+                <source src="static/video.mp4" type="video/mp4">
             </video>
         </div>
 
@@ -103,8 +103,8 @@
                         <div class="chat-message-content">
                             <p style="line-height:0">Hi {{username}}</p>
                         </div>
-                        <div class="chat-message-content" v-for="(message,index) in message">
-                            <span>{{message.sender}}</span>
+                        <div class="chat-message-content" v-for="(message,index) of message">
+                            <span style="font-size:10px">{{message.sender}} : {{message.date}}</span>
                             <textarea rows="5" cols="23" readonly >
                                 {{message.data}}
                             </textarea>
@@ -130,12 +130,7 @@
             islogin:false,
             loginflag:true,
             messageInput:"",
-            message:[
-                {id:'1',sender:"zhangsan",data:"Hello World1"},
-                {id:'2',sender:"lisi",data:"Hello World2"},
-                {id:'3',sender:"wangwu",data:"Hello World3"},
-                {id:'4',sender:"zhaoliu",data:"Hello World4"},
-            ]
+            message:[]
         },
         methods:{
             login:function () {
@@ -183,6 +178,7 @@
                     let data = result.data;
                     if(data.code == 1) {
                         this.username = data.username;
+                        alert("注册成功");
                     }else {
                         alert(data.msg);
                     }
@@ -202,11 +198,10 @@
                 var params = new URLSearchParams();
                 params.append('op', 'sendMessageOp');
                 params.append('message', this.messageInput);
-                axios.post("message.action", params).then( result=> {
-                    result = result.data;
+                axios.post("message.action", params).then( res=> {
+                    result = res.data;
                     if(result.code == 1) {
                         this.messageInput = "";
-                        this.message.push(result.data);
                     }else {
                         alert(result.msg);
                     }
@@ -223,6 +218,7 @@
                 if(d1.data.code===1){
                     console.log(d1);
                     vm.$data.islogin=!vm.$data.islogin;
+                    vm.$data.loginflag=false;
                     vm.$data.user.uname=d1.data.data.uname;
                 }
 
@@ -240,6 +236,7 @@
         axios.post("message.action",params).then((result)=>{
             if(result.data.code===1){
                 vm.$data.message=result.data.data;
+                console.log(vm.message);
             }
         })
     },1000)

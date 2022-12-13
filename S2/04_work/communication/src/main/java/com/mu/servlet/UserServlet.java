@@ -55,8 +55,14 @@ public class UserServlet extends CommonServlet{
             resuser = super.parseRequestToT(request,Resuser.class);
             String valcode = request.getParameter("valcode");
             HttpSession session = request.getSession();
-            boolean validate=false;
+            boolean validate=true;
             if (validate){
+                if ("".equals(valcode)){
+                    jm.setCode(0);
+                    jm.setMsg("验证码不能为空");
+                    super.writeJson(jm,response);
+                    return;
+                }
                 String code = session.getAttribute("code").toString();
                 if (!code.equals(valcode)){
                     jm.setCode(0);
@@ -67,7 +73,7 @@ public class UserServlet extends CommonServlet{
             }
 
             resuser.setPwd(Md5.MD5Encode(resuser.getPwd()));
-            String sql = "select * from testuser where uname=? and upwd=?";
+            String sql = "select * from testuser where username=? and upwd=?";
             DbHelper db = new DbHelper();
             List<Resuser> list = db.select(sql,Resuser.class,resuser.getUsername(),resuser.getPwd());
             if (list!=null&&list.size()>0){
@@ -96,7 +102,7 @@ public class UserServlet extends CommonServlet{
             resuser = super.parseRequestToT(request,Resuser.class);
             String valcode = request.getParameter("valcode");
             HttpSession session = request.getSession();
-            boolean validate=false;
+            boolean validate=true;
             if (validate){
                 String code = session.getAttribute("code").toString();
                 if (!code.equals(valcode)){
@@ -107,7 +113,7 @@ public class UserServlet extends CommonServlet{
                 }
             }
             resuser.setPwd(Md5.MD5Encode(resuser.getPwd()));
-            String sql = "insert into testuser (uname,upwd) values (?,?)";
+            String sql = "insert into testuser (username,upwd) values (?,?)";
             DbHelper db = new DbHelper();
             int isRegister = db.doUpdata(sql,resuser.getUsername(),resuser.getPwd());
             if (isRegister>0){

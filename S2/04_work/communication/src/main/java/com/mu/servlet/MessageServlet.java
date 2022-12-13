@@ -1,6 +1,8 @@
 package com.mu.servlet;
 
+import com.mu.bean.DataModel;
 import com.mu.bean.JsonModel;
+import com.mu.bean.Resuser;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -20,13 +22,15 @@ import java.util.List;
 
 @WebServlet(name = "MessageServlet", value = "/message.action")
 public class MessageServlet extends CommonServlet{
+    private int id;
+
     protected void getAllMessage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         JsonModel jm = new JsonModel();
         HttpSession session =req.getSession();
-        LinkedList<String> linkList =new LinkedList<String>();
+        LinkedList<DataModel> linkList =new LinkedList<DataModel>();
         ServletContext application = session.getServletContext();
         if(application.getAttribute("message")!=null){
-            linkList=(LinkedList<String>)application.getAttribute("message");
+            linkList=(LinkedList<DataModel>)application.getAttribute("message");
         }
         jm.setCode(1);
         jm.setData(linkList);
@@ -35,26 +39,30 @@ public class MessageServlet extends CommonServlet{
     }
 
     protected void sendMessageOp(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int id = 0;
         //获取用户输入的信息
         String message = request.getParameter("message");
 
+        DataModel model = new DataModel();
         //获取当前登录的用户
         HttpSession session = request.getSession();
-        String username = (String) session.getAttribute("username");
+        Resuser rs = (Resuser) session.getAttribute("resuser");
+        String username = rs.getUsername();
         //{id:'1',sender:"zhangsan",data:"Hello World1"}
-        String str = "{id:'" + ++id + "',sender:\"" + username + "\",data:\"" + message + "\",date:\"" + new Date() +"\"}";
-        System.out.println(str);
+        model.setId(id++);
+        model.setSender(username);
+        model.setData(message);
+        model.setDate(new Date().toString());
 
-        List<String> linkedList = new LinkedList<String>();
+        List<DataModel> linkedList = new LinkedList<DataModel>();
         ServletContext application = session.getServletContext();
         if (application.getAttribute("message") != null) {
-            linkedList = (List<String>) application.getAttribute("message");
+            linkedList = (List<DataModel>) application.getAttribute("message");
         }
-        ((LinkedList<String>) linkedList).addFirst(str);
+        ((LinkedList<DataModel>) linkedList).addFirst(model);
         application.setAttribute("message", linkedList);
         JsonModel jsonModel = new JsonModel();
         jsonModel.setCode(1);
+        jsonModel.setData(linkedList);
         super.writeJson(jsonModel, response);
     }
 }

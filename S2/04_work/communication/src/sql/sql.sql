@@ -5,4 +5,5 @@ CREATE table testuser(
      upwd varchar(32) not null
 );
 
-insert into testuser (uname,upwd) values ('a','0cc175b9c0f1b6a831c399e269772661');
+insert into testuser (username,upwd) values ('a','0cc175b9c0f1b6a831c399e269772661');
+insert into testuser (username,upwd) values ('b','0cc175b9c0f1b6a831c399e269772661');
