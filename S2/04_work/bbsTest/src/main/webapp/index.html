@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <TITLE>论坛</TITLE>
+    <link rel="short icon" href="image/eat0.ico"/>
+    <Link rel="stylesheet" type="text/css" href="style/style.css"/>
+    <style>
+        /*[v-cloak]是一个样式规则    */
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</HEAD>
+
+<BODY>
+
+<DIV>
+    <IMG src="image/logo.gif">
+</DIV>
+<!--      用户信息、登录、注册        -->
+<div id="app">
+    <DIV class="h">
+        <div v-if="!islog">
+            您尚未　<a href="login.html"  @click.prevent="gotoLogin()">登录</a>
+            &nbsp;| &nbsp; <A href="reg.html">注册</A> |
+        </div>
+        <div v-if="islog">
+            <p>欢迎您: {{uname}}</p>
+            <button @click="logout()">退出</button>
+        </div>
+    </DIV>
+
+    <!--      主体        -->
+    <DIV class="t">
+        <TABLE cellSpacing="0" cellPadding="0" width="100%">
+            <TR class="tr2" align="center" style="height: 30px; font-size: 20px">
+                <TD  width="10%">论坛</TD>
+                <TD  width="45%">主题</TD>
+                <TD  width="15%">话题数量</TD>
+                <TD style="WIDTH: 30%">最后发表</TD>
+            <!--       主版块       -->
+
+            <TR class="tr3" v-for="(value,key,index) in boarddata">
+                <TD colspan="4">
+                    <b style="font-size: 20px">{{key}}</b>
+                    <table width="100%" border="1px" cellspacing="0" cellpadding="0">
+
+                        <TR class="tr2" v-for="(value,index) in value">
+                            <TD width="10%"></TD>
+
+                            <TH align="left" width="50%">
+                                <IMG src="image/board.gif">
+                                <A href="lst.html" @click.prevent="tolist(value.boardid,value.boardname)">{{value.boardname}}</A>
+                            </TH>
+
+                            <TD align="center" width="10%">
+                                {{value.total}}
+                            </TD>
+
+                            <TH width="30%" style="text-align: center">
+				                <SPAN >
+                                    <A href="detail.html" @click.prevent="todetail(value.topicid,value.boardid,value.boardname)">{{value.title}} </A>
+                                </SPAN>
+                                <BR/>
+                                <SPAN style="color: black">{{value.uname}}</SPAN>
+                                <SPAN class="gray" style="float: right; color: #2C59AA">{{value.modifytime}}</SPAN>
+                            </TH>
+                        </TR>
+                    </table>
+                </TD>
+            </TR>
+        </TABLE>
+    </DIV>
+
+    <BR/>
+    <CENTER class="gray">源辰信息</CENTER>
+</div>
+
+<script src="js/jquery-1.9.1.js"></script>
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+
+<script type="text/javascript">
+    let vm = new Vue({
+        el: "#app",
+        data: {
+            uname: "",//用户名
+            upass: "",//密码
+            valcode: "",//验证码
+
+            islog: false,//是否登录:false显示未登录界面,true显示登陆界面
+
+            boarddata: {},//首页要展示的数据
+        },
+
+        methods: {
+            //用户点击了展示的最新的帖子标题，转到detail那个界面去展示详情
+            todetail:function(topicid,boardid,boardname){
+                //先将topic存入session
+                const data={topicid:topicid,boardname:boardname};
+                sessionStorage.setItem("topic",JSON.stringify(data));
+                const data2={boardid:boardid,boardname:boardname};
+                sessionStorage.setItem("board",JSON.stringify(data2));
+                window.location.href="detail.html";
+            },
+            //点击了某个主题,将界面转到list界面
+            tolist:function(boardid,boardname){
+                const data={boardid:boardid,boardname:boardname};
+                sessionStorage.setItem("board",JSON.stringify(data));
+                window.location.href = "list.html";
+            },
+            //获取首页需要的数据
+            getData: function () {
+                return axios.post("board.action?op=boarddata");
+            },
+            //退出登录
+            logout: function () {
+                axios.post("user.action?op=logout").then(data => {
+                    var result = data.data;
+                    if (result.code == 1) {
+                        this.islog = false;
+                        this.uname = "";
+                        this.upass = "";
+                    }
+                })
+            },
+            //判断是否登录
+            checkLogin: function () {
+                return axios.get("user.action?op=checkLogin");
+                //window.location.href="index.html";
+            },
+            gotoLogin:function(){
+                const data={ui:"index.html"};
+                sessionStorage.setItem("ui",JSON.stringify(data))
+                window.location.href="login.html";
+            },
+        },
+
+        mounted: function () {
+            axios.all([this.checkLogin(), this.getData()]).then(axios.spread(function (d1, d2) {
+                let jsonmodel1 = d1.data;
+                if (jsonmodel1.code == 1) {
+                    //vm.$data指的是model中的数据
+                    //this.username:这是view-model中的数据
+                    vm.$data.uname = jsonmodel1.data.uname;
+                    vm.$data.islog = true;
+                }
+                let jsonmodel2 = d2.data;
+                if (jsonmodel2.code == 1) {
+                    vm.$data.boarddata = jsonmodel2.data;
+                    console.log("");
+                }
+            }));
+
+        }
+
+    });
+</script>
+
+
+</BODY>
+</HTML>

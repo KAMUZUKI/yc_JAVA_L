@@ -1,0 +1,176 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<TITLE>论坛</TITLE>
+<Link rel="stylesheet" type="text/css" href="style/style.css" />
+	<style>
+		/*[v-cloak]是一个样式规则    */
+		[v-cloak]{
+			display:none;
+		}
+	</style>
+</HEAD>
+
+<BODY>
+<div id="app">
+	<DIV>
+		<IMG src="image/logo.gif">
+	</DIV>
+	<!--      用户信息、登录、注册        -->
+
+	<DIV class="h" v-if="islogin==false" v-cloak>
+		您尚未　<a href="login.html">登录</a>
+		&nbsp;| &nbsp; <A href="reg.html">注册</A> |
+	</DIV>
+	<div class="h"  v-else >
+		<span>欢迎您:{{uname}} </span> | <a href="" @click.prevent="logout">安全退出</a>|<a href="login.html"  >切换用户</a>
+	</div>
+
+
+
+
+	<!--      主体        -->
+	<DIV class="t">
+		<TABLE cellSpacing="0" cellPadding="0" width="100%" >
+			<TR class="tr2" align="center">
+				<TD colSpan="2">论坛</TD>
+				<TD style="WIDTH: 10%;">主题</TD>
+				<TD style="WIDTH: 30%">最后发表</TD>
+			</TR>
+
+			<tr class="tr3" v-for="(value,key, index) in board">
+				<td colspan="4">
+						<!--       主版块       -->
+					<b class="tr3">{{key}}</b>
+						<!--       子版块       -->
+					<div>
+						<table width="100%" border="1px" cellpadding="0" cellspacing="0">
+							<TR class="tr3" v-for="(value,index) in value">
+								<TD width="5%">&nbsp;</TD>
+								<TH align="left">
+									<IMG src="image/board.gif">
+									<A href="list.html" @click.prevent="showBoardDetail(value.boardid,value.boardname)" >{{value.boardname}}</A>
+								</TH>
+								<TD align="center" width="10%">{{value.topicnum}}</TD>
+								<TH width="53%">
+								<SPAN>
+								<A href=""  @click.prevent="showReplyDetail(value.topicid,value.title)" >{{value.title}}</A>
+								</SPAN>
+									<BR/>
+									<SPAN>{{value.uname}}</SPAN>
+									<SPAN class="gray">[ {{value.modifytime}} ]</SPAN>
+								</TH>
+							</TR>
+						</table>
+					</div>
+
+				</td>
+			</tr>
+
+		</TABLE>
+	</DIV>
+
+	<BR/>
+	<CENTER class="gray">源辰信息</CENTER>
+</div>
+</BODY>
+
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+<script>
+	var vm=new Vue({
+		el:"#app",
+		data:{
+			uname:"a",
+			upass:"a",
+			islogin:false,
+
+			board:[],
+
+
+		},
+		methods:{
+			checkLogin:function(){
+				return axios.get("tbl_user.action?op=checkLogin");
+			},
+			logout:function(){
+				axios.post("tbl_user.action?op=logout").then(data=>{
+					var result = data.data;
+					if(result.code==1){
+						this.uname="";
+						this.upass="";
+						this.islogin=false;
+					}
+				})  ;
+			},
+			showBoard:function(){
+				return axios.get("board.action?op=ShowBoard");
+			},
+			showBoardDetail:function(boardid,boardname){
+				axios.get("tbl_user.action?op=checkLogin").then(result=>{
+					if(result.data.code==-1){
+						alert("请登录");
+						return;
+					}else if(result.data.code==1){
+						const data={boardid:boardid,boardname:boardname};
+						sessionStorage.setItem("topicBoard",JSON.stringify(data));
+						window.location.href="list.html";
+					}else{
+						alert("请求失败，原因:"+result.data.msg);
+					}
+
+				})
+
+			},
+			showReplyDetail:function(topicid,title){
+				axios.get("tbl_user.action?op=checkLogin").then(result=>{
+					if(result.data.code==-1){
+						alert("请登录");
+						return;
+					}else if(result.data.code==1){
+						let data={topicid:topicid,title:title};
+						sessionStorage.setItem("reply",JSON.stringify(data));
+						window.location.href="detail.html";
+					}else{
+						alert("请求失败，原因:"+result.data.msg);
+					}
+
+				})
+
+
+			}
+
+
+
+
+		},
+		mounted:function(){
+			axios.all([this.checkLogin(),this.showBoard()]).then(axios.spread(function (d1,d2) {
+				let Json1=d1.data;
+				if(Json1.code==1){
+					vm.$data.uname=Json1.data.uname;
+					vm.$data.islogin=true;
+				}
+
+				let Json2=d2.data;
+				if(Json2.code==1){
+					vm.$data.board=Json2.data;
+					console.info(Json2.data.board);
+				}else{
+					console.info(Json2.msg);
+				}
+
+
+
+			})  );
+
+		}
+
+
+
+	})
+
+</script>
+
+</HTML>

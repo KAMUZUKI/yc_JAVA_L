@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <TITLE>论坛--登录</TITLE>
+    <Link rel="stylesheet" type="text/css" href="style/style.css"/>
+    <link rel="stylesheet" type="text/css" href="style/element.css"/>
+
+    <style>
+        /*[v-cloak]是一个样式规则    */
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</HEAD>
+
+<BODY>
+<DIV>
+    <IMG src="image/logo.gif">
+</DIV>
+<!--      用户信息、登录、注册        -->
+
+<DIV class="h">
+    您尚未　<a href="login.html">登录</a>
+    &nbsp;| &nbsp; <A href="reg.html">注册</A> |
+</DIV>
+
+
+<BR/>
+<!--      导航        -->
+<DIV>
+    &gt;&gt;<B><a href="index.html">论坛首页</a></B>
+</DIV>
+<!--      用户登录表单        -->
+<DIV class="t" style="MARGIN-TOP: 15px" align="center" id="app">
+    <div style="height:400px;width:400px">
+		<el-form name="loginForm" ref="form" :model="data" label-width="80px" size="small">
+			<el-form-item label="用户名" size="small">
+				<el-input value="a" v-model="uName" placeholder="请输入内容"></el-input>
+			</el-form-item>
+			<el-form-item label="密码" size="small">
+				<el-input value="a" placeholder="请输入密码" v-model="uPass" show-password></el-input>
+			</el-form-item>
+			<el-form-item label="验证码" size="small">
+				<el-input value="a" v-model="valcode" placeholder="请输入内容"></el-input>
+				<img src="code.action" id="yzm_img" @click="refreshCode()"/>
+			</el-form-item>
+			<el-button type="success" round value="登 录" @click.prevent="login()">登 录</el-button>
+		</el-form>
+	</div>
+</DIV>
+<!--      声明        -->
+<BR/>
+<CENTER class="gray">源辰信息</CENTER>
+
+<script src="js/jquery-1.9.1.js"></script>
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+<script type="text/javascript" src="js/element.js"></script>
+<script type="text/javascript">
+    let vm = new Vue({
+        el: "#app",
+        data: {
+            uName: "a",//用户名
+            uPass: "a",//密码
+            valcode: "验证码未启用",//验证码
+            ui: "",//用于判断登录之后进入那个界面
+        },
+
+        methods: {
+            //登录
+            login: function () {
+                var params = new URLSearchParams();
+                params.append("op", "login");
+                params.append("uname", this.uName);
+                params.append("upass", this.uPass);
+                params.append("valcode", this.valcode);
+                axios.post("user.action", params).then(result => {
+                    if (result.data.code == 1) {
+                        // alert("登陆成功！");
+                        // window.location.href=this.ui;
+                        window.location.href = "index.html";
+						vm.open1("登陆成功！");
+                    } else {
+                       vm.open2("登录失败:" + result.data.msg);
+                    }
+                });
+
+            },
+            open1(message) {
+                this.$notify({
+                    title: '成功',
+                    message: message,
+                    type: 'success'
+                });
+            },
+            open2(message) {
+                this.$notify.error({
+                    title: '错误',
+                    message: message
+                });
+            }
+        },
+
+        created() {
+            const uiJson = JSON.parse(sessionStorage.getItem("ui"));
+            if (uiJson != null) {
+                this.ui = uiJson.ui;
+                sessionStorage.removeItem("ui");
+            } else {
+                this.ui = "login.html";
+            }
+        },
+        mounted: function () {
+
+        }
+    });
+</script>
+
+</BODY>
+</HTML>

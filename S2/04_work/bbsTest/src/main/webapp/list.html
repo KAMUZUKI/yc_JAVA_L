@@ -1,0 +1,201 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <TITLE>论坛--帖子列表</TITLE>
+
+    <Link rel="stylesheet" type="text/css" href="style/style.css"/>
+    <style>
+        /*[v-cloak]是一个样式规则    */
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</HEAD>
+
+<BODY>
+<div id="app">
+    <DIV>
+        <IMG src="image/logo.gif">
+    </DIV>
+    <!--      用户信息、登录、注册        -->
+
+    <DIV class="h">
+        <div v-if="!islog">
+            您尚未登录|   　<a href="login.html" @click.prevent="gotoLogin()">登录</a>
+            &nbsp;            |   <A href="reg.html">注册</A> |
+        </div>
+        <div v-if="islog">
+            欢迎您: {{uname}}
+            <button @click="logout()">退出</button>
+        </div>
+    </DIV>
+
+
+    <!--      主体        -->
+    <DIV>
+        <!--      导航        -->
+        <br/>
+        <DIV>
+            &gt;&gt;<B><a href="index.html">论坛首页</a></B>&gt;&gt;
+            <B><a href="list.html">{{boardname}}</a></B>
+        </DIV>
+        <br/>
+        <!--      新帖        -->
+        <DIV>
+            <A href="post.html" @click.prevent="topost()"><IMG src="image/post.gif" name="td_post" border="0" id=td_post></A>
+        </DIV>
+
+        <DIV class="t">
+            <TABLE cellSpacing="0" cellPadding="0" width="100%">
+                <TR>
+                    <TH class="h" style="WIDTH: 100%" colSpan="4"><SPAN>&nbsp;</SPAN></TH>
+                </TR>
+                <!--       表 头           -->
+                <TR class="tr2">
+                    <TD>&nbsp;</TD>
+                    <TD style="WIDTH: 80%" align="center">文章</TD>
+                    <TD style="WIDTH: 10%" align="center">作者</TD>
+                    <TD style="WIDTH: 10%" align="center">回复</TD>
+                </TR>
+                <!--         主 题 列 表        -->
+
+                <TR class="tr3" v-for="(item,index) in listdata">
+                    <TD><IMG src="image/topic.gif" border=0></TD>
+                    <TD style="FONT-SIZE: 15px">
+                        <A href="detail.html" @click.prevent="todetail(item.topicid)">{{item.title}}</A>
+                    </TD>
+                    <TD align="center">{{item.uname}}</TD>
+                    <TD align="center">{{item.total}}</TD>
+                </TR>
+            </TABLE>
+        </DIV>
+        <!--            翻 页          -->
+        <DIV>
+            <a href="list.html" @click.prevent="getData(pagebean.pre)" :page-data="pagebean.pre">上一页{{pagebean.pre}}</a>|
+            <a href="list.html"  @click.prevent="getData(pagebean.next)" :page-data="pagebean.next">下一页{{pagebean.next}}</a>
+        </DIV>
+    </DIV>
+    <!--             声 明          -->
+    <BR/>
+    <CENTER class="gray">源辰信息</CENTER>
+</div>
+<script src="js/jquery-1.9.1.js"></script>
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+
+<script type="text/javascript">
+    let vm = new Vue({
+        el: "#app",
+        data: {
+            uname: "",//用户名
+            upass: "",//密码
+            valcode: "",//验证码
+
+            islog: false,//是否登录:false显示未登录界面,true显示登陆界面
+
+            listdata:[],//从数据库获取的话题对象数组
+
+            boardid: "",//从index界面传过来的点了哪个子版块的id
+            boardname: "",//从index界面传过来的点了哪个父板块的id
+            parentname:"",//通过parentid查询到的parentname,用于显示导航
+
+            pagebean: {
+                pageno: 1,
+                //sortby: "fid",
+                //sort: "asc",
+
+                total: 0,
+                totalpages: 0,
+                next: 1
+            },
+        },
+
+        methods: {
+
+            //用户点击了发表话题,判断一下是否登录了,没登陆不能进
+            topost(){
+                this.checkLogin().then(result=>{
+                    if(result.data.code==1){
+                        window.location.href="post.html";
+                    }else{
+                        alert("请先登录!");
+                        return;
+                    }
+                });
+
+            },
+
+            //用户点击了详细的帖子,去到详情界面
+            todetail:function(topicid){
+                const data={topicid:topicid,boardname:this.boardname};
+                sessionStorage.setItem("topic",JSON.stringify(data));
+                window.location.href="detail.html";
+            },
+
+            //退出登录
+            logout: function () {
+                axios.post("user.action?op=logout").then(data => {
+                    var result = data.data;
+                    if (result.code == 1) {
+                        this.islog = false;
+                        this.uname = "";
+                        this.upass = "";
+                    }
+                })
+            },
+            //判断是否登录
+            checkLogin: function () {
+                return axios.get("user.action?op=checkLogin");
+                //window.location.href="list.html";
+            },
+
+            gotoLogin:function(){
+                const data={ui:"list.html"};
+                sessionStorage.setItem("ui",JSON.stringify(data))
+                window.location.href="login.html";
+            },
+
+            //获取list界面的数据
+            getData: function ( pageno) {
+                var params = new URLSearchParams();
+                params.append("op", "getListData");
+                params.append("pageno", pageno);
+                params.append("boardid", this.boardid);
+                params.append("parentid", this.parentid);
+                axios.post("topic.action",params).then(result=>{
+                    if(result.data.code==1){
+                        this.listdata=result.data.data.dataset;
+                        this.pagebean=result.data.data;
+                        this.parentname=result.data.data.parentname;
+                    }
+                });
+            },
+
+        },
+
+        //created也是vue的生命周期函数里面的一个,比mounted要早
+        //另一个界面传过来的参数在这个函数里面接收
+        created() {
+            var board = JSON.parse(sessionStorage.getItem("board"));
+            this.boardid = board.boardid;
+            this.boardname = board.boardname;
+        },
+
+        mounted: function () {
+            axios.all([this.checkLogin(), this.getData(1)]).then(axios.spread(function (d1) {
+                let jsonmodel1 = d1.data;
+                if (jsonmodel1.code == 1) {
+                    //vm.$data指的是model中的数据
+                    //this.username:这是view-model中的数据
+                    vm.$data.uname = jsonmodel1.data.uname;
+                    vm.$data.islog = true;
+                }
+            }));
+
+        }
+
+    });
+</script>
+</BODY>
+</HTML>

@@ -1,0 +1,274 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <TITLE>论坛--修改信息</TITLE>
+    <!--    引入富文本编辑器的css样式-->
+    <link href="style/wang.css" rel="stylesheet">
+    <!--    引入界面的的css样式-->
+    <Link rel="stylesheet" type="text/css" href="style/style.css"/>
+    <style>
+        /*[v-cloak]是一个样式规则    */
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</HEAD>
+
+<BODY>
+<DIV>
+    <IMG src="image/logo.gif">
+</DIV>
+<!--      用户信息、登录、注册        -->
+<div id="app">
+    <DIV class="h">
+        <div v-if="!islog">
+            您尚未　<a href="login.html" @click.prevent="gotoLogin()">登录</a>
+            &nbsp;| &nbsp; <A href="reg.html">注册</A> |
+        </div>
+        <div v-if="islog">
+            欢迎您: {{uname}}
+            <button @click="logout()">退出</button>
+        </div>
+    </DIV>
+
+
+    <!--      主体        -->
+    <DIV>
+        <!--      导航        -->
+        <br/>
+        <DIV>
+            &gt;&gt;<B><a href="index.html">论坛首页</a></B>&gt;&gt;
+            <B><a href="list.html">{{boardname}}</a></B>>>
+
+            <B><a href="modify.html">修改</a></B>>>
+
+
+        </DIV>
+        <br/>
+
+        <DIV class="t">
+            <TABLE cellSpacing="0" cellPadding="0" width="100%">
+                <TR>
+                    <TH class="h" style="WIDTH: 100%" colSpan="4" v-if="replyname!=''"><SPAN>修改帖子</SPAN></TH>
+                    <TH class="h" style="WIDTH: 100%" colSpan="4" v-else><SPAN>修改回复</SPAN></TH>
+                </TR>
+                <!--       标题           -->
+                <TR class="tr3">
+                    <TD width="20%"><h2>标题</h2></TD>
+                    <TD><input style="height: 40px;width: 600px;font-size: 20px" type="text" v-model="mol.title">
+
+                        <div style="display: inline-block; float: right">
+                            <button style="width: 100px; height:40px;font-size: 20px" @click="modify()">确认修改</button>
+                            <button style="width: 100px; height:40px;font-size: 20px" @click="clean()">重置</button>
+                        </div>
+                    </TD>
+
+                </TR>
+                <!--         内容        -->
+
+                <TR class="tr3">
+                    <TD width="20%"><h2>内容</h2></TD>
+                    <TD height="500px">
+                        <div id="editor—wrapper">
+                            <div id="toolbar-container" style="background-color: #C3DAF5"><!-- 工具栏 --></div>
+                            <hr>
+                            <div id="editor-container" style="height: 350px"><!-- 编辑器 --></div>
+                        </div>
+                    </TD>
+                </TR>
+            </TABLE>
+        </DIV>
+        <!--        <button @click="reply()" v-if="topicname!=''">回复</button>-->
+        <!--        <button @click="post()" v-else>发表</button>-->
+        <!--        <button @click="clean()">重置</button>-->
+    </DIV>
+</div>
+<!--             声 明          -->
+<BR/>
+<CENTER class="gray">源辰信息</CENTER>
+
+<script src="js/jquery-1.9.1.js"></script>
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+<!--引入富文本编辑器的js-->
+<script src="js/wang.js"></script>
+
+<script type="text/javascript">
+
+    //创建vue对象
+    let vm = new Vue({
+        el: "#app",
+        data: {
+            uname: "",//用户名
+            upass: "",//密码
+            valcode: "",//验证码
+
+            islog: false,//是否登录:false显示未登录界面,true显示登陆界面
+
+            boardname: "",//从其他界面传过来的,用于导航
+            boardid: "",//从其他界面传过来的,用于发帖子
+            topicid: "",//从其他界面传过来的,用于发帖子的回复
+            topicname: "",//当前帖子的标题,从其他界面传过来的,用于导航
+
+            mol: {},
+            replyname: "",
+            torr: "",
+
+        },
+
+        methods: {
+
+            //确认修改按钮
+            modify: function () {
+                // 从editor中取出输入的内容
+                const html = editor.getHtml();
+                if (this.mol.title == "") {
+                    alert("标题不能为空!");
+                    return;
+                }
+                // console.log(html);
+                if (editor.getHtml() == "<p><br></p>") {
+                    alert("内容不能为空!");
+                    return;
+                }
+                var params = new URLSearchParams();
+                params.append("op", "modify");
+                params.append("title", this.mol.title);
+                params.append("content", html);
+                params.append("torr", this.torr);
+                if (this.torr == "topic") {
+                    params.append("id", this.mol.topicid);
+                } else if (this.torr == "reply") {
+                    params.append("id", this.mol.replyid);
+                }
+                //params.append("topicid", this.topicid);
+                axios.post("topic.action", params).then(result => {
+                    //code=1,是reply,code=2,是topic
+                    if (result.data.code == 1) {
+                        alert("修改成功！");
+                        window.location.href = "detail.html";
+                    } else if (result.data.code == 2) {
+                        alert("修改成功！");
+                        window.location.href = "detail.html";
+                    }else{
+                        alert("修改失败"+result.data.msg);
+                    }
+                });
+            },
+
+            //退出登录
+            logout: function () {
+                axios.post("user.action?op=logout").then(data => {
+                    var result = data.data;
+                    if (result.code == 1) {
+                        this.islog = false;
+                        this.uname = "";
+                        this.upass = "";
+                    }
+                })
+            },
+
+            gotoLogin: function () {
+                const data = {ui: "post.html"};
+                sessionStorage.setItem("ui", JSON.stringify(data))
+                window.location.href = "login.html";
+            },
+
+            //清空输入了的内容
+            clean: function () {
+                editor.setHtml("");
+                this.mol.title = "";
+            },
+
+            //设置内容开始的时候
+            setcontent: function () {
+                console.log(this);
+                editor.setHtml(this.mol.content);
+            },
+
+            //判断是否登录
+            checkLogin: function () {
+                return axios.get("user.action?op=checkLogin");
+            },
+        },
+
+        mounted: function () {
+            axios.all([this.checkLogin()]).then(axios.spread(function (d1) {
+                let jsonmodel1 = d1.data;
+                if (jsonmodel1.code == 1) {
+                    //vm.$data指的是model中的数据
+                    //this.username:这是view-model中的数据
+                    vm.$data.uname = jsonmodel1.data.uname;
+                    vm.$data.islog = true;
+                }
+                // console.log(vm)   ;
+                // console.log(this);
+                vm.setcontent();
+            }));
+
+
+        },
+
+        created() {
+
+            const torr = sessionStorage.getItem("torr");
+            this.torr = torr;
+
+            //获取从detail界面用户点击修改按钮传过来的信息
+            const mol = JSON.parse(sessionStorage.getItem("mol"));
+            //if()
+            this.mol = mol;
+
+            const board = JSON.parse(sessionStorage.getItem("board"));
+            const topic = JSON.parse(sessionStorage.getItem("topic"));
+
+            const topicname = JSON.parse(sessionStorage.getItem("topicname"));
+
+            this.boardname = board.boardname;
+
+            this.boardid = board.boardid;//用于发帖子
+            this.topicid = topic.topicid;//用于发帖子
+
+            //如果用户是从list界面点击<发帖子>按钮进来的,就没有存topic
+            if (topic != null) {
+                this.topicid = topic.topicid;
+            }
+            if (topicname != null) {
+                this.topicname = topicname.topicname;
+
+            }
+            sessionStorage.removeItem("topicname");
+        }
+
+    });
+
+    //创建富文本编辑器对象
+    const {createEditor, createToolbar} = window.wangEditor
+    const editorConfig = {
+        placeholder: 'Type here...',
+        onChange(editor) {
+            const html = editor.getHtml()
+            console.log('editor content', html);
+            // 也可以同步到 <textarea>
+        }
+    }
+
+    const editor = createEditor({
+        selector: '#editor-container',
+        html: '<p><br></p>',
+        config: editorConfig,
+        mode: 'default', // or 'simple'
+    })
+
+    const toolbarConfig = {}
+
+    const toolbar = createToolbar({
+        editor,
+        selector: '#toolbar-container',
+        config: toolbarConfig,
+        mode: 'default', // or 'simple'
+    });
+</script>
+</BODY>
+</HTML>

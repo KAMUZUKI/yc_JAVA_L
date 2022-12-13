@@ -10,8 +10,6 @@ Target Server Type    : MYSQL
 Target Server Version : 50018
 File Encoding         : 65001
 
-
-
 Date: 2020-09-14 15:25:40
 */
 create database blog;

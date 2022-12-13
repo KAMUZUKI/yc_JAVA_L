@@ -25,6 +25,10 @@ import java.util.Set;
  **/
 @WebServlet(name = "InfoServlet", value = "/info.action")
 public class InfoServlet extends CommonServlet {
+<<<<<<< HEAD
+    //info.action?op=getAritcleById
+    protected void getArticleById(HttpServletRequest request, HttpServletResponse response) throws IOException {
+=======
     /**
      * info.action?op=getAllUser
      * 获取所有用户信息
@@ -61,6 +65,7 @@ public class InfoServlet extends CommonServlet {
      */
     protected void getArticleById(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+>>>>>>> cadd4579561e4018d0789ddb30155558bf50e7b4
         DbHelper db = new DbHelper();
         JsonModel jm = new JsonModel();
         Article article = new Article();
@@ -492,11 +497,20 @@ public class InfoServlet extends CommonServlet {
         super.writeJson(jm, response);
     }
 
+<<<<<<< HEAD
+
+    //info.action?op=getAllAritcle
+    protected void getAllArticle(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+
+
+=======
     /**
      * info.action?op=getAllAritcle
      * 获取所有文章
      */
     protected void getAllArticle(HttpServletRequest request, HttpServletResponse response) throws IOException {
+>>>>>>> cadd4579561e4018d0789ddb30155558bf50e7b4
         DbHelper db = new DbHelper();
         JsonModel jm = new JsonModel();
         Article article = new Article();

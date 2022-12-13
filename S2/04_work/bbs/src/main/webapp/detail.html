@@ -1,0 +1,238 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<TITLE>论坛--看贴</TITLE>
+<Link rel="stylesheet" type="text/css" href="style/style.css" />
+	<style>
+		/*[v-cloak]是一个样式规则    */
+		[v-cloak]{
+			display:none;
+		}
+	</style>
+
+</HEAD>
+
+<div id="app">
+	<DIV>
+		<IMG src="image/logo.gif">
+	</DIV>
+
+	<!--      用户信息、登录、注册        -->
+
+	<DIV class="h" v-if="islogin==false" v-cloak>
+		您尚未　<a href="login.html">登录</a>
+		&nbsp;| &nbsp; <A href="reg.html">注册</A> |
+	</DIV>
+	<div class="h" v-else >
+		<span>欢迎您:{{uname}} </span> | <a href="" @click.prevent="logout">安全退出</a>|<a href="login.html"  >切换用户</a>
+	</div>
+	<!--      主体        -->
+	<DIV><br/>
+		<!--      导航        -->
+	<DIV>
+		&gt;&gt;<B><a href="index.html">论坛首页</a></B>&gt;&gt;
+		<B><a href="list.html">{{boardname}}</a></B>&gt;&gt;
+		<B><a href="detail.html">{{title}}</a></B>
+	</DIV>
+		<br/>
+		<!--      回复、新帖        -->
+		<DIV>
+			<A href="post.html"><IMG src="image/reply.gif"  border="0" id=td_post></A>
+			<A href="post.html"><IMG src="image/post.gif"   border="0" id=td_post></A>
+		</DIV>
+		<!--         翻 页         -->
+		<DIV>
+			总数据{{pagebean.total}} ,共{{pagebean.totalpages}}页，
+			当前第{{pagebean.pageno}}页, 每页{{pagebean.pagesize}}条 |
+			<a href="" @click.prevent="showReplyBoard(1)">第一页</a>|
+			<a href="" @click.prevent="showReplyBoard(pagebean.pre)">上一页</a>|
+			<a href="" @click.prevent="showReplyBoard(pagebean.next)">下一页</a>|
+			<a href="" @click.prevent="showReplyBoard(pagebean.totalpages)">最后一页</a>|
+		</DIV>
+		<!--      本页主题的标题        -->
+		<DIV>
+			<TABLE cellSpacing="0" cellPadding="0" width="100%">
+				<TR>
+					<TH class="h">本页主题: {{title}}</TH>
+				</TR>
+				<TR class="tr2">
+					<TD>&nbsp;</TD>
+				</TR>
+			</TABLE>
+		</DIV>
+
+		<!--      主题        -->
+
+		<DIV class="t">
+			<TABLE style="BORDER-TOP-WIDTH: 0px; TABLE-LAYOUT: fixed" cellSpacing="0" cellPadding="0" width="100%">
+				<TR class="tr1">
+					<TH style="WIDTH: 20%">
+						<B>{{topicInfo.uname}}</B><BR/>
+						<img :src=`image/head/${topicInfo.head}` /><BR/>
+						注册:{{topicInfo.regtime}}<BR/>
+					</TH>
+					<TH>
+						<H4>{{topicInfo.title}}</H4>
+						<DIV>{{topicInfo.content}}</DIV>
+						<DIV class="tipad gray">
+							发表：[{{topicInfo.publishtime}}] &nbsp;
+							最后修改:[{{topicInfo.modifytime}}]
+						</DIV>
+					</TH>
+				</TR>
+			</TABLE>
+		</DIV>
+
+		<!--      回复        -->
+
+		<DIV class="t" v-for="(item,index) in replyBoard">
+			<TABLE style="BORDER-TOP-WIDTH: 0px; TABLE-LAYOUT: fixed" cellSpacing="0" cellPadding="0" width="100%">
+				<TR class="tr1"  >
+					<TH style="WIDTH: 20%">
+						<B>{{item.uname}}</B><BR/><BR/>
+						<img  :src=`image/head/${item.head}` /> <BR/>
+						注册:{{item.regtime}}<BR/>
+					</TH>
+					<TH>
+						<H4>{{item.title}}</H4>
+						<DIV>{{item.content}}</DIV>
+						<DIV class="tipad gray">
+							发表：[{{item.publishtime}}] &nbsp;
+							最后修改:[{{item.modifytime}}]
+							<A href="" >[删除]</A>
+							<A href="" >[修改]</A>
+						</DIV>
+					</TH>
+				</TR>
+			</TABLE>
+		</DIV>
+
+<!--		<TR class="tr1">-->
+<!--			<TH style="WIDTH: 20%">-->
+<!--				<B>t</B><BR/><BR/>-->
+<!--				<image src="image/head/2.gif"/> <BR/>-->
+<!--				注册:2007-07-27<BR/>-->
+<!--			</TH>-->
+<!--			<TH>-->
+<!--				<H4>继续灌</H4>-->
+<!--				<DIV>继续灌</DIV>-->
+<!--				<DIV class="tipad gray">-->
+<!--					发表：[2007-07-30 10:32] &nbsp;-->
+<!--					最后修改:[2007-07-30 08:37]-->
+<!--					<A href="">[删除]</A>-->
+<!--					<A href="">[修改]</A>-->
+<!--				</DIV>-->
+<!--			</TH>-->
+<!--		</TR>-->
+
+	<!--      声明        -->
+	<BR>
+	<CENTER class="gray">源辰信息</CENTER>
+	</div>
+</div>
+
+</BODY>
+
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+<script>
+	var vm=new Vue({
+		el:"#app",
+		data:{
+			uname:"a",
+			islogin:false,
+			topicid:0,
+			replyBoard:[],
+			pagebean:{
+				pageno:1,
+				pagesize:4,
+				total:0,
+				totalpages:0,
+				pre:1,
+				next:2,
+			},
+			boardname:'',
+			title:"",
+			topicInfo:{
+				//head:'1.gif',
+			},
+
+		},
+		methods:{
+			checkLogin:function(){
+				return axios.get("tbl_user.action?op=checkLogin");
+			},
+			logout:function(){
+				axios.post("tbl_user.action?op=logout").then(data=>{
+					var result = data.data;
+					if(result.code==1){
+						this.uname="";
+						this.upass="";
+						this.islogin=false;
+					}
+				});
+			},
+			showReplyBoard:function(pageno ) {
+				this.pagebean.pageno = pageno;
+				var params = new URLSearchParams(this.pagebean);
+				params.append("op", "showReplyBoard");
+				params.append("topicid", this.topicid);
+				axios.post("reply.action", params).then(result => {
+					let jsonmodel2 = result.data;
+					if (jsonmodel2.code == 1) {
+						jsonmodel2.data.dataset.forEach((item, index) => {
+							item.status = false;  //给每个菜品加一个status属性值，方便操作
+						});
+						this.replyBoard = jsonmodel2.data.dataset;
+						this.pagebean.next = jsonmodel2.data.next;
+						this.pagebean.pre = jsonmodel2.data.pre;
+						this.pagebean.pageno = jsonmodel2.data.pageno;
+						this.pagebean.pagesize = jsonmodel2.data.pagesize;
+						this.pagebean.total = jsonmodel2.data.total;
+						this.pagebean.totalpages = jsonmodel2.data.totalpages;
+						return;
+					}
+				})
+			},
+			getTopic:function () {
+				axios.get("topic.action?op=getTopic&topicid="+this.topicid).then(result=>{
+					let json=result.data;
+					if(json.code==1){
+						this.topicInfo=json.data[0];
+
+					}
+				})
+			}
+
+		},
+		created:function(){
+			let Js=JSON.parse(sessionStorage.getItem("reply"));
+			this.topicid=Js.topicid;
+			this.title=Js.title;
+			let Js2=JSON.parse(sessionStorage.getItem("topicBoard"));
+			this.boardname=Js2.boardname;
+		},
+		mounted:function(){
+			axios.all([ this.checkLogin(),this.showReplyBoard(1),this.getTopic()  ]).then(axios.spread(function (d1) {
+				let Json1=d1.data;
+				if(Json1.code==1){
+					vm.$data.uname=Json1.data.uname;
+					vm.$data.islogin=true;
+				}
+
+			})  )
+
+		}
+
+
+
+	})
+
+</script>
+
+
+
+
+</HTML>
+
