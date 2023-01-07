@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新增链接</title>
+
+    <script src="https://lib.baomitu.com/vue/2.6.12/vue.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.min.js"></script>
+</head>
+<body>
+<h1>新增链接</h1>
+<div id="app">
+    <label>名称</label><input v-model="flabel"><br>
+    <label>地址</label><input v-model="furl"><br>
+    <label>分类</label><input v-model="ftags"><br>
+    <label>描述</label><input v-model="fdesc"><br>
+    <button @click="save">保存</button>
+</div>
+<script>
+    var v = new Vue({
+        el: '#app',
+        data: {
+            flabel: "",
+            furl: "",
+            ftags: "",
+            fdesc: ""
+        },
+        methods: {
+            save() {
+                var params = new URLSearchParams();
+                params.append("flabel", this.flabel);
+                params.append("furl", this.furl);
+                params.append("ftags", this.ftags);
+                params.append("fdesc", this.fdesc);
+                axios.post("addFav.s", params).then(res => {
+                    alert(res.data.msg);
+                    if (res.data.code == 1) {
+                        window.close();
+                    }
+                });
+            }
+        }
+    });
+</script>
+</body>
+</html>

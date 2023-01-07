@@ -1,0 +1,8 @@
+2023-01-04 17:43:43,847 main DEBUG [com.mu.net.comcat1.TomcatServer] 程序启动
+2023-01-04 17:43:43,849 main DEBUG [com.mu.net.comcat1.TomcatServer] 服务器配置端口为:8080
+2023-01-04 17:45:10,116 main DEBUG [com.mu.net.comcat1.TomcatServer] 程序启动
+2023-01-04 17:45:10,118 main DEBUG [com.mu.net.comcat1.TomcatServer] 服务器配置端口为:8080
+2023-01-04 17:45:39,068 main DEBUG [com.mu.net.comcat1.TomcatServer] 程序启动
+2023-01-04 17:45:39,070 main DEBUG [com.mu.net.comcat1.TomcatServer] 服务器配置端口为:8080
+2023-01-04 17:46:04,008 main DEBUG [com.mu.net.comcat1.TomcatServer] 程序启动
+2023-01-04 17:46:04,028 main DEBUG [com.mu.net.comcat1.TomcatServer] 服务器配置端口为:8090
