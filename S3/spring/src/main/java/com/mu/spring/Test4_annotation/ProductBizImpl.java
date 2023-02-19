@@ -1,16 +1,14 @@
-package com.mu.spring.Test3_factoryBean;
+package com.mu.spring.Test4_annotation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
+ * 此注解表明此类为 业务层的类
  * @author : MUZUKI
  * @date : 2023-01-10 17:58
- **/
-
-/**
- * 此注解表明此类为 业务层的类
  */
+
 @Service
 public class ProductBizImpl implements ProductBiz{
     /**

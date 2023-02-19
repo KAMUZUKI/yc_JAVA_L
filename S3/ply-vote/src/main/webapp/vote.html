@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>参与投票</title>
+    <link type="text/css" rel="stylesheet" href="css/style.css"/>
+	<script src="js/axios.min.js"></script>
+	<script src="js/vue.min.js"></script>
+	<script src="js/vote.js"></script>
+</head>
+<body>
+<div id="app">
+	<myheader></myheader>
+	<div id="vote" class="wrap">
+		<h2>参与投票</h2>
+		<ul class="list">
+			<li>
+				<h4>{{vote.name}}</h4>
+				<p class="info">共有 {{vote.items.length}} 个选项，已有 {{vote.userNums}} 个网友参与了投票。</p>
+				<form method="post" action="Vote!save.action">
+					<input type="hidden" name="entityId" value="103"/>
+					<ol>
+						<li v-for="i in vote.items">
+							<input v-model="records" :type="vote.vtype.indexOf('单选')==0?'radio':'checkbox'" name="iid" :value="i.id"/>
+							{{i.iname}}
+						</li>
+					</ol>
+					<p class="voteView">
+						<input type="image" src="images/button_vote.gif" @click.prevent="votes"/>
+						<a :href="'view.html?id=' + vote.id"><img src="images/button_view.gif"/></a>
+					</p>
+				</form>
+			</li>
+		</ul>
+	</div>
+	<div id="footer" class="wrap">
+		源辰信息 &copy; 版权所有
+	</div>
+</div>
+<script>
+	var v = new Vue({
+		el: '#app',
+		data: {
+			vote: {items:[]},
+			records: []
+		},
+		methods: {
+			votes() {
+				let p = {
+					vid:this.vote.id,
+					iid:this.records
+				}
+				let params = new URLSearchParams();
+				params.append("vid", this.vote.id);
+				if(this.records.forEach){
+					this.records.forEach(r=>{
+						params.append("iid", r);
+					})
+				}else{
+					params.append("iid", this.records);
+				}
+				axios.post("VoteServlet",params).then(function (response) {
+					alert(response.data.msg);
+					location.href = "index.html"
+				}).catch(function (error) {
+					console.log(error);
+				});
+			},
+			add(){
+				let p = new URLSearchParams();
+				p.append("vid", this.vote.id);
+				if(this.records.forEach){
+					this.records.forEach(r=>{
+						p.append("iid", r);
+					})
+				}else{
+					p.append("iid", this.records);
+				}
+				axios.post('VoteServlet', p).then(res=> {
+					alert(res.data.msg);
+				}).catch(function (error) {
+					console.log(error);
+				});
+			}
+		},
+		created() {
+			axios.get("GetVoteServlet"+location.search).then(res=>{
+				this.vote = res.data;
+			}).catch(function (error) {
+				console.log(error);
+			});
+		}
+	});
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-package com.mu.spring.Test3_factoryBean;
+package com.mu.spring.Test4_annotation;
 
 /**
  * @author : MUZUKI

@@ -3,4 +3,17 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="student" class="com.mu.spring.Test1.Student">
+        <property name="id" value="100"></property>
+        <property name="name" value="mu"></property>
+        <property name="address" ref="address"></property>
+    </bean>
+
+    <!--spring ioc-->
+    <bean id="address" class="com.mu.spring.Test1.Address">
+        <!--spring di-->
+        <property name="province" value="China"></property>
+        <property name="city" value="beijing"></property>
+    </bean>
 </beans>

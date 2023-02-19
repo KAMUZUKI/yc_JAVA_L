@@ -1,4 +1,4 @@
-package com.mu.spring;
+package com.mu.spring.Test1;
 
 import lombok.Data;
 

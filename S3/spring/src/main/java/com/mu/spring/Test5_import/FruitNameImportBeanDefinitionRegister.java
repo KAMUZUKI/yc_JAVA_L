@@ -1,9 +1,7 @@
 package com.mu.spring.Test5_import;
 
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 
@@ -15,7 +13,7 @@ import org.springframework.core.type.AnnotationMetadata;
 /**
  * 需求：根据条件(是否已经加载好了 Pear，判断是否加载 Grape到容器，且指定beanid)
  */
-public class FruitNameImportBeanDefinitionFactory implements ImportBeanDefinitionRegistrar {
+public class FruitNameImportBeanDefinitionRegister implements ImportBeanDefinitionRegistrar {
     /**
      * @param annotationMetadata : 当前扫描的注解
      * @param registry : 已经注册好的bean的容器

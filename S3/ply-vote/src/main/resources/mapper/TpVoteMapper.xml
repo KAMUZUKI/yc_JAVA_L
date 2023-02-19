@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mu.vote.mapper.TpVoteMapper">
+
+    <resultMap id="BaseResultMap" type="com.mu.vote.domain.TpVote">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="vname" column="vname" jdbcType="VARCHAR"/>
+            <result property="vtype" column="vtype" jdbcType="VARCHAR"/>
+            <result property="startDate" column="start_date" jdbcType="DATE"/>
+            <result property="endDate" column="end_date" jdbcType="DATE"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,vname,vtype,
+        start_date,end_date
+    </sql>
+</mapper>

@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-        
-<mapper namespace="">
+
+<mapper namespace="com.mu.movie.SpPlanMapper">
+    <resultMap id="myrm1" type="com.mu.movie.bean.SpPlan">
+        <id column="id" property="id"/>
+        <association property="movie" column="mid"
+                     select="com.mu.movie.SqMovieMapper.selectById"></association>
+
+        <association property="hall" column="hid" fetchType="lazy"
+                     select="selectHallById"></association>
+    </resultMap>
+
+<!--    <select id="selectById" resultMap="myrm1">-->
+<!--        select * from sp_plan where id = #{id}-->
+<!--    </select>-->
+
+    <select id="selectHallById" resultType="com.mu.movie.bean.SpHall">
+        select * from sp_hall where id = #{id}
+    </select>
+
+    <select id="selectByPrice" resultType="com.mu.movie.bean.SpPlan">
+        select a.*,
+               b.name as "movie.name",
+               b.id as "movie.id",
+               c.seats as "hall.seats"
+        from sp_plan a
+        join sp_movie b on a.mid = b.id
+        join sp_hall c on a.hid = c.id
+        where a.price = #{price}
+    </select>
 </mapper>

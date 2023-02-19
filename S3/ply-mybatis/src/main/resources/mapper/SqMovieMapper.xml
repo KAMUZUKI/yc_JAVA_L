@@ -11,6 +11,34 @@
     </resultMap>
 
     <select id="selectById" resultMap="rm1">
-        select * from movie where id = #{id}
+        select * from sp_movie where id = #{id}
+    </select>
+
+    <resultMap id="rm2" type="com.mu.movie.bean.SpMovie">
+        <id column="id" property="id"></id>
+        <collection property="plans" column="id" fetchType="lazy"
+                    select="selectPlansByiId"></collection>
+    </resultMap>
+
+    <select id="selectByType" resultMap="rm2">
+        select * from sp_movie where type = #{type}
+    </select>
+
+    <select id="selectPlansByiId" resultType="com.mu.movie.bean.SpPlan">
+        select * from sp_plan where mid = #{mid}
+    </select>
+
+    <resultMap id="rm3" type="com.mu.movie.bean.SpMovie">
+        <id column="id" property="id"></id>
+        <collection property="halls" column="id" fetchType="lazy"
+                    select="selectHallsById"></collection>
+    </resultMap>
+
+    <select id="selectLikeName" resultMap="rm3">
+        select * from sp_movie where name like #{name}
+    </select>
+
+    <select id="selectHallsById" resultType="com.mu.movie.bean.SpHall">
+        select a.* from sp_hall a join sp_plan b on a.id = b.hid where b.mid = #{mid}
     </select>
 </mapper>

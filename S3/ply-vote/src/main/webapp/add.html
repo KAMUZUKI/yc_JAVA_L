@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>发布新投票</title>
+<link type="text/css" rel="stylesheet" href="css/style.css" />
+	<script src="js/axios.min.js"></script>
+	<script src="js/vue.min.js"></script>
+</head>
+<body>
+<div id="app">
+	<div id="header" class="wrap">
+		<img src="images/logo.gif" />
+	</div>
+	<div id="navbar" class="wrap">
+		<div class="profile">
+			您好，a
+			<span class="return"><a href="manage.html">返回列表</a></span>
+			<span class="addnew"><a href="add.html">添加新投票</a></span>
+
+		</div>
+		<div class="search">
+			<form method="post" action="manage.html">
+				<input type="text" name="keywords" class="input-text" value=""/><input type="submit" name="submit" class="input-button" value="" />
+			</form>
+		</div>
+	</div>
+
+	<div id="voteManage" class="box">
+		<h2>添加新投票</h2>
+		<div class="content">
+			<form method="post" action="view.html">
+				<dl>
+					<dt>投票内容：</dt>
+					<dd>
+						<input type="hidden" name="entityId" value=""/>
+						<input type="text" class="input-text" v-model="vote.vname"  value=""/>
+					</dd>
+					<dt>投票类型：</dt>
+					<dd>
+						<input type="radio" v-model="vote.vtype" value="单选"/>单选
+						<input type="radio" v-model="vote.vtype" value="多选" />多选
+					</dd>
+					<dt>投票选项：</dt>
+
+					<dd id="voteoptions">
+						<p v-for="i,j in vote.inames">
+							<input type="text" class="input-text" v-model="vote.inames[j]" :key="j"/>
+						</p>
+					</dd>
+
+					<dt></dt>
+					<dd class="button">
+						<input type="image" @click.prevent="save" src="images/button_submit.gif" />
+						<a href="#" @click.prevent="addItem">增加选项</a>
+						<a href="manage.html" @click.prevent="cancel">取消操作</a>
+					</dd>
+				</dl>
+			</form>
+		</div>
+	</div>
+	<div id="footer" class="wrap">
+		源辰信息 &copy; 版权所有
+	</div>
+</div>
+<script>
+	var v = new Vue({
+		el: '#app',
+		data: {
+			vote:{
+				vname:"",
+				vtype:"单选",
+				inames:[""]
+			}
+		},
+		methods:{
+			addItem(){
+				this.vote.inames.push("");
+			},
+			cancel(){
+				this.vote.inames.pop();
+			},
+			save(){
+				let p = new URLSearchParams();
+				p.append("vname",this.vote.vname);
+				p.append("vtype",this.vote.vtype);
+				this.vote.inames.forEach(i=>{
+					p.append("inames",i);
+				});
+				axios.post("AddVoteServlet",p).then(res=>{
+					alert(res.data.msg);
+				})
+			}
+		}
+	})
+</script>
+</body>
+</html>
+

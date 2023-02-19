@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>投票列表</title>
+    <link type="text/css" rel="stylesheet" href="css/style.css"/>
+    <script src="js/axios.min.js"></script>
+    <script src="js/vue.min.js"></script>
+	<script src="js/vote.js"></script>
+</head>
+<body>
+<div id="app">
+	<myheader></myheader>
+	<div id="vote" class="wrap">
+		<h2>投票列表</h2>
+		<ul class="list">
+			<li v-for="v,i in votes" :class="{odd:i%2==0}">
+				<h4>
+					<a :href="'view.html?id='+v.id">{{v.vname}}</a>
+				</h4>
+				<div class="join"><a :href="'vote.html?id=' + v.id">我要参与</a></div>
+				<p class="info">共有{{v.items.length}}个选项，已有{{v.userNums}}个网友参与了投票</p>
+			</li>
+		</ul>
+	</div>
+	<div id="footer" class="wrap">
+		源辰信息 &copy; 版权所有
+	</div>
+</div>
+<script>
+    var v = new Vue({
+        el: '#app',
+        data: {
+            votes: []
+        },
+        created() {
+            axios.get("QueryVoteServlet").then(res => {
+                this.votes = res.data;
+            });
+        }
+    })
+</script>
+</body>
+</html>
