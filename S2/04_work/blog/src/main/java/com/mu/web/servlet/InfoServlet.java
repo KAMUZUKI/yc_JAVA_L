@@ -12,7 +12,6 @@ import redis.clients.jedis.Jedis;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -23,10 +22,8 @@ import java.util.List;
 @WebServlet(name = "InfoServlet", value = "/info.action")
 public class InfoServlet extends CommonServlet {
 
-
     //info.action?op=getAritcleById
     protected void getAritcleById(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         DbHelper db = new DbHelper();
         JsonModel jm = new JsonModel();
         Article article = new Article();
