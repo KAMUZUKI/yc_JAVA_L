@@ -1,32 +1,35 @@
-package com.mu.web.servlet;
+package com.mu.servlet;
 
 import com.mu.bean.Article;
 import com.mu.dao.DbHelper;
 import com.mu.dao.RedisHelper;
+import com.mu.service.ArticleService;
 import com.mu.utils.Constants;
 import com.mu.web.model.JsonModel;
+import com.mu.web.servlet.CommonServlet;
+import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet(name = "ArticleServlet", value = "/article.action")
 public class ArticleServlet extends CommonServlet {
+    @Autowired
+    private ArticleService articleService;
+
 
     //article.action?op=deleteArticle
     protected void deleteArticle(HttpServletRequest request,HttpServletResponse response) throws IOException {
         JsonModel jm = new JsonModel();
-        DbHelper db = new DbHelper();
         Article article = new Article();
-        String sql = "delete from article where id = ?";
         int result = 0;
         try{
             article = super.parseRequestToT(request,Article.class);
-            result = db.doUpdata(sql,article.getId());
+            result = articleService.deleteArticle(article.getId());;
         }catch (Exception e){
             e.printStackTrace();
             jm.setCode(0);

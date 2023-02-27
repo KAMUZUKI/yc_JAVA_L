@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mu.mapper.ArticleMapper">
+
+    <resultMap id="BaseResultMap" type="com.mu.domain.Article">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="author" column="author" jdbcType="VARCHAR"/>
+            <result property="title" column="title" jdbcType="VARCHAR"/>
+            <result property="content" column="content" jdbcType="VARCHAR"/>
+            <result property="keywords" column="keyWords" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="categoryid" column="categoryId" jdbcType="INTEGER"/>
+            <result property="label" column="label" jdbcType="VARCHAR"/>
+            <result property="titleimgs" column="titleImgs" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
+            <result property="readcnt" column="readCnt" jdbcType="INTEGER"/>
+            <result property="agreecnt" column="agreeCnt" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,author,title,
+        content,keyWords,description,
+        categoryId,label,titleImgs,
+        status,createTime,readCnt,
+        agreeCnt
+    </sql>
+
+    <delete id="deleteArticle">
+        delete from article where id = #{id}
+    </delete>
+</mapper>

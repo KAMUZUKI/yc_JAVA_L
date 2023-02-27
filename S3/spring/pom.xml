@@ -11,9 +11,10 @@
         <module>01_spring_introduce</module>
         <module>02_spring_ioc</module>
         <module>03_spring_myspring</module>
-        <module>spring_ico_demo</module>
+        <module>04_spring_ioc_demo</module>
         <module>container</module>
         <module>aop_dynamicProxy</module>
+
     </modules>
     <name>spring</name>
     <description>spring</description>
