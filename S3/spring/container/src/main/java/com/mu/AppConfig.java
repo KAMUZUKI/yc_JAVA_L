@@ -1,5 +1,7 @@
 package com.mu;
 
+import com.mu.bean.Apple;
+import org.muframework.annotation.Bean;
 import org.muframework.annotation.ComponentScan;
 import org.muframework.annotation.Configuration;
 
@@ -11,4 +13,8 @@ import org.muframework.annotation.Configuration;
 @Configuration
 @ComponentScan(value={"com.mu"})
 public class AppConfig {
+    @Bean
+    public Apple apple(){
+        return new Apple();
+    }
 }

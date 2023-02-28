@@ -1,8 +1,11 @@
 package com.mu;
 
+import com.mu.bean.Apple;
 import org.junit.Test;
 import org.muframework.annotation.ComponentScan;
 import org.muframework.context.YcAnnotationConfigApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -15,6 +18,9 @@ import java.util.Enumeration;
  **/
 
 public class test1 {
+
+    private static final Logger logger = LoggerFactory.getLogger(test1.class);
+
     @Test
     public void test1() throws ClassNotFoundException {
         Class clazz = ClassLoader.getSystemClassLoader().loadClass(AppConfig.class.getName());
@@ -36,7 +42,11 @@ public class test1 {
 
     @Test
     public void test3() throws ClassNotFoundException, IOException {
-        YcAnnotationConfigApplicationContext context = new YcAnnotationConfigApplicationContext();
-//        context.getBean("AppConfig");
+        YcAnnotationConfigApplicationContext context = new YcAnnotationConfigApplicationContext(AppConfig.class);
+
+        Apple a = (Apple) context.getBean("apple");
+        logger.info(a.toString());
+        AppConfig appConfig = (AppConfig) context.getBean("appConfig");
+        logger.info(appConfig.toString());
     }
 }

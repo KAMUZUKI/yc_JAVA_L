@@ -3,6 +3,7 @@ package com.mu.dao;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
