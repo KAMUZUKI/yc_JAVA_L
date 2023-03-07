@@ -11,7 +11,7 @@ import org.muframework.annotation.Configuration;
  **/
 
 @Configuration
-@ComponentScan(value={"com.mu"})
+@ComponentScan(value={"com.mu.dao","com.mu.bean"})
 public class AppConfig {
     @Bean
     public Apple apple(){

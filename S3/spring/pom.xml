@@ -14,6 +14,7 @@
         <module>04_spring_ioc_demo</module>
         <module>container</module>
         <module>aop_dynamicProxy</module>
+        <module>tx_bank</module>
 
     </modules>
     <name>spring</name>
