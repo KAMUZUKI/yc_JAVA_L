@@ -1,0 +1,27 @@
+product:
+  pname: apple
+  price: 10
+  is-used: true
+  man-date: 2021/09/09
+
+  attribute: {'color': 'red', 'type': 'good'}
+  address:
+    province: 湖南省
+    city: 长沙市
+  types:
+    - 水果
+    - 零食
+server:
+  port: 8080
+
+logging:
+  level:
+    root: debug
+    com.mu: info
+    org.springframework: error
+  file:
+      path: ./logs
+      name: springboot.log
+      max-size: 10MB
+      max-history: 30
+      level: info

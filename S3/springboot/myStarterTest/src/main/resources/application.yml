@@ -1,0 +1,4 @@
+mu:
+  hello:
+    prefix: "hi,"
+    suffix: ",a good day"
