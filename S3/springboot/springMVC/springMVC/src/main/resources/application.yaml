@@ -1,5 +1,9 @@
-ROSTemplateFormatVersion: "2015-09-01"
-Parameters:
-Description:
-Resources:
-
+spring:
+  mvc:
+    static-path-pattern: "/res/**"
+    hiddenmethod:
+      filter:
+        enabled: true
+  web:
+    resources:
+      static-locations: [classpath:/abc/,classpath:/static/, classpath:/public/, classpath:/resources/, classpath:/META-INF/resources/]

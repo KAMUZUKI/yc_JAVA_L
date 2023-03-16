@@ -1,10 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Title</title>
 </head>
 <body>
-$END$
+  <center>
+    <form action="/rest" method="get">
+      <input value="REST-get提交" type="submit">
+    </form>
+    <form action="/rest" method="post">
+      <input value="REST-post提交" type="submit">
+    </form>
+    <form action="/rest" method="post">
+      <input type="hidden" name="_method" value="delete">
+      <input value="REST-delete提交" type="submit">
+    </form>
+    <form action="/rest" method="post">
+      <input type="hidden" name="_method" value="put">
+      <input value="REST-put提交" type="submit">
+    </form>
+  </center>
 </body>
 </html>
