@@ -1,4 +1,4 @@
-package com.mu.TimeAutoConfiguration;
+package com.mu.helloautoconfiguration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

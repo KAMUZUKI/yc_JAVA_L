@@ -1,0 +1,9 @@
+mu:
+  log:
+    enabled: true
+
+logging:
+  level:
+    root: info
+    com.mu: info
+    org.springframework: warn
