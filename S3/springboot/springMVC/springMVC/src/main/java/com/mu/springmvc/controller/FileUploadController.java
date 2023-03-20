@@ -2,6 +2,7 @@ package com.mu.springmvc.controller;
 
 import com.mu.springmvc.dao.StuMapper;
 import com.mu.springmvc.domain.Stu;
+import com.mu.springmvc.utils.JsonModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,41 +28,44 @@ public class FileUploadController {
 
     @PostMapping("/upload")
     @ResponseBody
-    public Map<String, String> upload(@RequestParam MultipartFile head,
-                                      @RequestParam MultipartFile[] lifes) throws IOException {
+    public JsonModel upload(@RequestParam("head") MultipartFile head,@RequestParam("file") MultipartFile... lifes) throws IOException {
         Map<String, String> map = new HashMap<>();
-        map.put("head", head.getName());
+        JsonModel jm = new JsonModel();
         map.put("lifes", lifes.length + "");
+        String userHome = System.getProperty("user.home");
 
-        String user_home = System.getProperty("user.home");
-        String fileName = head.getOriginalFilename();
-        File f = new File(user_home + File.separator + fileName);
-        log.info(f.getPath());
-        try {
-            head.transferTo(f);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String fileName = null;
+        File f = null;
 
         for (int i = 0; i < lifes.length; i++) {
             fileName = lifes[i].getOriginalFilename();
-            f = new File(user_home + File.separator + fileName);
+            f = new File(userHome + File.separator + fileName);
+            map.put("pictures" + i, fileName);
             log.info(f.getPath());
-            lifes[i].transferTo(f);
+            try {
+                lifes[i].transferTo(f);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        return map;
+
+        jm.setCode(1).setData(map);
+        return jm;
     }
 
     @PostMapping("/register")
     @ResponseBody
-    public int register(@RequestBody Stu stu) {
+    public JsonModel register(@RequestParam("uname") String uname,
+                              @RequestParam("pwd") String pwd,
+                              @RequestParam("head") String head,
+                              @RequestParam("lifes") String[] lifes) {
+        JsonModel jm = new JsonModel();
         Stu s = new Stu();
-        s.setUname(stu.getUname());
-        s.setPwd(stu.getPwd());
-        s.setHead(stu.getHead());
-        s.setLifes(stu.getLifes());
-        int res = stuMapper.insert(s);
-        log.info("res:{}", res);
-        return res;
+        s.setUname(uname);
+        s.setPwd(pwd);
+        s.setHead(head);
+        s.setLifes(String.join(",", lifes));
+        jm.setCode(stuMapper.insert(s));;
+        return jm;
     }
 }
