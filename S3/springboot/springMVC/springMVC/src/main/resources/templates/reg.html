@@ -39,41 +39,48 @@
 
 <div id="app">
     <el-card class="box-card">
-        <el-form action="/upload" :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+        <el-form :model="userForm" status-icon :rules="rules" ref="userFrom" label-width="100px" class="demo-ruleForm">
             <el-form-item label="姓名" prop="uname">
-                <el-input type="username" v-model="ruleForm.uname" autocomplete="off"></el-input>
+                <el-input type="username" v-model="userForm.uname" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="密码" prop="checkPass">
-                <el-input type="password" v-model="ruleForm.pwd" autocomplete="off"></el-input>
+                <el-input type="password" v-model="userForm.pwd" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item>
-                头像<el-upload
+                <h2>头像</h2>
+                <el-upload
+                    name="head"
+                    action
                     class="avatar-uploader"
-                    action="https://localhost:8080/upload"
-                    :show-file-list="true"
-                    :on-success="handleAvatarSuccess"
-                    :before-upload="beforeAvatarUpload">
-                <img v-if="ruleForm.head" :src="ruleForm.head" class="avatar">
+                    :show-file-list="false"
+                    :auto-upload="false"
+                    :on-change="handleAvatar"
+                    :http-request="uploadPicture">
+                <img v-if="userForm.head" :src="userForm.head" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
             </el-form-item>
             <el-form-item>
-                照片<el-upload
+                <h2>照片</h2>
+                <el-upload
+                    name="lifes"
+                    action
                     class="upload-demo"
-                    action="https://localhost:8080/upload"
-                    :on-preview="handlePreview"
-                    :on-remove="handleRemove"
-                    :file-list="ruleForm.lifes"
                     list-type="picture"
+                    :before-upload="beforeUploadPicture"
+                    :on-remove="handleRemove"
+                    :file-list="userForm.lifes"
                     :show-file-list="true"
+                    :auto-upload="false"
+                    :on-change="handlePicture"
                     multiple>
                 <el-button size="small" type="primary">点击上传</el-button>
                 <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
             </el-upload>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
-                <el-button @click="resetForm('ruleForm')">重置</el-button>
+                <el-button type="primary" @click="submitForm('userForm')">提交</el-button>
+                <el-button @click="resetForm('userForm')">重置</el-button>
             </el-form-item>
         </el-form>
     </el-card>
@@ -101,12 +108,14 @@
                 }
             };
             return {
-                ruleForm: {
+                userForm: {
                     uname: '',
                     pwd: '',
                     head: '',
-                    lifes: ''
+                    lifes: []
                 },
+                headImgFile: null,
+                lifesImgFile: null,
                 rules: {
                     uname: [
                         {validator: checkUname, trigger: 'blur'}
@@ -115,28 +124,24 @@
                         {validator: validatePass, trigger: 'blur'}
                     ]
                 },
+                headers: { "Content-Type": "multipart/form-data" },
             };
         },
         methods: {
             submitForm() {
-                // var params = new URLSearchParams();
-                // params.append('uname', this.ruleForm.uname);
-                // params.append('pwd', this.ruleForm.pwd);
-                // params.append('head', this.ruleForm.head);
-                // params.append('lifes', this.ruleForm.lifes);
-                axios.post('/register', this.ruleForm).then(res => {
-                    if (res.data.code === 1) {
-                        alert('注册成功')
-                    } else {
-                        alert('注册失败')
-                    }
-                })
+                this.register()
+                this.uploadPicture()
             },
             resetForm(formName) {
                 this.$refs[formName].resetFields();
             },
-            handleAvatarSuccess(res, file) {
-                this.imageUrl = URL.createObjectURL(file.raw);
+            handleAvatar(file, fileList) {
+                this.headImgFile = file
+                this.userForm.head = URL.createObjectURL(this.headImgFile.raw);
+            },
+            handlePicture(file, fileList) {
+                this.userForm.lifes.push(URL.createObjectURL(file.raw))
+                this.lifesImgFile = fileList;
             },
             beforeAvatarUpload(file) {
                 const isJPG = file.type === 'image/jpeg';
@@ -150,11 +155,64 @@
                 return isJPG && isLt2M;
             },
             handleRemove(file, fileList) {
-                console.log(file, fileList);
+                this.removeElement(this.userForm.lifes, URL.createObjectURL(file.raw))
+                this.lifesImgFile = fileList;
             },
             handlePreview(file) {
                 console.log(file);
-            }
+            },
+            beforeUploadPicture(file){
+                console.log('beforeUploadPicture' + file.name)
+            },
+            removeElement(arr, item) {
+                return arr.filter(function(i){
+                    return i!=item;
+                })
+            },
+            register(){
+                var params = new URLSearchParams();
+                params.append('uname', this.userForm.uname);
+                params.append('pwd', this.userForm.pwd);
+                params.append('head', this.userForm.head);
+                params.append('lifes', this.userForm.lifes);
+                axios.post('/register', params).then(res => {
+                    if (res.data.code == 1) {
+                        this.$message({
+                            message: '注册成功',
+                            type: 'success'
+                        });
+                    } else {
+                        this.$message({
+                            message: '注册失败',
+                            type: 'error'
+                        });
+                    }
+                })
+            },
+            //上传文件的事件
+            async uploadPicture(){
+                this.$message('文件上传中........');
+                //上传文件的需要formdata类型;所以要转
+                let FormDatas = new FormData()
+                FormDatas.append('head', this.headImgFile.raw)
+                this.lifesImgFile.forEach(item => {
+                    FormDatas.append('file', item.raw)
+                })
+                axios.post('upload',FormDatas).then(res=>{
+                    if (res.data.code == 1) {
+                        this.$message({
+                            message: '上传成功',
+                            type: 'success'
+                        })
+                    } else {
+                        this.$message({
+                            message: '上传失败',
+                            type: 'error'
+                        })
+                    }
+                })
+            },
+
         }
     })
 </script>
