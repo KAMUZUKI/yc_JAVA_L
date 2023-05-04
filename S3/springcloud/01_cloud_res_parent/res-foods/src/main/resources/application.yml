@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: res-foods
+  datasource:
+    drive-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: muzuki
+    url: jdbc:mysql://localhost:3306/res?serverTimezone=UTC
+    type: com.alibaba.druid.pool.DruidDataSource
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        username: nacos
+        password: nacos
+    sentinel: #sentinel配置
+      transport:
+        port: 8719
+        dashboard: localhost:9999
+      eager: true
+server:
+  port: ${port:9001}
+
+
+logging:
+  level:
+    root: info
+    com.mu: info
+    org.springframework: info
+  file:
+    path: ./logs
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+

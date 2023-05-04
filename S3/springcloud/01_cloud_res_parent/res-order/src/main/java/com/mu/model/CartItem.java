@@ -1,6 +1,6 @@
-package com.yc.web.model;
+package com.mu.model;
 
-import com.yc.bean.Resfood;
+import com.mu.bean.Resfood;
 
 import java.io.Serializable;
 

@@ -1,0 +1,57 @@
+#spring:
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    username: root
+#    password: aaaa
+#    url: jdbc:mysql://localhost:3306/yc119res?serverTimezone=UTC
+#    # 使用druid数据源
+#    type: com.alibaba.druid.pool.DruidDataSource
+#  cloud:
+#    nacos:
+#      discovery:
+#        server-addr: localhost:8848
+#        username: nacos
+#        password: nacos
+#        namespace: prod
+#server:
+#  port: ${port:9001}
+##logging:
+##  level:
+##    root: info
+##    com.yc: info
+##    org.springframework: info
+
+#  file:
+#    path: ./logs
+#
+#
+#mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  #打印mybatis-plus的sql语句
+#
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
+
+
+spring:
+  cloud:
+    sentinel:  #sentinel配置
+      transport:
+        port: 8719
+        dashboard: localhost:9999
+      eager: true
+
+
+# 等待队列长度，默认100。
+server:
+  tomcat:
+    accept-count: 10
+  # 最大工作线程数，默认200。
+    max-threads: 20
+  # 最小工作空闲线程数，默认10。
+    min-spare-threads: 5
+  #最大连接数，默认为10000
+    max-connections: 100

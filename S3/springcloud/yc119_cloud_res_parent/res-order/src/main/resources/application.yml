@@ -1,0 +1,73 @@
+#spring:
+#  application:
+#    name: res-order
+#  redis:
+#    host: localhost
+#    port: 6379
+#    database: 3
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    username: root
+#    password: aaaa
+#    url: jdbc:mysql://localhost:3306/yc119res?serverTimezone=UTC
+#    # 使用druid数据源
+#    type: com.alibaba.druid.pool.DruidDataSource
+#  cloud:
+#    nacos:
+#      discovery:
+#        server-addr: localhost:8848
+#        username: nacos
+#        password: nacos
+#        namespace: prod
+#server:
+#  port: ${port:8001}
+#
+#logging:
+#  level:
+#    root: info
+#    com.yc: info
+#    org.springframework: info
+#    com.yc.api.ResfoodApi: DEBUG
+#
+#  file:
+#    path: ./logs
+#
+#
+#
+#mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  #打印mybatis-plus的sql语句
+#
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
+#
+#feign:
+#  compression:
+#    request:
+#      enabled: true
+#      mime-types: # 可以被压缩的类型
+#        - text/xml
+#        - application/xml
+#        - application/json
+#      min-request-size: 50 # 超过2048的字节进行压缩
+#    response:
+#      enabled: true
+#  client:
+#    config:
+#      default:   #所有api服务
+#        connectTimeout: 10000
+#        readTimeout: 10000
+#
+#
+
+spring:
+  cloud:
+    sentinel:  #sentinel配置
+      transport:
+        port: 8719
+        dashboard: localhost:9999
+      eager: true
+

@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: res-order
+  redis:
+    host: localhost
+    port: 6379
+    database: 2
+  datasource:
+    drive-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: muzuki
+    url: jdbc:mysql://localhost:3306/res?serverTimezone=UTC
+    type: com.alibaba.druid.pool.DruidDataSource
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        username: nacos
+        password: nacos
+server:
+  port: ${port:8001}
+
+
+logging:
+  level:
+    root: info
+    com.mu: info
+    org.springframework: info
+    com.mu.api.ResfoodApi: DEBUG
+  file:
+    path: ./logs
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+

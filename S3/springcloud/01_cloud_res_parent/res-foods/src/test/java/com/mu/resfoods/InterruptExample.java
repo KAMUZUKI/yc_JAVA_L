@@ -9,6 +9,7 @@ public class InterruptExample implements Runnable {
     @Override
     public void run() {
         while (!Thread.interrupted()) { // 检查中断状态并将其归位
+            System.out.println(Thread.interrupted());
             System.out.println("线程正在运行...");
             try {
                 Thread.sleep(1000); // 线程休眠1秒
